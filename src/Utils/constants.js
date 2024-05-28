@@ -1,0 +1,33 @@
+export const defaultTheme = {
+  primaryColor: "#ffffff",
+  secondaryColor: "linear-gradient(97.43deg, #2F80ED 0%, #56CCF2 100%);",
+  iconFillColor: "#ff0000d6",
+  sidebarInnerHEadingColor: "gray;",
+  sidebarInnnerDivBg: "#ffff",
+  tableRowBg: "whitesmoke",
+  tableRowColor: "#000",
+  activeButtonBg: "#1fc91ffa",
+  landingOutletBg: "rgba(20, 93, 160, 0.09)",
+  inputBg: "#fff",
+  inputColor: "#000",
+  fontFamily: "Poppins",
+  sidebarheadingcolor: "rgba(0, 0, 0, 0.6)",
+  sidebarclickheadingcolor: "#fff",
+};
+
+export const nightMode = {
+  primaryColor: "#ffffff",
+  secondaryColor: "linear-gradient(97.43deg, #2F80ED 0%, #56CCF2 100%);",
+  iconFillColor: "#ff0000d6",
+  sidebarInnerHEadingColor: "gray;",
+  sidebarInnnerDivBg: "#212121",
+  tableRowBg: "#212121",
+  tableRowColor: "#fff",
+  activeButtonBg: "#1fc91ffa",
+  landingOutletBg: "#000",
+  inputBg: "#fff",
+  inputColor: "#000",
+  fontFamily: "Poppins",
+  sidebarheadingcolor: "#fff",
+  sidebarclickheadingcolor: "#fff",
+};

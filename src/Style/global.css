@@ -1,0 +1,223 @@
+.ant-modal-content {
+  background: #f4f4f4 !important;
+  box-shadow: 0px 1.53804px 4.61413px rgba(0, 0, 0, 0.1),
+    0px 1.53804px 3.07609px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 10px !important;
+}
+.ant-modal-close {
+  position: absolute !important;
+  top: -20px !important;
+  right: -17px !important;
+  background: black !important;
+  color: #fff !important;
+  width: 45px !important;
+  height: 45px !important;
+  border-radius: 50% !important;
+}
+
+Header {
+  background: #333 !important;
+  padding-right: 15px !important;
+}
+.ant-menu {
+  position: sticky;
+  top: 65px;
+  background: transparent;
+}
+.ant-layout-sider {
+  background: linear-gradient(
+    351deg,
+    rgb(201, 248, 199) 20.05%,
+    rgb(105, 201, 102) 85.17%
+  ) !important;
+}
+.ant-menu-item {
+  color: rgb(255, 255, 255) !important;
+  padding: 15px 30px !important;
+  margin: auto !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  width: 100% !important;
+  border-radius: 0px !important;
+  height: 50px !important;
+  font-family: Poppins;
+}
+.ant-menu-item:hover {
+  cursor: pointer !important;
+  background-color: rgb(242, 245, 246, 0.5) !important;
+  color: #000 !important;
+}
+:where(.css-dev-only-do-not-override-1me4733).ant-menu-dark
+  .ant-menu-item-selected {
+  background-color: rgb(242, 245, 246, 0.5);
+  color: #000 !important;
+}
+:where(.css-dev-only-do-not-override-1me4733).ant-menu-dark
+  .ant-menu-item-selected
+  .menuItem {
+  filter: invert(100%) !important;
+}
+.ant-menu-item:hover .menuItem {
+  filter: invert(100%) !important;
+}
+.ant-menu-title-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+:where(.css-dev-only-do-not-override-1me4733).ant-layout
+  .ant-layout-sider-children
+  .ant-menu.ant-menu-inline-collapsed
+  .menuItem {
+  padding-right: 15px;
+}
+/* .ant-tooltip-open {
+    display: none !important;
+  }
+  .ant-menu-item-active {
+    /* display: none !important; */
+/* } */
+
+.MuiSelect-select.MuiSelect-outlined.MuiSelect-multiple.MuiInputBase-input.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 0px;
+}
+.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4375em;
+  letter-spacing: 0.00938em;
+  color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
+  position: relative;
+  cursor: text;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+/*Antd carousel css changes tart here*/
+
+/* .cdUTym section .information div {
+  display: block !important;
+} */
+
+/*Antd carousel css changes end here*/
+
+/* sidebar on off button css start here*/
+@media screen and (max-width: 933px) {
+  .openBtnDiv {
+    width: 26.2% !important;
+  }
+}
+@media screen and (max-width: 858px) {
+  .openBtnDiv {
+    width: 26.4% !important;
+  }
+}
+@media screen and (max-width: 815px) {
+  .openBtnDiv {
+    width: 26.6% !important;
+  }
+}
+@media screen and (max-width: 761px) {
+  .openBtnDiv {
+    width: 27% !important;
+  }
+}
+@media screen and (max-width: 685px) {
+  .openBtnDiv {
+    width: 27.4% !important;
+  }
+}
+@media screen and (max-width: 612px) {
+  .openBtnDiv {
+    width: 27.8% !important;
+  }
+}
+@media screen and (max-width: 568px) {
+  .openBtnDiv {
+    width: 28.2% !important;
+  }
+}
+@media screen and (max-widtth: 550px) {
+  .openBtnDiv {
+    padding: 0px !important;
+  }
+}
+@media screen and (max-width: 703px) {
+  .clickOpenDiv {
+    width: 28% !important;
+  }
+  .openBtnDiv {
+    width: 32.5% !important;
+  }
+}
+@media screen and (max-width: 600px) {
+  .clickOpenDiv {
+    width: 31% !important;
+  }
+  .openBtnDiv {
+    width: 36% !important;
+  }
+}
+/* sidebar on off button css end here */
+/* 360 to 550 media start here*/
+@media screen and (max-width: 550px) {
+  .clickOpenDiv2 {
+    width: 34.5% !important;
+    left: -14px;
+    top: -10px;
+  }
+  .openBtnDiv {
+    width: 38% !important;
+  }
+}
+@media screen and (max-width: 510px) {
+  .clickOpenDiv2 {
+    width: 36.5% !important;
+    left: -14px;
+  }
+  .openBtnDiv {
+    width: 40% !important;
+  }
+}
+@media screen and (max-width: 485px) {
+  .clickOpenDiv2 {
+    width: 37% !important;
+  }
+  .openBtnDiv {
+    width: 40.5% !important;
+  }
+}
+@media screen and (max-width: 475px) {
+  .clickOpenDiv2 {
+    width: 39% !important;
+  }
+  .openBtnDiv {
+    width: 42.5% !important;
+  }
+}
+@media screen and (max-width: 453px) {
+  .clickOpenDiv2 {
+    width: 45% !important;
+  }
+  .openBtnDiv {
+    width: 48.5% !important;
+  }
+}
+@media screen and (max-width: 430px) {
+  .clickOpenDiv2 {
+    width: 55% !important;
+  }
+  .openBtnDiv {
+    width: 59% !important;
+  }
+}
+/* 360 to 550 media end here*/
