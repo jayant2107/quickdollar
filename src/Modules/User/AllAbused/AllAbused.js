@@ -138,6 +138,8 @@ const AllUserWrapper = styled.div`
       color: ${({ theme }) => theme?.primaryColor};
       background: ${({ theme }) => theme?.secondaryColor};
       font-family: ${({ theme }) => theme?.fontFamily};
+      // comment added
+      
     }
   }
 
