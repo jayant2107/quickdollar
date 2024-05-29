@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Select } from 'antd';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import TextArea from 'antd/es/input/TextArea';
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import MUIRichTextEditor from 'mui-rte'
-import { convertToRaw } from 'draft-js';
+import * as yup from "yup";
 
 const PromotionEmail = () => {
     const initialValues = {
@@ -20,6 +20,19 @@ const PromotionEmail = () => {
         customPostbackParm: '',
         offerDescription: ""
     };
+
+    const validationSchema = yup.object().shape({
+        subject: yup.string().required('Subject is required'),
+        heading: yup.string().required('Heading is required'),
+        additionalText: yup.string().required('Additional text is required'),
+        countries: yup.array().required('Countries are required'),
+        offerText: yup.string().required('Offer text is required'),
+        offerAmount: yup.string().required('Offer amount is required'),
+        offerId: yup.number().required('Offer ID is required'),
+        offerLink: yup.string().required('Offer link is required'),
+        customPostbackParm: yup.string().required('Custom postback parameter is required'),
+        offerDescription: yup.string().required('Offer description is required'),
+    });
 
     const handleSubmit = (values) => {
         console.log('Form values:', values);
@@ -41,6 +54,7 @@ const PromotionEmail = () => {
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
+                    validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
                     {({ values, setFieldValue }) => (
@@ -48,68 +62,111 @@ const PromotionEmail = () => {
                             <InputWrapper>
                                 <FieldWrapper>
                                     <Label>Email Subject</Label>
+                                    <FieldContainer>
                                     <InputField name="subject" placeholder="Email subject" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="subject" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Email Heading</Label>
+                                    <FieldContainer>
                                     <InputField name="heading" placeholder="Email heading" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="heading" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Description</Label>
+                                    <FieldContainer>
                                     <ThemeProvider theme={myTheme}>
                                         <RichTextEditorWrapper>
                                             <MUIRichTextEditor
                                                 label="Start typing..."
-                                                onSave={(data) => {
-                                                    const rawContentState = convertToRaw(data.getCurrentContent());
-                                                    const content = JSON.stringify(rawContentState);
-                                                    setFieldValue('offerDescription', content);
+                                                onChange={(state) => {
+                                                    setFieldValue('offerDescription', state.getCurrentContent().getPlainText());
                                                 }}
-                                                inlineToolbar={true}
                                             />
                                         </RichTextEditorWrapper>
                                     </ThemeProvider>
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="offerDescription" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Additional Text</Label>
+                                    <FieldContainer>
                                     <TextAreaField
                                         name="additionalText"
                                         placeholder="Additional text"
                                         rows={3}
                                         onChange={(e) => setFieldValue('additionalText', e.target.value)}
                                     />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="additionalText" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Text</Label>
+                                    <FieldContainer>
                                     <InputField name="offerText" placeholder="Offer text" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="offerText" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Amount in $</Label>
+                                    <FieldContainer>
                                     <InputField name="offerAmount" placeholder="Offer amount" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="offerAmount" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer ID</Label>
+                                    <FieldContainer>
                                     <InputField name="offerId" placeholder="1" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="offerId" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Link</Label>
+                                    <FieldContainer>
                                     <InputField name="offerLink" placeholder="Offer link" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="offerLink" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Custom Postback Params</Label>
+                                    <FieldContainer>
                                     <InputField name="customPostbackParm" placeholder="Custom postback params" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="customPostbackParm" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Country Code</Label>
+                                    <FieldContainer>
                                     <ChooseCountry>
                                         <SelectField
                                             mode="multiple"
@@ -129,11 +186,15 @@ const PromotionEmail = () => {
                                             Select all country
                                         </Checkbox>
                                     </ChooseCountry>
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="countries" />
+                                    </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
                             </InputWrapper>
                             <Footer>
                                 <ResetButton type="primary">Preview</ResetButton>
-                                <Button type="primary" htmlType="submit">Submit</Button>
+                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
@@ -184,13 +245,13 @@ const Label = styled.p`
     line-height: 17px;
     color: #282828;
     display: flex;
-    align-items: center;
     justify-content: start;
     margin-bottom: 0.5rem;
     margin-top: 0px;
     font-size: 17px;
     text-align: start;
     width: 210px;
+    padding: 15px 0px 15px 15px;
 `;
 
 const InputField = styled(Field)`
@@ -201,7 +262,7 @@ const InputField = styled(Field)`
     color: #666;
     border-radius: 5px;
     outline: none;
-    margin-bottom: 1rem;
+    margin-bottom: 3px;
 `;
 
 const InputWrapper = styled.div`
@@ -220,7 +281,7 @@ const TextAreaField = styled(TextArea)`
     font-size: 14px;
     color: #666;
     border-radius: 5px;
-    margin-bottom: 1rem;
+    margin-bottom: 3px;
     &.ant-input:focus, &.ant-input-focused, &.ant-input:hover {
         outline: none;
         box-shadow: none;
@@ -275,6 +336,11 @@ const ResetButton = styled(Button)`
     border-color: #17A2B8;
 `;
 
+const SubmitBtn = styled(Button)`
+color: ${({ theme }) => theme?.primaryColor};
+background: ${({ theme }) => theme?.secondaryColor};
+border: none;
+`
 const myTheme = createTheme({
     palette: {
         primary: {
@@ -296,8 +362,18 @@ overflow-y: scroll;
 background: white;
 border: 1px solid #e5e5e5;
 border-radius: 5px;
-margin-bottom: 1rem;
+margin-bottom: 3px;
     &::-webkit-scrollbar {
         display: none;
     }
 `;
+
+const RequiredWrapper = styled.div`
+color: red;
+text-align: left;
+margin-bottom: 1rem;
+`
+
+const FieldContainer = styled.div`
+width: 100%;
+`

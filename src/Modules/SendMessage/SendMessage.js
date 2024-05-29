@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Select } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import { createTheme, ThemeProvider } from '@mui/material/styles'
@@ -85,15 +84,23 @@ const SendMessage = () => {
                                     <Label>Your Message</Label>
                                     <ThemeProvider theme={myTheme}>
                                         <RichTextEditorWrapper>
-                                            <MUIRichTextEditor label="Start typing..." />
+                                            <MUIRichTextEditor
+                                                label="Start typing..."
+                                                onChange={(state) => {
+                                                    setFieldValue('message', state.getCurrentContent().getPlainText());
+                                                }}
+                                            />
                                         </RichTextEditorWrapper>
                                     </ThemeProvider>
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="message" />
+                                    </RequiredWrapper>
                                 </div>
 
                             </InputWrapper>
 
                             <Footer>
-                                <Button type="primary" htmlType="submit">Submit</Button>
+                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
@@ -230,4 +237,9 @@ const RequiredWrapper = styled.div`
 color: red;
 text-align: left;
 margin-bottom: 1rem;
+`
+
+const SubmitBtn = styled(Button)`
+color: ${({ theme }) => theme?.primaryColor};
+background: ${({ theme }) => theme?.secondaryColor};
 `

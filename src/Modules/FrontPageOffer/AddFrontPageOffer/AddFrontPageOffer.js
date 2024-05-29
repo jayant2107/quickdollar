@@ -97,7 +97,7 @@ const AddFrontPageOffer = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <Button type="primary" htmlType="submit">Submit</Button>
+                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                                 <Button type="primary" danger onClick={resetForm}>Reset</Button>
                             </Footer>
                         </Form>
@@ -151,13 +151,13 @@ font-weight: 400;
 line-height: 17px;
 color: #282828;
 display:flex;
-align-items:center;
 justify-content:start;
 margin-bottom: 0.5rem;
 margin-top: 0px;
 font-size: 17px;
 text-align: start;
 width: 210px;
+padding: 15px 0px 15px 15px;
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;
@@ -213,4 +213,10 @@ margin-bottom: 1rem;
 `
 const FieldContainer = styled.div`
 width: 100%;
+`
+
+const SubmitBtn = styled(Button)`
+color: ${({ theme }) => theme?.primaryColor};
+background: ${({ theme }) => theme?.secondaryColor};
+border: none;
 `

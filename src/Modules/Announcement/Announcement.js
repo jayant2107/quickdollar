@@ -95,7 +95,7 @@ const Announcement = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <Button type="primary" htmlType="submit">Send</Button>
+                                <SubmitBtn type="primary" htmlType="submit">Send</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
@@ -224,4 +224,11 @@ const RequiredWrapper = styled.div`
 color: red;
 text-align: left;
 margin-bottom: 1rem;
+`
+
+
+const SubmitBtn = styled(Button)`
+color: ${({ theme }) => theme?.primaryColor};
+background: ${({ theme }) => theme?.secondaryColor};
+border: none;
 `
