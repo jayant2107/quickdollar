@@ -23,21 +23,7 @@ const Landing = () => {
             <div className="outletDiv">
               <Outlet />
               <div className="policyDiv">
-                <p>
-                  <IntlMassage id="admin.terms" />
-                </p>
-                <p className="policyDot">
-                  <IntlMassage id="admin.hyphen" />
-                </p>
-                <p>
-                  <IntlMassage id="admin.policy" />
-                </p>
-                <p className="policyDot">
-                  <IntlMassage id="admin.hyphen" />
-                </p>
-                <p>
-                  <IntlMassage id="admin.contactus" />
-                </p>
+                
               </div>
             </div>
           </div>

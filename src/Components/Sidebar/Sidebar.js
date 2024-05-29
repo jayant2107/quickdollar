@@ -13,6 +13,10 @@ import { useRef } from "react";
 import useWindowWidth from "../CustomHook/UseWindowWidth";
 import { GoThreeBars } from "react-icons/go";
 import "../../Style/global.css";
+import { FaUsers } from "react-icons/fa";
+import { IoMail } from "react-icons/io5";
+import { FaGift } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
 
 export default function Sidebar({ dir, open }) {
   //   const unreadComment = useSelector(
@@ -21,91 +25,227 @@ export default function Sidebar({ dir, open }) {
   const navigate = useNavigate();
   const [type, setType] = useState(false);
   const [width] = useWindowWidth();
-  const location = window.location.pathname === "/landing/dashboard";
+  const [isShown, setIsShown] = useState(false);
+  const location = window.location.pathname === "/quickdollar/dashboard";
   console.log(location, "location is here!");
+  const [showMoreUserOptions, setShowMoreUserOptions] = useState(false);
+  const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(false);
+  const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
+  const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
+
 
   const SidebarData = [
     // {
     //   id: "sidebar.dashboard",
-    //   path: "/landing/dashboard",
+    //   path: "/quickdollar/dashboard",
     //   logo: <MdOutlineDashboardCustomize />,
     // },
     {
       id: "sidebar.drivers",
-      path: "/landing/driver",
+      path: "/quickdollar/driver",
       logo: <AiOutlineCar />,
     },
     {
-      id: "sidebar.users",
-      path: "/landing/user",
-      logo: <FiUserPlus />,
+      id: "sidebar.user",
+      path: "/quickdollar/user",
+      logo: <FaUsers />,
+    },
+    {
+      id: "sidebar.offers",
+      path: "/quickdollar/offer",
+      logo: <IoMail />,
+    },
+    {
+      id: "sidebar.giftCards",
+      path: "/quickdollar/giftcard",
+      logo: <FaGift />,
+    },
+    {
+      id: "sidebar.sendMessage",
+      path: "/quickdollar/sendmessage",
+      logo: <IoMail />,
+    },
+    {
+      id: "sidebar.frontPageOffer",
+      path: "/quickdollar/frontpageoffer",
+      logo: <IoMail />,
+    },
+    {
+      id: "sidebar.announcement",
+      path: "/quickdollar/announcement",
+      logo: <FaBell />,
+    },
+    {
+      id: "sidebar.promotionEmail",
+      path: "/quickdollar/promotionEmail",
+      logo: <FaBell />,
+    },
+  ];
+
+  const additionalUserOptions = [
+    {
+      id: "sidebar.allUsers",
+      path: "/quickdollar/user/allusers",
+    },
+    {
+      id: "sidebar.allAbusedUsers",
+      path: "/quickdollar/user/allabused",
+    },
+    {
+      id: "sidebar.addAdminUsers",
+      path: "/quickdollar/user/addadminuser",
+    },
+    {
+      id: "sidebar.decryptUserInfo",
+      path: "/quickdollar/user/decryptuserinfo",
+    },
+  ];
+
+  const additionalOffersOptions = [
+    {
+      id: "sidebar.allOffers",
+      path: "/quickdollar/offer/alloffers",
+    },
+    {
+      id: "sidebar.addOffer",
+      path: "/quickdollar/offer/addoffer",
+    },
+    {
+      id: "sidebar.addCustomOffers",
+      path: "/quickdollar/offer/addcustomoffers",
+    },
+    {
+      id: "sidebar.viewCustomOffers",
+      path: "/quickdollar/offer/viewcustomoffers",
+    },
+    {
+      id: "sidebar.completedOffers",
+      path: "/quickdollar/offer/completedoffers",
+    },
+  ];
+
+  const additionalGiftsOptions = [
+    {
+      id: "sidebar.allGiftCards",
+      path: "/quickdollar/giftcard/allgiftcard",
+    },
+    {
+      id: "sidebar.addGiftCard",
+      path: "/quickdollar/giftcard/addgiftcard",
+    },
+    {
+      id: "sidebar.requestedGiftCards",
+      path: "/quickdollar/giftcard/requestedgiftcard",
+    },
+    {
+      id: "sidebar.deliveredGiftCards",
+      path: "/quickdollar/giftcard/deliveredgiftcard",
+    },
+  ];
+
+  const additionalFrontPageOptions = [
+    {
+      id: "sidebar.allFrontPageOffer",
+      path: "/quickdollar/frontpageoffer/allfrontageoffer",
+    },
+    {
+      id: "sidebar.addFrontPageOffer",
+      path: "/quickdollar/frontpageoffer/addfrontpageoffer",
     },
   ];
 
   const ItemList = () => {
-    return SidebarData.map((val) => {
-      const active = window.location.pathname === val.path;
-      if (active) {
-        return (
-          // <Selecteditem onClick={() => navigate(val.path)}>
-          //   <img className="dashImg" src={val.img} alt="" />
-          //   {val.Label}
-          // </Selecteditem>
-          <NavIcon onClick={() => navigate(val.path)}>
-            {val.logo}
-            <p>
-              <IntlMassage id={val.id} />
-            </p>
-          </NavIcon>
-        );
+    return (
+      <>
+        {SidebarData.map((val) => {
+          const active = window.location.pathname?.includes(val.path);
+
+          if (active) {
+            return (
+              <>
+                <div key={val.id}>
+                  <NavIcon onClick={() => window.location.pathname?.includes(val.path) ? handleItemClick(val.id) : navigate(val.path)}>
+                    {val.logo}
+                    <p>
+                      <IntlMassage id={val.id} />
+                    </p>
+                  </NavIcon>
+                  {getAdditionalOptions(val.id).map((option) => (
+                    <NavIcon2 key={option.id} onClick={() => navigate(option.path)}
+                      isSubActive={option.path?.includes(window.location.pathname)}
+
+                    >
+                      {option.logo}
+                      <p>
+                        <IntlMassage id={option.id} />
+                      </p>
+                    </NavIcon2>
+                  ))}
+                </div>
+
+
+              </>
+            );
+          } else {
+            return (
+              <NavIcon2 key={val.id} onClick={() => navigate(val.path)}>
+                {val.logo}
+                <p>
+                  <IntlMassage id={val.id} />
+                </p>
+              </NavIcon2>
+            );
+          }
+        })}
+      </>
+    );
+
+    function handleItemClick(itemId) {
+      switch (itemId) {
+        case "sidebar.user":
+          setShowMoreUserOptions((prev) => !prev);
+          setShowMoreOfferOptions(false);
+          setShowMoreGiftOptions(false);
+          setShowMoreFrontPageOptions(false);
+          break;
+        case "sidebar.offers":
+          setShowMoreUserOptions(false);
+          setShowMoreOfferOptions((prev) => !prev);
+          setShowMoreGiftOptions(false);
+          setShowMoreFrontPageOptions(false);
+          break;
+        case "sidebar.giftCards":
+          setShowMoreUserOptions(false);
+          setShowMoreOfferOptions(false);
+          setShowMoreGiftOptions((prev) => !prev);
+          setShowMoreFrontPageOptions(false);
+          break;
+        case "sidebar.frontPageOffer":
+          setShowMoreUserOptions(false);
+          setShowMoreOfferOptions(false);
+          setShowMoreGiftOptions(false);
+          setShowMoreFrontPageOptions((prev) => !prev);
+          break;
+        default:
+          break;
       }
-      return (
-        <NavIcon2 onClick={() => navigate(val.path)}>
-          {val.logo}
-          <p>
-            <IntlMassage id={val.id} />
-          </p>
-        </NavIcon2>
-      );
-    });
-  };
+    }
 
-  const ItemList2 = () => {
-    return SidebarData.map((val) => {
-      const active = window.location.pathname === val.path;
-      if (active) {
-        return (
-          // <Selecteditem onClick={() => navigate(val.path)}>
-          //   <img className="dashImg" src={val.img} alt="" />
-          //   {val.Label}
-          // </Selecteditem>
-          <NavIcon4 onClick={() => navigate(val.path)}>
-            {val.logo}
-            <p>
-              <IntlMassage id={val.id} />
-            </p>
-          </NavIcon4>
-        );
+    function getAdditionalOptions(itemId) {
+      console.log(itemId, "itemID")
+      switch (itemId) {
+        case "sidebar.user":
+          return showMoreUserOptions ? additionalUserOptions : [];
+        case "sidebar.offers":
+          return showMoreOfferOptions ? additionalOffersOptions : [];
+        case "sidebar.giftCards":
+          return showMoreGiftOptions ? additionalGiftsOptions : [];
+        case "sidebar.frontPageOffer":
+          return showMoreFrontPageOptions ? additionalFrontPageOptions : [];
+        default:
+          return [];
       }
-      return (
-        <NavIcon3 onClick={() => navigate(val.path)}>
-          {val.logo}
-          <p>
-            <IntlMassage id={val.id} />
-          </p>
-        </NavIcon3>
-      );
-    });
-  };
-
-  const [isShown, setIsShown] = useState(false);
-
-  const handleClick = (event) => {
-    // 👇️ toggle shown state
-    setIsShown((current) => !current);
-
-    // 👇️ or simply set it to true
-    // setIsShown(true);
+    }
   };
 
   return (
@@ -125,19 +265,19 @@ export default function Sidebar({ dir, open }) {
         <>
           <div
             onClick={() => {
-              handleClick();
+              setIsShown((current) => !current);
               setType((type) => !type);
             }}
             className="openBtnDiv"
             style={
               type
                 ? {
-                    width: "26%",
-                    display: "flex",
-                    justifyContent: "end",
-                    zIndex: 9,
-                    position: "absolute",
-                  }
+                  width: "26%",
+                  display: "flex",
+                  justifyContent: "end",
+                  zIndex: 9,
+                  position: "absolute",
+                }
                 : { display: "flex", float: "right" }
             }
           >
@@ -164,18 +304,12 @@ export default function Sidebar({ dir, open }) {
               }}
               className="clickOpenDiv"
             >
-              {/* <div
-                style={{ display: "flex", float: "right" }}
-                onClick={handleClick}
-              >
-                <GoThreeBars style={{ fontSize: "30px" }} />
-              </div> */}
               <InnerContainer>
                 <LogoWrap>
                   <NavLogo src={Applogo}></NavLogo>
                 </LogoWrap>
                 <SidebarMenu>
-                  <ItemList2 />
+                  <ItemList />
                 </SidebarMenu>
               </InnerContainer>
             </SidebarContainer>
@@ -200,6 +334,25 @@ const SidebarContainer = styled.div`
   color: #000;
   position: fixed;
   transition: all ease-out 0.4s;
+  overflow-y: scroll;
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
 
   @media (max-width: 982px) {
     width: 10%;
@@ -340,7 +493,7 @@ const NavIcon2 = styled.div`
   padding-right: 20px;
   font-size: 20px;
   line-height: 17px;
-  color: ${({ theme }) => theme?.sidebarheadingcolor};
+  color: ${({ isSubActive }) => isSubActive && "red"};
   display: flex;
   gap: 10px;
   align-items: center;
@@ -408,3 +561,4 @@ const Badge = styled.span`
   justify-content: center;
   transform: translateY(-10px);
 `;
+
