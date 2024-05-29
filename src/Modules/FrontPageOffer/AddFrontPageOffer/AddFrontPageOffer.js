@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from 'antd';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
+import * as yup from "yup";
 
 const AddFrontPageOffer = () => {
 
@@ -12,8 +13,16 @@ const AddFrontPageOffer = () => {
         buttonImg: ''
     };
 
-    const handleSubmit = (values) => {
+    const validationSchema = yup.object().shape({
+        offerTitle: yup.string().required('Offer title is required'),
+        offerLink: yup.string().required('Offer link is required'),
+        offerImg: yup.string().required('Offer image is required'),
+        buttonImg: yup.string().required('Button image is required'),
+    });
+
+    const handleSubmit = (values, { resetForm }) => {
         console.log('Form values:', values);
+        resetForm();
     };
 
     return (
@@ -24,6 +33,7 @@ const AddFrontPageOffer = () => {
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
+                    validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
                     {({ resetForm }) => (
@@ -33,35 +43,55 @@ const AddFrontPageOffer = () => {
 
                                 <FieldWrapper>
                                     <Label>Frontpage Offer Title</Label>
-                                    <InputField name="offerTitle" placeholder="Offer title" />
+                                    <FieldContainer>
+                                        <InputField name="offerTitle" placeholder="Offer title" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerTitle" />
+                                        </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Frontpage Offer Link</Label>
-                                    <InputField name="offerLink" placeholder="Offer link" />
+                                    <FieldContainer>
+                                        <InputField name="offerLink" placeholder="Offer link" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerLink" />
+                                        </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Frontpage Offer Image</Label>
-                                    <ChooseContainer>
-                                        <ChooseFile
-                                            name="offerImg"
-                                            type="file"
-                                        />
-                                        <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
-                                    </ChooseContainer>
+                                    <FieldContainer>
+                                        <ChooseContainer>
+                                            <ChooseFile
+                                                name="offerImg"
+                                                type="file"
+                                            />
+                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                                        </ChooseContainer>
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerImg" />
+                                        </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Frontpage Button Image</Label>
-                                    <ChooseContainer>
-                                        <ChooseFile
-                                            name="buttonImg"
-                                            type="file"
-                                        />
-                                        <UploadInstruction>Max size 2MB and resolution is 250x250 px <br />
-                                            Add button image if you want to replace default Image</UploadInstruction>
-                                    </ChooseContainer>
+                                    <FieldContainer>
+                                        <ChooseContainer>
+                                            <ChooseFile
+                                                name="buttonImg"
+                                                type="file"
+                                            />
+                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px <br />
+                                                Add button image if you want to replace default Image</UploadInstruction>
+                                        </ChooseContainer>
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="buttonImg" />
+                                        </RequiredWrapper>
+                                    </FieldContainer>
                                 </FieldWrapper>
 
                             </InputWrapper>
@@ -137,7 +167,7 @@ font-size: 14px;
 color: #666;
 border-radius: 5px;
 outline: none;
-margin-bottom: 1rem;
+margin-bottom: 3px;
 `;
 
 const ChooseFile = styled(Field)`
@@ -175,4 +205,12 @@ margin-bottom: 0.5rem;
 margin-top: 0px;
 font-size: 14px;
 text-align: start;
+`
+const RequiredWrapper = styled.div`
+color: red;
+text-align: left;
+margin-bottom: 1rem;
+`
+const FieldContainer = styled.div`
+width: 100%;
 `

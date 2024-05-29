@@ -1,18 +1,25 @@
 import React from 'react'
 import { Button, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import MUIRichTextEditor from 'mui-rte'
+import * as yup from "yup";
 
 const SendMessage = () => {
 
     const initialValues = {
         user: '',
-        title: '',
+        subject: '',
         message: ''
     };
+
+    const validationSchema = yup.object().shape({
+        user: yup.string().required('User is required'),
+        subject: yup.string().required('Subject is required'),
+        message: yup.string().required('Message is required')
+    });
 
     const handleSubmit = (values, { resetForm }) => {
         console.log('Form values:', values);
@@ -26,6 +33,7 @@ const SendMessage = () => {
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
+                    validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
                     {({ setFieldValue }) => (
@@ -37,7 +45,7 @@ const SendMessage = () => {
                                         defaultValue={initialValues.user}
                                         style={{
                                             width: "100%",
-                                            marginBottom: "1rem",
+                                            marginBottom: "3px",
                                         }}
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
@@ -60,11 +68,17 @@ const SendMessage = () => {
                                             },
                                         ]}
                                     />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="user" />
+                                    </RequiredWrapper>
                                 </div>
 
                                 <div>
                                     <Label>Your Subject</Label>
-                                    <InputField name="title" placeholder="Message subject" />
+                                    <InputField name="subject" placeholder="Message subject" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="subject" />
+                                    </RequiredWrapper>
                                 </div>
 
                                 <div>
@@ -144,27 +158,8 @@ font-size: 14px;
 color: #666;
 border-radius: 5px;
 outline: none;
-margin-bottom: 1rem;
+margin-bottom: 3px;
 `;
-
-const TextAreaField = styled(TextArea)`
-width: 100%;
-padding: 15px 0px 15px 15px;
-border: 1px solid #e5e5e5;
-font-size: 14px;
-color: #666;
-border-radius: 5px;
-margin-bottom: 1rem;
-&.ant-input:focus, &.ant-input-focused, &.ant-input:hover {
-outline: none;
-box-shadow: none;
-resize: none;
-border-color: #e5e5e5; 
-  }
-  ::placeholder {
-    color: #666;
-  }
-`
 
 const InputWrapper = styled.div`
 padding: 1.25rem;
@@ -230,3 +225,9 @@ margin-bottom: 1rem;
         display: none;
     }
 `;
+
+const RequiredWrapper = styled.div`
+color: red;
+text-align: left;
+margin-bottom: 1rem;
+`

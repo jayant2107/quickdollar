@@ -1,10 +1,9 @@
 import React from 'react'
 import { Button, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
-
 
 const Announcement = () => {
 
@@ -19,8 +18,7 @@ const Announcement = () => {
         title: yup.string().required('Title is required'),
         message: yup.string().required('Message is required')
     });
-
-    const handleSubmit = (values, { resetForm }) => {
+    const handleSubmit = (values) => {
         console.log('Form values:', values);
     };
 
@@ -45,7 +43,7 @@ const Announcement = () => {
                                         placeholder="Please select"
                                         style={{
                                             width: "100%",
-                                            marginBottom: "1rem",
+                                            marginBottom: "3px",
                                         }}
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
@@ -68,11 +66,17 @@ const Announcement = () => {
                                             },
                                         ]}
                                     />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="user" />
+                                    </RequiredWrapper>
                                 </div>
 
                                 <div>
                                     <Label>Title</Label>
                                     <InputField name="title" placeholder="Notification Title" />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="title" />
+                                    </RequiredWrapper>
                                 </div>
 
                                 <div>
@@ -83,6 +87,9 @@ const Announcement = () => {
                                         rows={5}
                                         onChange={(e) => setFieldValue('message', e.target.value)}
                                     />
+                                    <RequiredWrapper>
+                                        <ErrorMessage name="message" />
+                                    </RequiredWrapper>
                                 </div>
 
                             </InputWrapper>
@@ -153,7 +160,7 @@ font-size: 14px;
 color: #666;
 border-radius: 5px;
 outline: none;
-margin-bottom: 1rem;
+margin-bottom: 3px;
 `;
 
 const TextAreaField = styled(TextArea)`
@@ -163,7 +170,7 @@ border: 1px solid #e5e5e5;
 font-size: 14px;
 color: #666;
 border-radius: 5px;
-margin-bottom: 1rem;
+margin-bottom: 3px;
 &.ant-input:focus, &.ant-input-focused, &.ant-input:hover {
 outline: none;
 box-shadow: none;
@@ -212,3 +219,9 @@ const SelectField = styled(Select)`
     border-color: #e5e5e5 !important;
   }
 `;
+
+const RequiredWrapper = styled.div`
+color: red;
+text-align: left;
+margin-bottom: 1rem;
+`
