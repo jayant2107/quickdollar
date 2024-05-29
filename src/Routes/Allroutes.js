@@ -13,7 +13,7 @@ import EditProfile from "../Components/Header/Profile/EditProfile";
 import Loader from "../Components/Loader/Loader";
 import SkeletonLoader from "../Components/Skeleton/SkeletonLoader";
 import Landing from "../Pages/Landing";
-import Dashboard from "../Pages/SidebarPages/Dashboard/Dashboard";
+import Dashboard from "../Modules/Dashboard/Dashboard";
 import DriverListing from "../Pages/SidebarPages/DriverListing/DriverListing";
 import Announcement from "../Modules/Announcement/Announcement";
 import SendMessage from "../Modules/SendMessage/SendMessage";

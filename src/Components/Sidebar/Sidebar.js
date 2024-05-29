@@ -17,6 +17,7 @@ import { FaUsers } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { FaGift } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
+import { AiFillDashboard } from "react-icons/ai";
 
 export default function Sidebar({ dir, open }) {
   //   const unreadComment = useSelector(
@@ -44,6 +45,11 @@ export default function Sidebar({ dir, open }) {
       id: "sidebar.drivers",
       path: "/quickdollar/driver",
       logo: <AiOutlineCar />,
+    },
+    {
+      id: "sidebar.dashboard",
+      path: "/quickdollar/dashboard",
+      logo: <AiFillDashboard />,
     },
     {
       id: "sidebar.user",
