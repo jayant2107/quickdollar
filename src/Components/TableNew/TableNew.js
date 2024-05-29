@@ -7,71 +7,71 @@ import { MdDelete } from "react-icons/md";
 import { CgSearch } from "react-icons/cg";
 
 const TableNew = ({ columns, data, scroll }) => {
-    const [entries, setEntries] = useState(5);
+  const [entries, setEntries] = useState(5);
 
-    const columnsWithSno = [
-        {
-            title: "S.No",
-            dataIndex: "sno",
-            key: "sno",
-            fixed: "left",
-            width: 70,
-            render: (index) => index + 1,
-        },
-        ...columns,
-        {
-            title: "Action",
-            key: "operation",
-            fixed: "right",
-            width: 100,
-            render: () => (
-                <div className="actionIcons">
-                    <IoIosSend className="icon" />
-                    <MdModeEditOutline className="icon" />
-                    <MdDelete className="icon" />
-                </div>
-            ),
-        },
-    ];
+  const columnsWithSno = [
+    {
+      title: "S.No",
+      dataIndex: "sno",
+      key: "sno",
+      fixed: "left",
+      width: 70,
+      render: (text, record, index) => index + 1,
+    },
+    ...columns,
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 100,
+      render: () => (
+        <div className="actionIcons">
+          <IoIosSend className="icon" />
+          <MdModeEditOutline className="icon" />
+          <MdDelete className="icon" />
+        </div>
+      ),
+    },
+  ];
 
-    const paginationConfig = {
-        pageSize: entries,
-        showSizeChanger: true, // Allow changing the page size
-        showTotal: (total, range) =>
-            `Showing ${ range[0]} to ${ range[1]} of ${ total } entries`,
-                pageSizeOptions: ["5", "10", "20", "50"], // Define the available page size options
-                    onChange: (pageSize) => {
-                        setEntries(pageSize);
-                    },
+  const paginationConfig = {
+    pageSize: entries,
+    showSizeChanger: true, // Allow changing the page size
+    showTotal: (total, range) =>
+      `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+    pageSizeOptions: ["5", "10", "20", "50"], // Define the available page size options
+    onChange: (pageSize) => {
+      setEntries(pageSize);
+    },
   };
 
-return (
+  return (
     <TableWrapper>
-        <div className="tableContent">
-            <div className="allUsersSearchDiv">
-                <div className="searchDiv">
-                    <label htmlFor="" className="searchLabel">
-                        Search
-                    </label>
-                    <div className="searchField">
-                        <input
-                            className="alluserSearch"
-                            type="text"
-                            placeholder="Search"
-                        />
-                        <CgSearch className="searchIcon" />
-                    </div>
-                </div>
+      <div className="tableContent">
+        <div className="allUsersSearchDiv">
+          <div className="searchDiv">
+            <label htmlFor="" className="searchLabel">
+              Search
+            </label>
+            <div className="searchField">
+              <input
+                className="alluserSearch"
+                type="text"
+                placeholder="Search"
+              />
+              <CgSearch className="searchIcon" />
             </div>
-            <Table
-                columns={columnsWithSno}
-                dataSource={data}
-                pagination={paginationConfig}
-                scroll={scroll}
-            />
+          </div>
         </div>
+        <Table
+          columns={columnsWithSno}
+          dataSource={data}
+          pagination={paginationConfig}
+          scroll={scroll}
+        />
+      </div>
     </TableWrapper>
-);
+  );
 };
 
 export default TableNew;
