@@ -133,7 +133,8 @@ export const LogoWrap = styled.div`
   text-align: center;
 `;
 export const Logo = styled.img`
-  height: 100px;
+  height: 90px;
+  margin-bottom:10px;
 `;
 export const Logintext = styled.p`
   text-align: center;

@@ -1,28 +1,29 @@
-import React, { useState } from 'react';
-import { Button, Radio } from 'antd';
+import React from 'react';
+import { Button } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
 import TextArea from 'antd/es/input/TextArea';
 
 const AddGiftCard = () => {
-    const [value, setValue] = useState("yes");
     const initialValues = {
         giftCardName: '',
         giftImg: '',
         giftCardPrice: '',
         giftCardNote: '',
+        isAdmin: "",
     };
 
     const validationSchema = yup.object().shape({
         giftCardName: yup.string().required('Gift Card Name is required'),
         giftImg: yup.string().required('Gift Card Image is required'),
         giftCardPrice: yup.string().required('Gift card priceis required').test(
-          'is-number',
-          'Enter number only',
-          value => !isNaN(value) && Number.isInteger(parseFloat(value))
-      ),
+            'is-number',
+            'Enter number only',
+            value => !isNaN(value) && Number.isInteger(parseFloat(value))
+        ),
         giftCardNote: yup.string().required('Gift Card Note is required'),
+        isAdmin: yup.string().required("Admin status is required"),
     });
 
     const handleSubmit = (values, { resetForm, setFieldValue }) => {
@@ -30,11 +31,8 @@ const AddGiftCard = () => {
         resetForm();
         setFieldValue('giftCardNote', '')
     };
-    
-    const onChange = (e) => {
-      console.log('radio checked', e.target.value);
-      setValue(e.target.value);
-    };
+
+
 
     return (
         <div>
@@ -106,12 +104,31 @@ const AddGiftCard = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                <Label>Is Active</Label>
-                                <FieldContainer>
-                                    <Radio.Group onChange={onChange} value={value}>
-                                        <Radio value={"yes"}>Yes</Radio>
-                                        <Radio value={"no"}>No</Radio>
-                                    </Radio.Group>
+                                    <Label>Is Active</Label>
+                                    <FieldContainer>
+                                        <FieldWrapper>
+                                            <div>
+                                                <Field
+                                                    type="radio"
+                                                    name="isAdmin"
+                                                    value="yes"
+                                                    id="isAdminYes"
+                                                />
+                                                <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
+                                            </div>
+                                            <div>
+                                                <Field
+                                                    type="radio"
+                                                    name="isAdmin"
+                                                    value="no"
+                                                    id="isAdminNo"
+                                                />
+                                                <RadioLabel htmlFor="isAdminNo">No</RadioLabel>
+                                            </div>
+                                        </FieldWrapper>
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="isAdmin" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
@@ -260,4 +277,7 @@ const TextAreaField = styled(TextArea)`
     ::placeholder {
         color: #666;
     }
+`;
+const RadioLabel = styled.label`
+  margin: 0;
 `;
