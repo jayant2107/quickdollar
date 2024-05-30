@@ -6,9 +6,11 @@ import TextArea from 'antd/es/input/TextArea';
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import MUIRichTextEditor from 'mui-rte'
 import * as yup from "yup";
+import PreviewPromotionEmail from './PreviewPromotionEmail';
 
 const PromotionEmail = () => {
     const [editorKey, setEditorKey] = useState(0);
+    const [triggerModal, setTriggerModal] = useState(false);
     const initialValues = {
         subject: '',
         heading: '',
@@ -208,13 +210,14 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
                             </InputWrapper>
                             <Footer>
-                                <ResetButton type="primary">Preview</ResetButton>
+                                <ResetButton type="button" onClick={() => setTriggerModal(true)}>Preview</ResetButton>
                                 <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
                 </Formik>
             </AnnouncementWrapper>
+            <PreviewPromotionEmail triggerModal={triggerModal} setTriggerModal={setTriggerModal} />
         </div>
     )
 }
@@ -350,6 +353,7 @@ const ChooseCountry = styled.div`
 const ResetButton = styled(Button)`
     background-color: #17A2B8;
     border-color: #17A2B8;
+    color: white;
 `;
 
 const SubmitBtn = styled(Button)`

@@ -46,6 +46,7 @@ const SendMessage = () => {
                                 <div>
                                     <Label>Select user to send notification</Label>
                                     <SelectField
+                                        placeholder="Select user"
                                         defaultValue={initialValues.user}
                                         style={{
                                             width: "100%",

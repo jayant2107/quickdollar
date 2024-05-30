@@ -38,7 +38,7 @@ import MainFrontPageOffer from "../Modules/FrontPageOffer/MainFrontPageOffer";
 import AddFrontPageOffer from "../Modules/FrontPageOffer/AddFrontPageOffer/AddFrontPageOffer"
 import AllFrontPageOffer from "../Modules/FrontPageOffer/AllFrontPageOffer/AllFrontPageOffer";
 function PublicRoute({ isAuthenticated }) {
-  if (isAuthenticated) return <Navigate to="/quickdollar/driver" replace />;
+  if (isAuthenticated) return <Navigate to="/quickdollar/dashboard" replace />;
   return <Outlet />;
 }
 
@@ -65,7 +65,6 @@ export default function GaspilRoutes() {
         <Route element={<PrivateRoute isAuthenticated={token} />}>
           <Route element={<Landing />} path="quickdollar">
             <Route element={<Dashboard />} path="dashboard" />
-            <Route element={<DriverListing />} path="/quickdollar/driver" />
 
             <Route element={<MainUser />} path="user">
               <Route element={<AllUsers />} path="allusers" />
