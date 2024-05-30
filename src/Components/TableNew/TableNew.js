@@ -1,13 +1,41 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Table } from "antd";
-import { MdModeEditOutline } from "react-icons/md";
+import { MdModeEditOutline, MdDelete } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
 import { CgSearch } from "react-icons/cg";
+import Loader from "../Loader/Loader";
+import DeleteModal from "../DeleteModal/DeleteModal";
+import EditDriver from "../DriverActions/EditDriver";
+import SendModal from "../SendModal/SendModal";
 
-const TableNew = ({ columns, data, scroll }) => {
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+  }
+
+  /* Custom Scrollbar Styles */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+  }
+
+  *::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+  }
+
+`;
+
+const TableNew = ({ columns, data, scroll, Actions, loader }) => {
   const [entries, setEntries] = useState(5);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [sendModal, setSendModal] = useState(false);
+  const [viewLoader, setViewLoader] = useState(false);
 
   const columnsWithSno = [
     {
@@ -23,12 +51,13 @@ const TableNew = ({ columns, data, scroll }) => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 100,
-      render: () => (
+      width: 150,
+      render: (text, record) => (
         <div className="actionIcons">
-          <IoIosSend className="icon" />
-          <MdModeEditOutline className="icon" />
-          <MdDelete className="icon" />
+          {Actions?.apply && <IoIosSend className="icon" onClick={showSendModal} />}
+          {Actions?.view && <CgSearch className="icon" />}
+          {Actions?.edit && <MdModeEditOutline className="icon" onClick={showEditModal} />}
+          {Actions?.delete && <MdDelete className="icon" onClick={showModal} />}
         </div>
       ),
     },
@@ -36,41 +65,62 @@ const TableNew = ({ columns, data, scroll }) => {
 
   const paginationConfig = {
     pageSize: entries,
-    showSizeChanger: true, // Allow changing the page size
-    showTotal: (total, range) =>
-      `Showing ${range[0]} to ${range[1]} of ${total} entries`,
-    pageSizeOptions: ["5", "10", "20", "50"], // Define the available page size options
-    onChange: (pageSize) => {
-      setEntries(pageSize);
-    },
+    showSizeChanger: true,
+    showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+    pageSizeOptions: ["5", "10", "20", "50"],
+    onChange: (pageSize) => setEntries(pageSize),
   };
 
+  const showModal = () => {
+    setDeleteModal(true);
+  };
+
+  const handleCancel = () => {
+    setDeleteModal(false);
+  };
+
+  const showEditModal = () => {
+    setEditModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+  };
+  const showSendModal = () => {
+    setSendModal(true);
+  };
+
+  const handleSendCancel = () => {
+    setSendModal(false);
+  };
+
+  if (viewLoader) {
+    return <Loader />;
+  }
+
   return (
-    <TableWrapper>
-      <div className="tableContent">
-        <div className="allUsersSearchDiv">
-          <div className="searchDiv">
-            <label htmlFor="" className="searchLabel">
-              Search
-            </label>
-            <div className="searchField">
-              <input
-                className="alluserSearch"
-                type="text"
-                placeholder="Search"
-              />
-              <CgSearch className="searchIcon" />
+    <>
+      <GlobalStyle />
+      <TableWrapper>
+        {deleteModal && <DeleteModal showModal={showModal} handleCancel={handleCancel} deleteModal={deleteModal} />}
+        {editModal && <EditDriver showEditModal={showEditModal} handleEditCancel={handleEditCancel} editModal={editModal} />}
+        {sendModal && <SendModal showSendModal={showSendModal} handleSendCancel={handleSendCancel} sendModal={sendModal} />}
+        <div className="tableContent">
+          <div className="allUsersSearchDiv">
+            <div className="searchDiv">
+              <label htmlFor="" className="searchLabel">
+                Search
+              </label>
+              <div className="searchField">
+                <input className="alluserSearch" type="text" placeholder="Search" />
+                <CgSearch className="searchIcon" />
+              </div>
             </div>
           </div>
+          <Table columns={columnsWithSno} dataSource={data} pagination={paginationConfig} scroll={scroll} />
         </div>
-        <Table
-          columns={columnsWithSno}
-          dataSource={data}
-          pagination={paginationConfig}
-          scroll={scroll}
-        />
-      </div>
-    </TableWrapper>
+      </TableWrapper>
+    </>
   );
 };
 
@@ -161,15 +211,15 @@ const TableWrapper = styled.div`
 
   .ant-pagination {
     margin-top: 16px;
-    // text-align: left; // Align pagination to the left
   }
+
   .actionIcons {
     display: flex;
     gap: 10px;
   }
 
   .icon {
-    font-size: 30px;
+    font-size: 25px;
     &:hover {
       cursor: pointer;
     }

@@ -44,6 +44,7 @@ const AllGiftCards = () => {
       dataIndex: "createdat",
       key: "createdat",
     },
+    
   ];
 
   const userData = [
@@ -67,6 +68,17 @@ const AllGiftCards = () => {
     x: 1000, 
   };
 
+  const formActions = {
+    apply: false,
+    view: false,
+    edit: true,
+    delete: true,
+    pathname: "/home/owners/view",
+    pathnameEdit: "/home/owners/edit",
+    deletepath: "delete_owner/",
+    delete_key: "owners_id",
+  };
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
@@ -74,7 +86,7 @@ const AllGiftCards = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} />
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions}/>
       </div>
     </AllUserWrapper>
   );

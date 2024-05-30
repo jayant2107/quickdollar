@@ -1,37 +1,35 @@
 import { Modal } from "antd";
 import styled from "styled-components";
-import "../../Style/global.css";
-import { MdDelete } from "react-icons/md";
-import IntlMassage from "../../Utils/IntlMassage";
 
-const DeleteModal = ({ handleCancel, showModal, deleteModal }) => {
+const DeleteModal = ({ handleCancel,  deleteModal }) => {
+
+
   return (
     <>
       <Modal
         maskStyle={{
           backgroundColor: " rgb(0 0 0 / 60%)",
         }}
-        width={320}
         centered
         open={deleteModal}
-        onOk={handleCancel}
+        // onOk={handleCancel}
         onCancel={handleCancel}
         footer={false}
-        closable={true}
+        closable=""
+       
       >
-        <ServiceModalWrapper>
+        <ServiceModalWrapper  >
           <div className="serviceModalUpperDiv">
             <div className="deleteMain">
-              <div className="deleteDiv">
-                <MdDelete className="deleteIcon" />
-              </div>
+             
+              <h4 className="upperDivHead1">
+                Are you sure you want to delete?
+              </h4>
             </div>
-            <h1 className="upperDivHead1">
-              <IntlMassage id="delete.areyousure" />
-            </h1>
-            <button>
-              <IntlMassage id="button.delete" />
-            </button>
+            <div className="buttons">
+              <button  onClick={handleCancel}>Cancel</button>
+              <button onClick={handleCancel} className="delete-button">Delete</button>
+            </div>
           </div>
         </ServiceModalWrapper>
       </Modal>
@@ -40,39 +38,70 @@ const DeleteModal = ({ handleCancel, showModal, deleteModal }) => {
 };
 export default DeleteModal;
 
+
+
+
+
 const ServiceModalWrapper = styled.div`
+
   .serviceModalUpperDiv {
+    height:142px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    // justify-content: space-evenly;
+    gap:32px;
+    // min-height:206px;
     .deleteMain {
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      .deleteDiv {
-        background: rgb(255, 255, 255);
-        box-shadow: rgba(0, 0, 0, 0.18) 0px 14px 28px;
-        border-radius: 50%;
-        padding: 15px 15px 11px 15px;
-        width: max-content;
-
-        .deleteIcon {
-          font-size: 30px;
-          color: ${({ theme }) => theme?.iconFillColor};
-        }
+      align-items: center;
+      .upperDivHead1{
+        font-size:24px;
+        font-weight:700;
       }
+      
+        
     }
-
+    .buttons {
+      display: flex;
+    }
     button {
-      background: rgb(0, 0, 0);
-      box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
+      width: 208px;
+      color: black;
+      height:48px !important;
+      display:flex;
+      align-items:center !important;
+      justify-content:center !important;
+      border: 1px solid var(--Greyscale/1000);
       border-radius: 10px;
       font-style: normal;
-      font-weight: 500;
+      font-weight: 700;
       font-size: 16px;
       line-height: 17px;
-      color: rgb(255, 255, 255);
-      padding: 10px 20px;
+      // padding:  21px 24px;
+      margin: 5px 10px;
+      cursor: pointer;
+      background:transparent;
+    }
+    .delete-button{
+      width: 208px;
+      color: white;
+      // box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
+      border-radius: 10px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 17px;
+      display:flex;
+      align-items:center !important;
+      justify-content:center !important;
       margin: 5px 10px;
       cursor: pointer;
       border: none;
+    background: var(--Alerts-Error-Base, #E03137);
+
     }
     .upperDivHead1 {
       font-weight: 600;
@@ -81,6 +110,8 @@ const ServiceModalWrapper = styled.div`
       color: #242424;
       margin: 0px;
       line-height: 2;
+      color:black;
+
     }
     .upperDivPara1 {
       font-size: 16px;

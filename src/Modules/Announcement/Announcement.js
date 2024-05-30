@@ -18,22 +18,23 @@ const Announcement = () => {
         title: yup.string().required('Title is required'),
         message: yup.string().required('Message is required')
     });
-    const handleSubmit = (values) => {
+
+    const handleSubmit = (values, { resetForm , setFieldValue}) => {
         console.log('Form values:', values);
+        resetForm();
+        setFieldValue('message', '');
     };
 
     return (
         <div>
-            <Header>
-                Send push notification
-            </Header>
+            <Header>Send push notification</Header>
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ setFieldValue }) => (
+                    {({ setFieldValue, values }) => (
                         <Form>
                             <InputWrapper>
                                 <div>
@@ -45,32 +46,20 @@ const Announcement = () => {
                                             width: "100%",
                                             marginBottom: "3px",
                                         }}
+                                        value={values.user}
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
-                                            {
-                                                value: 'jack',
-                                                label: 'Jack',
-                                            },
-                                            {
-                                                value: 'lucy',
-                                                label: 'Lucy',
-                                            },
-                                            {
-                                                value: 'Yiminghe',
-                                                label: 'Yiminghe',
-                                            },
-                                            {
-                                                value: 'disabled',
-                                                label: 'Disabled',
-                                                disabled: true,
-                                            },
+                                            { value: 'jack', label: 'Jack' },
+                                            { value: 'lucy', label: 'Lucy' },
+                                            { value: 'Yiminghe', label: 'Yiminghe' },
+                                            { value: 'disabled', label: 'Disabled', disabled: true },
                                         ]}
                                     />
                                     <RequiredWrapper>
                                         <ErrorMessage name="user" />
                                     </RequiredWrapper>
                                 </div>
-
+    
                                 <div>
                                     <Label>Title</Label>
                                     <InputField name="title" placeholder="Notification Title" />
@@ -78,7 +67,7 @@ const Announcement = () => {
                                         <ErrorMessage name="title" />
                                     </RequiredWrapper>
                                 </div>
-
+    
                                 <div>
                                     <Label>Message</Label>
                                     <TextAreaField
@@ -86,25 +75,24 @@ const Announcement = () => {
                                         placeholder="Notification Message"
                                         rows={5}
                                         onChange={(e) => setFieldValue('message', e.target.value)}
+                                        value={values.message}
                                     />
                                     <RequiredWrapper>
                                         <ErrorMessage name="message" />
                                     </RequiredWrapper>
                                 </div>
-
+    
                             </InputWrapper>
-
+    
                             <Footer>
                                 <SubmitBtn type="primary" htmlType="submit">Send</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
                 </Formik>
-
             </AnnouncementWrapper>
         </div>
-
-    )
+    );
 }
 
 export default Announcement

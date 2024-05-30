@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Select } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
@@ -7,6 +7,7 @@ import MUIRichTextEditor from 'mui-rte'
 import * as yup from "yup";
 
 const SendMessage = () => {
+    const [editorKey, setEditorKey] = useState(0);
 
     const initialValues = {
         user: '',
@@ -20,8 +21,12 @@ const SendMessage = () => {
         message: yup.string().required('Message is required')
     });
 
-    const handleSubmit = (values, { resetForm }) => {
+    const handleSubmit = (values, { resetForm, setFieldValue }) => {
         console.log('Form values:', values);
+        resetForm()
+        setFieldValue('message', '');
+        setEditorKey(prevKey => prevKey + 1);
+
     };
 
     return (
@@ -35,7 +40,7 @@ const SendMessage = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ setFieldValue }) => (
+                    {({ setFieldValue, values }) => (
                         <Form>
                             <InputWrapper>
                                 <div>
@@ -46,6 +51,7 @@ const SendMessage = () => {
                                             width: "100%",
                                             marginBottom: "3px",
                                         }}
+                                        value={values.user}
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
                                             {
@@ -85,9 +91,11 @@ const SendMessage = () => {
                                     <ThemeProvider theme={myTheme}>
                                         <RichTextEditorWrapper>
                                             <MUIRichTextEditor
+                                                key={editorKey}
                                                 label="Start typing..."
                                                 onChange={(state) => {
-                                                    setFieldValue('message', state.getCurrentContent().getPlainText());
+                                                    const content = state.getCurrentContent();
+                                                    setFieldValue('message', content.getPlainText());
                                                 }}
                                             />
                                         </RichTextEditorWrapper>

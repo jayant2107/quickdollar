@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import { IntlProvider } from "react-intl";
-// import { useSelector } from "react-redux";
-
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Applogo, Vector } from "../../Utils/Images";
-import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { Applogo } from "../../Utils/Images";
 import { AiOutlineCar } from "react-icons/ai";
-import { FiUserPlus } from "react-icons/fi";
 import IntlMassage from "../../Utils/IntlMassage";
-import { useRef } from "react";
 import useWindowWidth from "../CustomHook/UseWindowWidth";
-import { GoThreeBars } from "react-icons/go";
 import "../../Style/global.css";
 import { FaUsers } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
@@ -19,70 +12,58 @@ import { FaGift } from "react-icons/fa";
 import { FaBell } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
 
-export default function Sidebar({ dir, open }) {
-  //   const unreadComment = useSelector(
-  //     (state) => state.Notification.unReadMessage
-  //   );
+
+export default function Sidebar() {
   const navigate = useNavigate();
-  const [type, setType] = useState(false);
   const [width] = useWindowWidth();
-  const [isShown, setIsShown] = useState(false);
-  const location = window.location.pathname === "/quickdollar/dashboard";
-  console.log(location, "location is here!");
   const [showMoreUserOptions, setShowMoreUserOptions] = useState(false);
   const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(false);
   const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
   const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
 
-
   const SidebarData = [
-    // {
-    //   id: "sidebar.dashboard",
-    //   path: "/quickdollar/dashboard",
-    //   logo: <MdOutlineDashboardCustomize />,
-    // },
     {
-      id: "sidebar.drivers",
+      name: "sidebar.drivers",
       path: "/quickdollar/driver",
       logo: <AiOutlineCar />,
     },
     {
-      id: "sidebar.dashboard",
+      name: "Dashboard",
       path: "/quickdollar/dashboard",
       logo: <AiFillDashboard />,
     },
     {
-      id: "sidebar.user",
+      name: "Users",
       path: "/quickdollar/user",
       logo: <FaUsers />,
     },
     {
-      id: "sidebar.offers",
+      name: "Offers",
       path: "/quickdollar/offer",
       logo: <IoMail />,
     },
     {
-      id: "sidebar.giftCards",
+      name: "Gift Cards",
       path: "/quickdollar/giftcard",
       logo: <FaGift />,
     },
     {
-      id: "sidebar.sendMessage",
+      name: "Send Message",
       path: "/quickdollar/sendmessage",
       logo: <IoMail />,
     },
     {
-      id: "sidebar.frontPageOffer",
+      name: "Frontpage Offer",
       path: "/quickdollar/frontpageoffer",
       logo: <IoMail />,
     },
     {
-      id: "sidebar.announcement",
+      name: "Annoouncement",
       path: "/quickdollar/announcement",
       logo: <FaBell />,
     },
     {
-      id: "sidebar.promotionEmail",
+      name: "Promotion Email",
       path: "/quickdollar/promotionEmail",
       logo: <FaBell />,
     },
@@ -90,72 +71,72 @@ export default function Sidebar({ dir, open }) {
 
   const additionalUserOptions = [
     {
-      id: "sidebar.allUsers",
+      name: "All Users",
       path: "/quickdollar/user/allusers",
     },
     {
-      id: "sidebar.allAbusedUsers",
+      name: "All Abused Users",
       path: "/quickdollar/user/allabused",
     },
     {
-      id: "sidebar.addAdminUsers",
+      name: "Add Admin User",
       path: "/quickdollar/user/addadminuser",
     },
     {
-      id: "sidebar.decryptUserInfo",
+      name: "Decrypt User info",
       path: "/quickdollar/user/decryptuserinfo",
     },
   ];
 
   const additionalOffersOptions = [
     {
-      id: "sidebar.allOffers",
+      name: "All Offers",
       path: "/quickdollar/offer/alloffers",
     },
     {
-      id: "sidebar.addOffer",
+      name: "Add Offer",
       path: "/quickdollar/offer/addoffer",
     },
     {
-      id: "sidebar.addCustomOffers",
+      name: "Add Custom Offers",
       path: "/quickdollar/offer/addcustomoffers",
     },
     {
-      id: "sidebar.viewCustomOffers",
+      name: "View Custom Offers",
       path: "/quickdollar/offer/viewcustomoffers",
     },
     {
-      id: "sidebar.completedOffers",
+      name: "Completed Offers",
       path: "/quickdollar/offer/completedoffers",
     },
   ];
 
   const additionalGiftsOptions = [
     {
-      id: "sidebar.allGiftCards",
+      name: "All Gift Cards",
       path: "/quickdollar/giftcard/allgiftcard",
     },
     {
-      id: "sidebar.addGiftCard",
+      name: "Add Gift Card",
       path: "/quickdollar/giftcard/addgiftcard",
     },
     {
-      id: "sidebar.requestedGiftCards",
+      name: "Requested Gift Cards",
       path: "/quickdollar/giftcard/requestedgiftcard",
     },
     {
-      id: "sidebar.deliveredGiftCards",
+      name: "Delivered Gift Cards",
       path: "/quickdollar/giftcard/deliveredgiftcard",
     },
   ];
 
   const additionalFrontPageOptions = [
     {
-      id: "sidebar.allFrontPageOffer",
+      name: "All Frontpage Offer",
       path: "/quickdollar/frontpageoffer/allfrontageoffer",
     },
     {
-      id: "sidebar.addFrontPageOffer",
+      name: "Add Frontpage Offer",
       path: "/quickdollar/frontpageoffer/addfrontpageoffer",
     },
   ];
@@ -165,39 +146,75 @@ export default function Sidebar({ dir, open }) {
       <>
         {SidebarData.map((val) => {
           const active = window.location.pathname?.includes(val.path);
-
           if (active) {
             return (
               <>
-                <div key={val.id}>
-                  <NavIcon onClick={() => window.location.pathname?.includes(val.path) ? handleItemClick(val.id) : navigate(val.path)}>
+                <div key={val.name}>
+                  <NavIcon onClick={() => handleItemClick(val)} >
                     {val.logo}
                     <p>
-                      <IntlMassage id={val.id} />
+                      <IntlMassage id={val.name} />
                     </p>
                   </NavIcon>
-                  {getAdditionalOptions(val.id).map((option) => (
-                    <NavIcon2 key={option.id} onClick={() => navigate(option.path)}
-                      isSubActive={option.path?.includes(window.location.pathname)}
-
+                  {val.name === "Users" && showMoreUserOptions && additionalUserOptions.map((option) => (
+                    <NavIcon2
+                      key={option.name}
+                      onClick={() => navigate(option.path)}
+                      isSubActive={option.path === window.location.pathname}
                     >
                       {option.logo}
                       <p>
-                        <IntlMassage id={option.id} />
+                        <IntlMassage id={option.name} />
+                      </p>
+                    </NavIcon2>
+                  ))}
+
+                  {val.name === "Offers" && showMoreOfferOptions && additionalOffersOptions.map((option) => (
+                    <NavIcon2
+                      key={option.name}
+                      onClick={() => navigate(option.path)}
+                      isSubActive={option.path === window.location.pathname}
+                    >
+                      {option.logo}
+                      <p>
+                        <IntlMassage id={option.name} />
+                      </p>
+                    </NavIcon2>
+                  ))}
+                  {val.name === "Gift Cards" && showMoreGiftOptions && additionalGiftsOptions.map((option) => (
+                    <NavIcon2
+                      key={option.name}
+                      onClick={() => navigate(option.path)}
+                      isSubActive={option.path === window.location.pathname}
+                    >
+                      {option.logo}
+                      <p>
+                        <IntlMassage id={option.name} />
+                      </p>
+                    </NavIcon2>
+                  ))}
+                  {val.name === "Frontpage Offer" && showMoreFrontPageOptions && additionalFrontPageOptions.map((option) => (
+                    <NavIcon2
+                      key={option.name}
+                      onClick={() => navigate(option.path)}
+                      isSubActive={option.path === window.location.pathname}
+                    >
+                      {option.logo}
+                      <p>
+                        <IntlMassage id={option.name} />
                       </p>
                     </NavIcon2>
                   ))}
                 </div>
-
-
               </>
-            );
+            )
+
           } else {
             return (
-              <NavIcon2 key={val.id} onClick={() => navigate(val.path)}>
+              <NavIcon2 key={val.name} onClick={() => navigate(val.path)}>
                 {val.logo}
                 <p>
-                  <IntlMassage id={val.id} />
+                  <IntlMassage id={val.name} />
                 </p>
               </NavIcon2>
             );
@@ -205,126 +222,41 @@ export default function Sidebar({ dir, open }) {
         })}
       </>
     );
+  };
 
-    function handleItemClick(itemId) {
-      switch (itemId) {
-        case "sidebar.user":
-          setShowMoreUserOptions((prev) => !prev);
-          setShowMoreOfferOptions(false);
-          setShowMoreGiftOptions(false);
-          setShowMoreFrontPageOptions(false);
-          break;
-        case "sidebar.offers":
-          setShowMoreUserOptions(false);
-          setShowMoreOfferOptions((prev) => !prev);
-          setShowMoreGiftOptions(false);
-          setShowMoreFrontPageOptions(false);
-          break;
-        case "sidebar.giftCards":
-          setShowMoreUserOptions(false);
-          setShowMoreOfferOptions(false);
-          setShowMoreGiftOptions((prev) => !prev);
-          setShowMoreFrontPageOptions(false);
-          break;
-        case "sidebar.frontPageOffer":
-          setShowMoreUserOptions(false);
-          setShowMoreOfferOptions(false);
-          setShowMoreGiftOptions(false);
-          setShowMoreFrontPageOptions((prev) => !prev);
-          break;
-        default:
-          break;
-      }
-    }
 
-    function getAdditionalOptions(itemId) {
-      console.log(itemId, "itemID")
-      switch (itemId) {
-        case "sidebar.user":
-          return showMoreUserOptions ? additionalUserOptions : [];
-        case "sidebar.offers":
-          return showMoreOfferOptions ? additionalOffersOptions : [];
-        case "sidebar.giftCards":
-          return showMoreGiftOptions ? additionalGiftsOptions : [];
-        case "sidebar.frontPageOffer":
-          return showMoreFrontPageOptions ? additionalFrontPageOptions : [];
-        default:
-          return [];
-      }
+  const handleItemClick = (item) => {
+    switch (item.name) {
+      case "Users":
+        setShowMoreUserOptions((prev) => !prev);
+        break;
+      case "Offers":
+        setShowMoreOfferOptions((prev) => !prev);
+        break;
+      case "Gift Cards":
+        setShowMoreGiftOptions((prev) => !prev);
+        break;
+      case "Frontpage Offer":
+        setShowMoreFrontPageOptions((prev) => !prev);
+        break;
+      default:
+        navigate(item.path);
+        break;
     }
   };
 
-  return (
-    <>
-      {width > 982 ? (
-        <SidebarContainer>
-          <InnerContainer>
-            <LogoWrap>
-              <NavLogo src={Applogo}></NavLogo>
-            </LogoWrap>
-            <SidebarMenu>
-              <ItemList />
-            </SidebarMenu>
-          </InnerContainer>
-        </SidebarContainer>
-      ) : (
-        <>
-          <div
-            onClick={() => {
-              setIsShown((current) => !current);
-              setType((type) => !type);
-            }}
-            className="openBtnDiv"
-            style={
-              type
-                ? {
-                  width: "26%",
-                  display: "flex",
-                  justifyContent: "end",
-                  zIndex: 9,
-                  position: "absolute",
-                }
-                : { display: "flex", float: "right" }
-            }
-          >
-            <GoThreeBars style={{ fontSize: "30px" }} />
-          </div>
 
-          <SidebarContainer>
-            <InnerContainer>
-              <LogoWrap>
-                <NavLogo src={Applogo}></NavLogo>
-              </LogoWrap>
-              <SidebarMenu>
-                <ItemList />
-              </SidebarMenu>
-            </InnerContainer>
-          </SidebarContainer>
-          {isShown ? (
-            <SidebarContainer
-              style={{
-                position: "fixed",
-                width: "23%",
-                zIndex: 9,
-                transition: "all 2s ease",
-              }}
-              className="clickOpenDiv"
-            >
-              <InnerContainer>
-                <LogoWrap>
-                  <NavLogo src={Applogo}></NavLogo>
-                </LogoWrap>
-                <SidebarMenu>
-                  <ItemList />
-                </SidebarMenu>
-              </InnerContainer>
-            </SidebarContainer>
-          ) : (
-            ""
-          )}
-        </>
-      )}
-    </>
+  return (
+    <SidebarContainer>
+      <InnerContainer>
+        <LogoWrap>
+          <NavLogo src={Applogo}></NavLogo>
+        </LogoWrap>
+        <SidebarMenu>
+          <ItemList />
+        </SidebarMenu>
+      </InnerContainer>
+    </SidebarContainer>
   );
 }
 

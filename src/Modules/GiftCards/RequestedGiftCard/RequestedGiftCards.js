@@ -18,13 +18,13 @@ const RequestGiftCard = () => {
       title: "Gift Card Price",
       dataIndex: "price",
       key: "price",
-      
+
     },
     {
       title: "User Name",
       dataIndex: "name",
       key: "name",
-      
+
     },
     {
       title: "User Total Amount",
@@ -56,17 +56,28 @@ const RequestGiftCard = () => {
     {
       key: "1",
       giftname: "Gift Card Name",
-      name:"name",
+      name: "name",
       status: "active",
       price: "50$",
-      reward:"reward",
+      reward: "reward",
       requesteddate: "Nov 06, 2019 18:37:31",
-      
+
     },
   ];
 
   const scrollConfig = {
-    x: 1000, 
+    x: 1000,
+  };
+
+  const formActions = {
+    apply: false,
+    view: false,
+    edit: true,
+    delete: true,
+    pathname: "/home/owners/view",
+    pathnameEdit: "/home/owners/edit",
+    deletepath: "delete_owner/",
+    delete_key: "owners_id",
   };
 
   return (
@@ -76,7 +87,7 @@ const RequestGiftCard = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} />
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions} />
       </div>
     </AllUserWrapper>
   );

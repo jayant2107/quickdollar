@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 
-const AllAbusedUsers = () => {
+const AllAbusedUser = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
-
+  const [loader, setLoader] = useState();
   const columns = [
     {
       title: "Full Name",
-      width: 100,
+      width: 150,
       dataIndex: "name",
       key: "name",
       fixed: "left",
@@ -81,6 +81,16 @@ const AllAbusedUsers = () => {
   const scrollConfig = {
     x: 1500, // Horizontal scrolling
   };
+  const formActions = {
+    apply: false,
+    view: false,
+    edit: true,
+    delete: true,
+    pathname: "/home/owners/view",
+    pathnameEdit: "/home/owners/edit",
+    deletepath: "delete_owner/",
+    delete_key: "owners_id",
+  };
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -90,13 +100,14 @@ const AllAbusedUsers = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} />
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions}
+        loader={loader}/>
       </div>
     </AllUserWrapper>
   );
 };
 
-export default AllAbusedUsers;
+export default AllAbusedUser;
 
 const AllUserWrapper = styled.div`
   padding-bottom: 35px;
@@ -138,8 +149,6 @@ const AllUserWrapper = styled.div`
       color: ${({ theme }) => theme?.primaryColor};
       background: ${({ theme }) => theme?.secondaryColor};
       font-family: ${({ theme }) => theme?.fontFamily};
-      // comment added
-      
     }
   }
 
@@ -149,9 +158,9 @@ const AllUserWrapper = styled.div`
     gap: 20px;
     padding: 24px;
     margin-top: 20px;
+    box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
     background: rgb(255, 255, 255);
     border-radius: 10px;
-    box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
   }
 `;
 

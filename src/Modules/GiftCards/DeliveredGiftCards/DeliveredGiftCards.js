@@ -18,27 +18,27 @@ const DeliveredGift = () => {
       title: "Gift Card Price",
       dataIndex: "price",
       key: "price",
-      
+
     },
     {
       title: "User Name",
       dataIndex: "name",
       key: "name",
-      
+
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      
+
     },
     {
-        title: "User Type",
-        dataIndex: "usertype",
-        key: "usertype",
-       
-        
-      },
+      title: "User Type",
+      dataIndex: "usertype",
+      key: "usertype",
+
+
+    },
 
     {
       title: "Gift Card Code",
@@ -57,17 +57,28 @@ const DeliveredGift = () => {
       key: "1",
       giftname: "Paypal",
       price: "10.36$",
-      name:"Kerry smith",
+      name: "Kerry smith",
       status: "Completed",
-      usertype:"Android",
-      cardcode:"Transaction ID: 11T08390HD2921411",
+      usertype: "Android",
+      cardcode: "Transaction ID: 11T08390HD2921411",
       deliverydate: "Nov 06, 2019 18:37:31",
-      
+
     },
   ];
 
   const scrollConfig = {
-    x: 1000, 
+    x: 1000,
+  };
+
+  const formActions = {
+    apply: false,
+    view: false,
+    edit: false,
+    delete: true,
+    pathname: "/home/owners/view",
+    pathnameEdit: "/home/owners/edit",
+    deletepath: "delete_owner/",
+    delete_key: "owners_id",
   };
 
   return (
@@ -77,7 +88,7 @@ const DeliveredGift = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} />
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions} />
       </div>
     </AllUserWrapper>
   );

@@ -8,6 +8,7 @@ import MUIRichTextEditor from 'mui-rte'
 import * as yup from "yup";
 
 const PromotionEmail = () => {
+    const [editorKey, setEditorKey] = useState(0);
     const initialValues = {
         subject: '',
         heading: '',
@@ -25,17 +26,29 @@ const PromotionEmail = () => {
         subject: yup.string().required('Subject is required'),
         heading: yup.string().required('Heading is required'),
         additionalText: yup.string().required('Additional text is required'),
-        countries: yup.array().required('Countries are required'),
+        countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
         offerText: yup.string().required('Offer text is required'),
-        offerAmount: yup.string().required('Offer amount is required'),
-        offerId: yup.number().required('Offer ID is required'),
+        offerAmount: yup.string().required('Offer amount is required').test(
+            'is-number',
+            'Enter number only',
+            value => !isNaN(value) && Number.isInteger(parseFloat(value))
+        ),
+        offerId: yup.string().required('Offer ID is required').test(
+            'is-number',
+            'Enter number only',
+            value => !isNaN(value) && Number.isInteger(parseFloat(value))
+        ),
         offerLink: yup.string().required('Offer link is required'),
         customPostbackParm: yup.string().required('Custom postback parameter is required'),
         offerDescription: yup.string().required('Offer description is required'),
     });
 
-    const handleSubmit = (values) => {
+    const handleSubmit = (values, { resetForm, setFieldValue }) => {
         console.log('Form values:', values);
+        resetForm();
+        setFieldValue('additionalText', '');
+        setFieldValue('offerDescription', '');
+        setEditorKey(prevKey => prevKey + 1);
     };
 
     const options = [];
@@ -63,132 +76,134 @@ const PromotionEmail = () => {
                                 <FieldWrapper>
                                     <Label>Email Subject</Label>
                                     <FieldContainer>
-                                    <InputField name="subject" placeholder="Email subject" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="subject" />
-                                    </RequiredWrapper>
+                                        <InputField name="subject" placeholder="Email subject" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="subject" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Email Heading</Label>
                                     <FieldContainer>
-                                    <InputField name="heading" placeholder="Email heading" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="heading" />
-                                    </RequiredWrapper>
+                                        <InputField name="heading" placeholder="Email heading" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="heading" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Description</Label>
                                     <FieldContainer>
-                                    <ThemeProvider theme={myTheme}>
-                                        <RichTextEditorWrapper>
-                                            <MUIRichTextEditor
-                                                label="Start typing..."
-                                                onChange={(state) => {
-                                                    setFieldValue('offerDescription', state.getCurrentContent().getPlainText());
-                                                }}
-                                            />
-                                        </RichTextEditorWrapper>
-                                    </ThemeProvider>
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="offerDescription" />
-                                    </RequiredWrapper>
+                                        <ThemeProvider theme={myTheme}>
+                                            <RichTextEditorWrapper>
+                                                <MUIRichTextEditor
+                                                    key={editorKey}
+                                                    label="Start typing..."
+                                                    onChange={(state) => {
+                                                        const content = state.getCurrentContent();
+                                                        setFieldValue('offerDescription', content.getPlainText());
+                                                    }}
+                                                />
+                                            </RichTextEditorWrapper>
+                                        </ThemeProvider>
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerDescription" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Additional Text</Label>
                                     <FieldContainer>
-                                    <TextAreaField
-                                        name="additionalText"
-                                        placeholder="Additional text"
-                                        rows={3}
-                                        onChange={(e) => setFieldValue('additionalText', e.target.value)}
-                                    />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="additionalText" />
-                                    </RequiredWrapper>
+                                        <TextAreaField
+                                            name="additionalText"
+                                            placeholder="Additional text"
+                                            rows={3}
+                                            onChange={(e) => setFieldValue('additionalText', e.target.value)}
+                                            value={values.additionalText} />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="additionalText" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Text</Label>
                                     <FieldContainer>
-                                    <InputField name="offerText" placeholder="Offer text" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="offerText" />
-                                    </RequiredWrapper>
+                                        <InputField name="offerText" placeholder="Offer text" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerText" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Amount in $</Label>
                                     <FieldContainer>
-                                    <InputField name="offerAmount" placeholder="Offer amount" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="offerAmount" />
-                                    </RequiredWrapper>
+                                        <InputField name="offerAmount" placeholder="Offer amount" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerAmount" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer ID</Label>
                                     <FieldContainer>
-                                    <InputField name="offerId" placeholder="1" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="offerId" />
-                                    </RequiredWrapper>
+                                        <InputField name="offerId" placeholder="1" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerId" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Link</Label>
                                     <FieldContainer>
-                                    <InputField name="offerLink" placeholder="Offer link" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="offerLink" />
-                                    </RequiredWrapper>
+                                        <InputField name="offerLink" placeholder="Offer link" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="offerLink" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Custom Postback Params</Label>
                                     <FieldContainer>
-                                    <InputField name="customPostbackParm" placeholder="Custom postback params" />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="customPostbackParm" />
-                                    </RequiredWrapper>
+                                        <InputField name="customPostbackParm" placeholder="Custom postback params" />
+                                        <RequiredWrapper>
+                                            <ErrorMessage name="customPostbackParm" />
+                                        </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
                                     <Label>Offer Country Code</Label>
                                     <FieldContainer>
-                                    <ChooseCountry>
-                                        <SelectField
-                                            mode="multiple"
-                                            allowClear
-                                            style={{ width: '100%' }}
-                                            placeholder="Please select"
-                                            value={values.countries}
-                                            onChange={(value) => setFieldValue('countries', value)}
-                                            options={options}
-                                        />
-                                        <Checkbox checked={selectAll} onChange={(e) => {
-                                            const { checked } = e.target;
-                                            setSelectAll(checked);
-                                            const allCountries = options.map(option => option.value);
-                                            setFieldValue('countries', checked ? allCountries : []);
-                                        }}>
-                                            Select all country
-                                        </Checkbox>
-                                    </ChooseCountry>
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="countries" />
-                                    </RequiredWrapper>
+                                        <ChooseCountry>
+                                            <SelectField
+                                                mode="multiple"
+                                                allowClear
+                                                style={{ width: '100%' }}
+                                                placeholder="Please select"
+                                                value={values.countries}
+                                                onChange={(value) => setFieldValue('countries', value)}
+                                                options={options}
+                                            />
+                                            <Checkbox checked={selectAll} onChange={(e) => {
+                                                const { checked } = e.target;
+                                                setSelectAll(checked);
+                                                const allCountries = options.map(option => option.value);
+                                                setFieldValue('countries', checked ? allCountries : []);
+                                            }}>
+                                                Select all country
+                                            </Checkbox>
+                                            <RequiredWrapper>
+                                                <ErrorMessage name="countries" />
+                                            </RequiredWrapper>
+                                        </ChooseCountry>
                                     </FieldContainer>
                                 </FieldWrapper>
                             </InputWrapper>
@@ -205,6 +220,7 @@ const PromotionEmail = () => {
 }
 
 export default PromotionEmail;
+
 
 const AnnouncementWrapper = styled.div`
     box-sizing: border-box;
