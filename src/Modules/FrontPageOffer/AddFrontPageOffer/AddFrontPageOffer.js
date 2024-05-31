@@ -158,6 +158,7 @@ font-size: 17px;
 text-align: start;
 width: 210px;
 padding: 15px 0px 15px 15px;
+font-family: Poppins;
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;

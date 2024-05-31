@@ -297,6 +297,7 @@ const Label = styled.p`
     text-align: start;
     width: 210px;
     padding: 15px 0px 15px 15px;
+    font-family: Poppins;
 `;
 
 const InputField = styled(Field)`

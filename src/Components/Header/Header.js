@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { BsBell } from "react-icons/bs";
 import { FiChevronDown } from "react-icons/fi";
@@ -22,6 +22,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const [width] = useWindowWidth();
   const byTheme = useSelector((state) => state?.changeColors?.theme);
+  const profileDivRef = useRef(null);
 
   const SidebarData = [
     {
@@ -71,8 +72,25 @@ const Header = () => {
     setIsShown((current) => !current);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileDivRef.current && !profileDivRef.current.contains(event.target)) {
+        setTtype(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [profileDivRef]);
+
+  const handleChangePassword = () => {
+    navigate("/quickdollar/profile")
+    setTtype(false);
+  }
   const logout = () => {
     dispatch(authlogout());
+    setTtype(false);
   };
 
   return (
@@ -84,12 +102,12 @@ const Header = () => {
             style={
               typeBtn
                 ? {
-                    width: "26%",
-                    display: "flex",
-                    justifyContent: "end",
-                    zIndex: 9,
-                    position: "absolute",
-                  }
+                  width: "26%",
+                  display: "flex",
+                  justifyContent: "end",
+                  zIndex: 9,
+                  position: "absolute",
+                }
                 : { display: "flex", padding: "0px" }
             }
           >
@@ -131,8 +149,9 @@ const Header = () => {
               right: "5px",
             }}
           >
-            <div className="profileDiv">
-              <img src={Addams} alt="" />
+            <div className="profileDiv" ref={profileDivRef}>
+              {/* <img src={Addams} alt="" /> */}
+              <p className="quickAdmin" onClick={() => setTtype(!type)}>Quick Admin</p>
               <FiChevronDown
                 className="FiIcon"
                 onClick={() => setTtype(!type)}
@@ -141,15 +160,15 @@ const Header = () => {
                 <div className="hiddenHeaderDiv">
                   <h4
                     className="hiddenHead1"
-                    onClick={() => navigate("/landing/profile")}
+                    onClick={() => handleChangePassword()}
                   >
                     <FaUser className="hiddenLogo" />
-                    <IntlMassage id="header.profile" />
+                    Change Password
                   </h4>
                   <hr className="hrTag" />
                   <h4 onClick={logout} className="hiddenHead2">
                     <RiLogoutCircleRLine className="hiddenLogo2" />
-                    <IntlMassage id="header.logout" />
+                    Logout
                   </h4>
                 </div>
               )}
@@ -158,17 +177,18 @@ const Header = () => {
         </div>
       ) : (
         <div className="headerInner">
-          <div className="profileDiv">
-            <img src={Addams} alt="" />
+          <div className="profileDiv" ref={profileDivRef}>
+            {/* <img src={Addams} alt="" /> */}
+            <p className="quickAdmin" onClick={() => setTtype(!type)}>Quick Admin</p>
             <FiChevronDown className="FiIcon" onClick={() => setTtype(!type)} />
             {type && (
               <div className="hiddenHeaderDiv">
                 <h4
                   className="hiddenHead1"
-                  onClick={() => navigate("/landing/profile")}
+                  onClick={() => handleChangePassword()}
                 >
                   <FaUser className="hiddenLogo" />
-                  <IntlMassage id="header.profile" />
+                  Change Password
                 </h4>
                 <hr className="hrTag" />
                 <h4 onClick={logout} className="hiddenHead2">
@@ -218,7 +238,12 @@ const HeaderWrapper = styled.div`
       display: flex;
       align-items: center;
       gap: 15px;
-
+    .quickAdmin{
+   font-size: 18px;
+    font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+    }
       @media (max-width: 550px) {
         gap: 5px;
       }
@@ -234,13 +259,13 @@ const HeaderWrapper = styled.div`
         border-radius: 50%;
         border: none;
         border: ${({ byTheme }) =>
-          byTheme == "day" ? "none" : "2.5px solid #fff"};
+    byTheme == "day" ? "none" : "2.5px solid #fff"};
       }
       .hiddenHeaderDiv {
         background: #fff;
         position: absolute;
         top: 90px;
-        width: 200px;
+        min-width: 300px;
         right: 40px;
         padding: 10px 5px;
         border-radius: 7px;
@@ -265,6 +290,9 @@ const HeaderWrapper = styled.div`
           .hiddenLogo {
             font-size: 17px;
           }
+          :hover{
+          color:#145da0
+          }
         }
         .hiddenHead2 {
           margin: 0px;
@@ -275,11 +303,14 @@ const HeaderWrapper = styled.div`
           align-items: center;
           gap: 15px;
           font-family: ${({ theme }) => theme?.fontFamily};
-
+          :hover{
+            color:#145da0
+            }
           .hiddenLogo2 {
             font-size: 17px;
             color: #ff0000d6;
           }
+          
         }
         .hrTag {
           width: 90%;
