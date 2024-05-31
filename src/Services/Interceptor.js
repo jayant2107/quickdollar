@@ -16,7 +16,7 @@ Api.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 Api.interceptors.request.use(
   (config) => {
     if (store.getState().Authlogin.data !== null) {
-      const token = `Bearer ${store.getState().Authlogin.data.token}`;
+      const token = `b ${store.getState().Authlogin.data.token}`;
       // console.log(token, "uu");
       config.headers = {
         Authorization: token,

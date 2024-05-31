@@ -3,6 +3,8 @@ import { Button, Checkbox } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
+import { addAdminUser } from '../../../Services/Collection';
+import { toast } from "react-toastify";
 
 const AddAdminUser = () => {
 
@@ -10,7 +12,7 @@ const AddAdminUser = () => {
     firstName: '',
     lastName: '',
     userName: '',
-    email: '',
+    emailAddress: '',
     password: '',
     confirmPassword: '',
     isAdmin: true
@@ -20,14 +22,38 @@ const AddAdminUser = () => {
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
     userName: yup.string().required('User name is required'),
-    email: yup.string().required('Email Address is required'),
-    password: yup.string().required('Password is required'),
-    confirmPassword: yup.string().required('Confirm Password is required'),
+    emailAddress: yup.string().required('Email Address is required'),
+    password: yup.string().required('Password is required')
+      .min(8, 'Password must be at least 8 characters')
+      .matches(/^(?=.*[A-Z])/, 'Password must contain at least one uppercase letter')
+      .matches(/^(?=.*[a-z])/, 'Password must contain at least one lowercase letter')
+      .matches(/^(?=.*\d)/, 'Password must contain at least one number')
+      .matches(/^(?=.*[@$!%*?&])/, 'Password must contain at least one special character'),
+    confirmPassword: yup.string().required('Confirm Password is required')
+      .oneOf([yup.ref('password'), null], 'Passwords must match')
   });
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log('Form values:', values);
-    resetForm();
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      const { firstName, lastName, userName, emailAddress, password } = values;
+      const payload = { firstName, lastName, userName, emailAddress, password };
+      let res = await addAdminUser(payload);
+      console.log(res, "res");
+      if (res?.status === 200) {
+        toast.success("User Added Successfully");
+        resetForm();
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
   };
 
   const onChange = (e) => {
@@ -80,9 +106,9 @@ const AddAdminUser = () => {
                 <FieldWrapper>
                   <Label>Email Address</Label>
                   <FieldContainer>
-                    <InputField name="email" placeholder="Email Address" />
+                    <InputField name="emailAddress" placeholder="Email Address" />
                     <RequiredWrapper>
-                      <ErrorMessage name="email" />
+                      <ErrorMessage name="emailAddress" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
