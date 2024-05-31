@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
+import { RxCross2 } from "react-icons/rx";
+import { IoCheckmarkOutline } from "react-icons/io5";
 
 const DeliveredGift = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -30,14 +32,24 @@ const DeliveredGift = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-
+      render: (text, record) => (
+        <StatusStyledText status={record.status}>
+          {record.status}
+          {record.status === "Completed" ? (
+            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+          ) : (
+            <RxCross2 style={{ color: "white",fontSize:'20px' }} />
+          )}
+        </StatusStyledText>
+      ),
     },
     {
-      title: "User Type",
+      title: "UserType",
       dataIndex: "usertype",
       key: "usertype",
-
-
+      render: (text, record) => (
+        <StyledText color="orange">{record.usertype}</StyledText>
+      ),
     },
 
     {
@@ -70,16 +82,7 @@ const DeliveredGift = () => {
     x: 1000,
   };
 
-  const formActions = {
-    apply: false,
-    view: false,
-    edit: false,
-    delete: true,
-    pathname: "/home/owners/view",
-    pathnameEdit: "/home/owners/edit",
-    deletepath: "delete_owner/",
-    delete_key: "owners_id",
-  };
+
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -88,7 +91,7 @@ const DeliveredGift = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions} />
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} />
       </div>
     </AllUserWrapper>
   );
@@ -149,4 +152,25 @@ const AllUserWrapper = styled.div`
     border-radius: 10px;
     box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
   }
+`;
+const StatusStyledText = styled.span`
+  color: #fff;
+  background-color: ${({ status }) => (status === "Completed" ? "#00e633" : "red")};
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor:pointer;
+  text-transform:capitalize;
+`;
+const StyledText = styled.span`
+  color: #fff;
+  background: linear-gradient(97.43deg, rgb(47, 128, 237) 0%, rgb(86, 204, 242) 100%);
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
 `;

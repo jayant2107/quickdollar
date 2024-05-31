@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { RxCross2 } from "react-icons/rx";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
+import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
+import TableAction from "../../../Components/TableNew/TableActions";
 
 const AllGiftCards = () => {
+  
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [editModal, setEditModal] = useState(false);
   const byTheme = useSelector((state) => state?.changeColors?.theme);
 
   const columns = [
@@ -35,14 +43,35 @@ const AllGiftCards = () => {
       dataIndex: "status",
       key: "status",
       render: (text, record) => (
-        <StyledText color="green">{record.status}</StyledText>
+        <StatusStyledText status={record.status}>
+          {record.status}
+          {record.status === "active" ? (
+            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+          ) : (
+            <RxCross2 style={{ color: "white",fontSize:'20px' }} />
+          )}
+        </StatusStyledText>
       ),
     },
-
     {
       title: "Created Date",
       dataIndex: "createdat",
       key: "createdat",
+    },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 150,
+      render: (text, record) => (
+        <TableAction
+          apply={formActions.apply}
+          edit={formActions.edit}
+          deleteAction={formActions.delete}
+          onEdit={() => showEditModal(record)}
+          onDelete={() => showDeleteModal(record)}
+        />
+      ),
     },
     
   ];
@@ -55,38 +84,62 @@ const AllGiftCards = () => {
       status: "active",
       price: "50$",
       createdat: "Nov 06, 2019 18:37:31",
-      action: (
-        <>
-          <EditOutlined style={{ fontSize: "30px" }} />
-          <DeleteOutlined style={{ fontSize: "30px" }} />
-        </>
-      ),
+    
     },
   ];
 
   const scrollConfig = {
     x: 1000, 
   };
+  const showEditModal = (record) => {
+    setSelectedRecord(record);
+    setEditModal(true);
+  };
+
+  const showDeleteModal = (record) => {
+    setSelectedRecord(record);
+    setDeleteModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+    setSelectedRecord(null);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteModal(false);
+    setSelectedRecord(null);
+  };
 
   const formActions = {
     apply: false,
-    view: false,
     edit: true,
     delete: true,
-    pathname: "/home/owners/view",
-    pathnameEdit: "/home/owners/edit",
-    deletepath: "delete_owner/",
-    delete_key: "owners_id",
   };
 
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
+      {deleteModal && (
+        <DeleteModal
+          showModal={showDeleteModal}
+          handleCancel={handleDeleteCancel}
+          deleteModal={deleteModal}
+          record={selectedRecord}
+        />
+      )}
+      {editModal && (
+        <EditGiftCardModal
+          showEditModal={showEditModal}
+          handleEditCancel={handleEditCancel}
+          editModal={editModal}
+          record={selectedRecord}
+        />
+      )}
         <h1 className="allUsersHeading">All Gift Card</h1>
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions}/>
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} />
       </div>
     </AllUserWrapper>
   );
@@ -149,12 +202,7 @@ const AllUserWrapper = styled.div`
   }
 `;
 
-const StyledText = styled.span`
-  color: ${({ color }) => color};
-  border: 1px solid ${({ color }) => color};
-  padding: 5px 10px;
-  border-radius: 5px;
-`;
+
 const TableImageWrapper = styled.div`
 
 img {
@@ -163,3 +211,17 @@ img {
 }
 
 `;
+
+const StatusStyledText = styled.span`
+  color: #fff;
+  background-color: ${({ status }) => (status === "active" ? "#00e633" : "red")};
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor:pointer;
+  text-transform:capitalize;
+`;
+
+
