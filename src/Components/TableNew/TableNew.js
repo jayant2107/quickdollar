@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Table } from "antd";
-import { MdModeEditOutline, MdDelete } from "react-icons/md";
-import { IoIosSend } from "react-icons/io";
 import { CgSearch } from "react-icons/cg";
-import Loader from "../Loader/Loader";
-import DeleteModal from "../DeleteModal/DeleteModal";
-import EditDriver from "../DriverActions/EditDriver";
-import SendModal from "../SendModal/SendModal";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -30,12 +24,8 @@ const GlobalStyle = createGlobalStyle`
 
 `;
 
-const TableNew = ({ columns, data, scroll, Actions, loader }) => {
+const TableNew = ({ columns, data, scroll }) => {
   const [entries, setEntries] = useState(5);
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-  const [sendModal, setSendModal] = useState(false);
-  const [viewLoader, setViewLoader] = useState(false);
 
   const columnsWithSno = [
     {
@@ -47,20 +37,7 @@ const TableNew = ({ columns, data, scroll, Actions, loader }) => {
       render: (text, record, index) => index + 1,
     },
     ...columns,
-    {
-      title: "Action",
-      key: "operation",
-      fixed: "right",
-      width: 150,
-      render: (text, record) => (
-        <div className="actionIcons">
-          {Actions?.apply && <IoIosSend className="icon" onClick={showSendModal} />}
-          {Actions?.view && <CgSearch className="icon" />}
-          {Actions?.edit && <MdModeEditOutline className="icon" onClick={showEditModal} />}
-          {Actions?.delete && <MdDelete className="icon" onClick={showModal} />}
-        </div>
-      ),
-    },
+    
   ];
 
   const paginationConfig = {
@@ -71,46 +48,17 @@ const TableNew = ({ columns, data, scroll, Actions, loader }) => {
     onChange: (pageSize) => setEntries(pageSize),
   };
 
-  const showModal = () => {
-    setDeleteModal(true);
-  };
-
-  const handleCancel = () => {
-    setDeleteModal(false);
-  };
-
-  const showEditModal = () => {
-    setEditModal(true);
-  };
-
-  const handleEditCancel = () => {
-    setEditModal(false);
-  };
-  const showSendModal = () => {
-    setSendModal(true);
-  };
-
-  const handleSendCancel = () => {
-    setSendModal(false);
-  };
-
-  if (viewLoader) {
-    return <Loader />;
-  }
+  
 
   return (
     <>
       <GlobalStyle />
       <TableWrapper>
-        {deleteModal && <DeleteModal showModal={showModal} handleCancel={handleCancel} deleteModal={deleteModal} />}
-        {editModal && <EditDriver showEditModal={showEditModal} handleEditCancel={handleEditCancel} editModal={editModal} />}
-        {sendModal && <SendModal showSendModal={showSendModal} handleSendCancel={handleSendCancel} sendModal={sendModal} />}
+       
         <div className="tableContent">
           <div className="allUsersSearchDiv">
             <div className="searchDiv">
-              <label htmlFor="" className="searchLabel">
-                Search
-              </label>
+             
               <div className="searchField">
                 <input className="alluserSearch" type="text" placeholder="Search" />
                 <CgSearch className="searchIcon" />

@@ -12,16 +12,15 @@ const SendModal = ({
   viewLoader,
 }) => {
   const initialValues = {
-    recipient:"",
-    subject: '',
-    message: ''
+    recipient: "",
+    subject: "",
+    message: "",
   };
 
   const validationSchema = yup.object().shape({
-    
     recipient: yup.string().required("Recipient is required"),
-    subject: yup.string().required('Subject is required'),
-    message: yup.string().required('Message is required')
+    subject: yup.string().required("Subject is required"),
+    message: yup.string().required("Message is required"),
   });
 
   const handleSubmit = (values, { resetForm }) => {
@@ -75,21 +74,23 @@ const SendModal = ({
                       </RequiredWrapper>
                     </div>
                     <div>
-                                    <Label>Your Message</Label>
-                                    <TextAreaField
-                                        name="message"
-                                        placeholder="Your Message"
-                                        rows={3}
-                                        onChange={(e) => setFieldValue('message', e.target.value)}
-                                    />
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="message" />
-                                    </RequiredWrapper>
-                                </div>
+                      <Label>Your Message</Label>
+                      <TextAreaField
+                        name="message"
+                        placeholder="Your Message"
+                        rows={3}
+                        onChange={(e) =>
+                          setFieldValue("message", e.target.value)
+                        }
+                      />
+                      <RequiredWrapper>
+                        <ErrorMessage name="message" />
+                      </RequiredWrapper>
+                    </div>
                   </InputWrapper>
 
                   <Footer>
-                    <ResetBtn type="primary" onClick={handleSendCancel} >
+                    <ResetBtn type="primary" onClick={handleSendCancel}>
                       Cancel
                     </ResetBtn>
                     <SubmitBtn type="primary" htmlType="submit">
@@ -126,7 +127,7 @@ const Footer = styled.div`
   font-weight: 700;
   line-height: 17px;
   color: #666666;
-  gap: 10px;
+  gap: 20px;
   padding-right: 1.25rem;
 `;
 
@@ -148,7 +149,7 @@ const InputField = styled(Field)`
   border: 1px solid #e5e5e5;
   font-size: 14px;
   color: #666;
-  border-radius: 5px;
+  border-radius: 10px;
   outline: none;
   margin-bottom: 3px;
 `;
@@ -164,40 +165,43 @@ const RequiredWrapper = styled.div`
 `;
 
 const SubmitBtn = styled(Button)`
-
-color: ${({ theme }) => theme?.primaryColor};
-background-color: black !important;
-border: none;
-width: 100%;
-height: 48px;
+  color: ${({ theme }) => theme?.primaryColor};
+  background-color: black !important;
+  border: none;
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
 `;
 const ResetBtn = styled(Button)`
-color: black;
-background: white;
-width: 100%;
-height: 48px;
-border: 1px solid black;
-&:hover {
-  color: black !important;
-  background: white !important;
+  color: black;
+  background: white;
+  width: 100%;
+  height: 48px;
   border: 1px solid black;
-}
+  border-radius: 10px;
+  &:hover {
+    color: black !important;
+    background: white !important;
+    border: 1px solid black;
+  }
 `;
 const TextAreaField = styled(TextArea)`
-    width: 100%;
-    padding: 15px 0px 15px 15px;
-    border: 1px solid #e5e5e5;
-    font-size: 14px;
-    color: #666;
-    border-radius: 5px;
-    margin-bottom: 3px;
-    &.ant-input:focus, &.ant-input-focused, &.ant-input:hover {
-        outline: none;
-        box-shadow: none;
-        resize: none;
-        border-color: #e5e5e5; 
-    }
-    ::placeholder {
-        color: black;
-    }
+  width: 100%;
+  padding: 15px 0px 15px 15px;
+  border: 1px solid #e5e5e5;
+  font-size: 14px;
+  color: #666;
+  border-radius: 10px;
+  margin-bottom: 3px;
+  &.ant-input:focus,
+  &.ant-input-focused,
+  &.ant-input:hover {
+    outline: none;
+    box-shadow: none;
+    resize: none;
+    border-color: #e5e5e5;
+  }
+  ::placeholder {
+    color: black;
+  }
 `;

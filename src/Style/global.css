@@ -1,8 +1,8 @@
 .ant-modal-content {
-  background: #f4f4f4 !important;
   box-shadow: 0px 1.53804px 4.61413px rgba(0, 0, 0, 0.1),
     0px 1.53804px 3.07609px rgba(0, 0, 0, 0.06) !important;
   border-radius: 10px !important;
+  padding: 32px !important;
 }
 .ant-modal-close {
   position: absolute !important;

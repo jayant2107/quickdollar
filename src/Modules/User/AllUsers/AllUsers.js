@@ -2,10 +2,25 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
+import TableAction from "../../../Components/TableNew/TableActions";
+import EditUserModal from "../../../Components/EditModal/EditUserModal";
+import SendModal from "../../../Components/SendModal/SendModal";
+import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
+import { RiAdminFill } from "react-icons/ri";
+import { FaUser } from "react-icons/fa";
+import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
 
 const AllUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [loader, setLoader] = useState();
+  const [editModal, setEditModal] = useState(false);
+  const [sendModal, setSendModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [activeModal, setActiveModal] = useState(false); // State for active modal
+
   const columns = [
     {
       title: "Full Name",
@@ -29,7 +44,12 @@ const AllUsers = () => {
       dataIndex: "role",
       key: "role",
       render: (text, record) => (
-        <StyledText color="blue">{record.role}</StyledText>
+        <RoleStyledText role={record.role}>{record.role}
+        {record.role === "Admin" ? (
+          <RiAdminFill style={{ color: "white",fontSize:'20px' }} />
+        ) : (
+          <FaUser style={{ color: "white",fontSize:'20px' }} />
+        )}</RoleStyledText>
       ),
     },
     {
@@ -37,7 +57,14 @@ const AllUsers = () => {
       dataIndex: "status",
       key: "status",
       render: (text, record) => (
-        <StyledText color="green">{record.status}</StyledText>
+        <StatusStyledText status={record.status} onClick={() => showActiveModal(record)}>
+          {record.status}
+          {record.status === "Active" ? (
+            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+          ) : (
+            <RxCross2 style={{ color: "white",fontSize:'20px' }} />
+          )}
+        </StatusStyledText>
       ),
     },
     {
@@ -53,6 +80,23 @@ const AllUsers = () => {
       dataIndex: "createdat",
       key: "createdat",
     },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 150,
+      render: (text, record) => (
+        <TableAction
+          apply={formActions.apply}
+          view={formActions.view}
+          edit={formActions.edit}
+          deleteAction={formActions.delete}
+          onSend={() => showSendModal(record)}
+          onEdit={() => showEditModal(record)}
+          onDelete={() => showDeleteModal(record)}
+        />
+      ),
+    },
   ];
 
   const userData = [
@@ -63,7 +107,7 @@ const AllUsers = () => {
       points: 100,
       role: "Admin",
       status: "Active",
-      usertype: "Internal",
+      usertype: "Web",
       createdat: "2024-05-29",
     },
     {
@@ -72,8 +116,8 @@ const AllUsers = () => {
       country: "Canada",
       points: 75,
       role: "User",
-      status: "Inactive",
-      usertype: "External",
+      status: "Deactivate",
+      usertype: "Android",
       createdat: "2024-05-28",
     },
   ];
@@ -81,27 +125,94 @@ const AllUsers = () => {
   const scrollConfig = {
     x: 1500, // Horizontal scrolling
   };
+
   const formActions = {
     apply: true,
-    view: false,
     edit: true,
     delete: true,
-    pathname: "/home/owners/view",
-    pathnameEdit: "/home/owners/edit",
-    deletepath: "delete_owner/",
-    delete_key: "owners_id",
+  };
+
+  const showSendModal = (record) => {
+    setSelectedRecord(record);
+    setSendModal(true);
+  };
+
+  const showEditModal = (record) => {
+    setSelectedRecord(record);
+    setEditModal(true);
+  };
+
+  const showDeleteModal = (record) => {
+    setSelectedRecord(record);
+    setDeleteModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+    setSelectedRecord(null);
+  };
+
+  const handleSendCancel = () => {
+    setSendModal(false);
+    setSelectedRecord(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal(false);
+    setSelectedRecord(null);
+  };
+
+  const showActiveModal = (record) => {
+    setSelectedRecord(record);
+    setActiveModal(true);
+  };
+  const handleActiveCancel = () => {
+    setActiveModal(false);
+    setSelectedRecord(null);
   };
 
   return (
     <AllUserWrapper byTheme={byTheme}>
+      {deleteModal && (
+        <DeleteModal
+          showModal={showDeleteModal}
+          handleCancel={handleDeleteCancel}
+          deleteModal={deleteModal}
+          record={selectedRecord}
+        />
+      )}
+      {editModal && (
+        <EditUserModal
+          showEditModal={showEditModal}
+          handleEditCancel={handleEditCancel}
+          editModal={editModal}
+          record={selectedRecord}
+          viewLoader={loader}
+        />
+      )}
+      {sendModal && (
+        <SendModal
+          showSendModal={showSendModal}
+          handleSendCancel={handleSendCancel}
+          sendModal={sendModal}
+          record={selectedRecord}
+        />
+      )}
+      {/* Active modal */}
+      {activeModal && (
+        <ActiveModal
+          handleCancel={() => setActiveModal(false)}
+          activeModal={activeModal}
+          handleConfirm={handleActiveCancel}
+        />
+      )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Users</h1>
-        <button>Export User Details</button>
+        {/* <button>Export User Details</button> */}
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions}
-          loader={loader} />
+        <TableNew columns={columns} data={userData} scroll={scrollConfig} loader={loader} />
       </div>
     </AllUserWrapper>
   );
@@ -110,6 +221,7 @@ const AllUsers = () => {
 export default AllUsers;
 
 const AllUserWrapper = styled.div`
+font-family: ${({ theme }) => theme?.fontFamily};
   padding-bottom: 35px;
   @media (max-width: 550px) {
     padding-bottom: 25px;
@@ -164,9 +276,35 @@ const AllUserWrapper = styled.div`
   }
 `;
 
-const StyledText = styled.span`
-  color: ${({ color }) => color};
-  border: 1px solid ${({ color }) => color};
-  padding: 5px 10px;
-  border-radius: 5px;
+const RoleStyledText = styled.span`
+  color: #fff;
+  background-color: ${({ role }) => (role === "Admin" ? "#0caf60" : "#00a1e6")};
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 `;
+
+const StatusStyledText = styled.span`
+  color: #fff;
+  background-color: ${({ status }) => (status === "Active" ? "#00e633" : "red")};
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor:pointer;
+`;
+
+const StyledText = styled.span`
+  color: #fff;
+  background: linear-gradient(97.43deg, rgb(47, 128, 237) 0%, rgb(86, 204, 242) 100%);
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+`;
+
