@@ -28,7 +28,6 @@ import AddCustomOffer from "../Modules/Offer/AddCustomOffer/AddCustomOffer";
 import ViewCustomOffer from "../Modules/Offer/ViewCustomOffer/ViewCustomOffer";
 import CompletedOffer from "../Modules/Offer/CompletedOffer/CompletedOffer";
 import AddAdminUser from "../Modules/User/AddAdmin/AddAdminUser";
-import DecryptUserInfo from "../Modules/User/DecryptUser/DecryptUserInfo";
 import MainGiftCards from "../Modules/GiftCards/MainGiftCards";
 import AllGiftCards from "../Modules/GiftCards/AllGiftCards/AllGiftCatds";
 import AddGiftCard from "../Modules/GiftCards/AddGiftCard/AddGiftCard";
@@ -73,7 +72,6 @@ export default function GaspilRoutes() {
               <Route element={<AllUsers />} path="allusers" />
               <Route element={<AllAbusedUsers />} path="allabused" />
               <Route element={<AddAdminUser />} path="addadminuser" />
-              <Route element={<DecryptUserInfo />} path="decryptuserinfo" />
             </Route>
 
             <Route element={<MainOffer />} path="offer">

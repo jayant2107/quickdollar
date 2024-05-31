@@ -8,6 +8,7 @@ import "../../Style/global.css";
 import { FaUsers, FaGift, FaBell } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { AiFillDashboard } from "react-icons/ai";
+import DecryptUserInfo from "../../Modules/User/DecryptUser/DecryptUserInfo";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -17,6 +18,12 @@ export default function Sidebar() {
   const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
   const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
   const location = useLocation();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleModalOpen = () => {
+    setShowModal(true);
+  };
+
   const ItemList = () => {
     return (
       <>
@@ -68,7 +75,7 @@ export default function Sidebar() {
                 <IntlMassage id="Add Admin User" />
               </p>
             </NavIcon2>
-            <NavIcon2 isActive={location.pathname === "/quickdollar/user/decryptuserinfo"} onClick={() => navigate("/quickdollar/user/decryptuserinfo")}>
+            <NavIcon2 onClick={handleModalOpen}>
               <p>
                 <IntlMassage id="Decrypt User info" />
               </p>
@@ -262,17 +269,22 @@ export default function Sidebar() {
   };
 
   return (
-    <SidebarContainer>
-      <InnerContainer>
-        <LogoWrap>
-          <NavLogo src={Applogo}></NavLogo>
-        </LogoWrap>
-        <SidebarMenu>
-          <ItemList />
-        </SidebarMenu>
-      </InnerContainer>
-    </SidebarContainer>
+    <>
+      <SidebarContainer>
+        <InnerContainer>
+          <LogoWrap>
+            <NavLogo src={Applogo}></NavLogo>
+          </LogoWrap>
+          <SidebarMenu>
+            <ItemList />
+          </SidebarMenu>
+        </InnerContainer>
+      </SidebarContainer>
+      <DecryptUserInfo triggerModal={showModal} setTriggerModal={setShowModal} />
+    </>
+
   );
+
 }
 
 const SidebarContainer = styled.div`
