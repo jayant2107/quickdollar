@@ -1,17 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Applogo } from "../../Utils/Images";
-import { AiOutlineCar } from "react-icons/ai";
 import IntlMassage from "../../Utils/IntlMassage";
 import useWindowWidth from "../CustomHook/UseWindowWidth";
 import "../../Style/global.css";
-import { FaUsers } from "react-icons/fa";
+import { FaUsers, FaGift, FaBell } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
-import { FaGift } from "react-icons/fa";
-import { FaBell } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
-
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -20,213 +16,233 @@ export default function Sidebar() {
   const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(false);
   const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
   const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
-
-  const SidebarData = [
-    {
-      name: "sidebar.drivers",
-      path: "/quickdollar/driver",
-      logo: <AiOutlineCar />,
-    },
-    {
-      name: "Dashboard",
-      path: "/quickdollar/dashboard",
-      logo: <AiFillDashboard />,
-    },
-    {
-      name: "Users",
-      path: "/quickdollar/user",
-      logo: <FaUsers />,
-    },
-    {
-      name: "Offers",
-      path: "/quickdollar/offer",
-      logo: <IoMail />,
-    },
-    {
-      name: "Gift Cards",
-      path: "/quickdollar/giftcard",
-      logo: <FaGift />,
-    },
-    {
-      name: "Send Message",
-      path: "/quickdollar/sendmessage",
-      logo: <IoMail />,
-    },
-    {
-      name: "Frontpage Offer",
-      path: "/quickdollar/frontpageoffer",
-      logo: <IoMail />,
-    },
-    {
-      name: "Annoouncement",
-      path: "/quickdollar/announcement",
-      logo: <FaBell />,
-    },
-    {
-      name: "Promotion Email",
-      path: "/quickdollar/promotionEmail",
-      logo: <FaBell />,
-    },
-  ];
-
-  const additionalUserOptions = [
-    {
-      name: "All Users",
-      path: "/quickdollar/user/allusers",
-    },
-    {
-      name: "All Abused Users",
-      path: "/quickdollar/user/allabused",
-    },
-    {
-      name: "Add Admin User",
-      path: "/quickdollar/user/addadminuser",
-    },
-    {
-      name: "Decrypt User info",
-      path: "/quickdollar/user/decryptuserinfo",
-    },
-  ];
-
-  const additionalOffersOptions = [
-    {
-      name: "All Offers",
-      path: "/quickdollar/offer/alloffers",
-    },
-    {
-      name: "Add Offer",
-      path: "/quickdollar/offer/addoffer",
-    },
-    {
-      name: "Add Custom Offers",
-      path: "/quickdollar/offer/addcustomoffers",
-    },
-    {
-      name: "View Custom Offers",
-      path: "/quickdollar/offer/viewcustomoffers",
-    },
-    {
-      name: "Completed Offers",
-      path: "/quickdollar/offer/completedoffers",
-    },
-  ];
-
-  const additionalGiftsOptions = [
-    {
-      name: "All Gift Cards",
-      path: "/quickdollar/giftcard/allgiftcard",
-    },
-    {
-      name: "Add Gift Card",
-      path: "/quickdollar/giftcard/addgiftcard",
-    },
-    {
-      name: "Requested Gift Cards",
-      path: "/quickdollar/giftcard/requestedgiftcard",
-    },
-    {
-      name: "Delivered Gift Cards",
-      path: "/quickdollar/giftcard/deliveredgiftcard",
-    },
-  ];
-
-  const additionalFrontPageOptions = [
-    {
-      name: "All Frontpage Offer",
-      path: "/quickdollar/frontpageoffer/allfrontageoffer",
-    },
-    {
-      name: "Add Frontpage Offer",
-      path: "/quickdollar/frontpageoffer/addfrontpageoffer",
-    },
-  ];
-
+  const location = useLocation();
   const ItemList = () => {
     return (
       <>
-        {SidebarData.map((val) => {
-          const active = window.location.pathname?.includes(val.path);
-          if (active) {
-            return (
-              <>
-                <div key={val.name}>
-                  <NavIcon onClick={() => handleItemClick(val)} >
-                    {val.logo}
-                    <p>
-                      <IntlMassage id={val.name} />
-                    </p>
-                  </NavIcon>
-                  {val.name === "Users" && showMoreUserOptions && additionalUserOptions.map((option) => (
-                    <NavIcon2
-                      key={option.name}
-                      onClick={() => navigate(option.path)}
-                      isSubActive={option.path === window.location.pathname}
-                    >
-                      {option.logo}
-                      <p>
-                        <IntlMassage id={option.name} />
-                      </p>
-                    </NavIcon2>
-                  ))}
+        {location.pathname === "/quickdollar/dashboard" ? (
+          <NavIcon onClick={() => navigate("/quickdollar/dashboard")}>
+            <AiFillDashboard />
+            <p>
+              <IntlMassage id="Dashboard" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => navigate("/quickdollar/dashboard")}>
+            <AiFillDashboard />
+            <p>
+              <IntlMassage id="Dashboard" />
+            </p>
+          </NavIcon2>
+        )}
 
-                  {val.name === "Offers" && showMoreOfferOptions && additionalOffersOptions.map((option) => (
-                    <NavIcon2
-                      key={option.name}
-                      onClick={() => navigate(option.path)}
-                      isSubActive={option.path === window.location.pathname}
-                    >
-                      {option.logo}
-                      <p>
-                        <IntlMassage id={option.name} />
-                      </p>
-                    </NavIcon2>
-                  ))}
-                  {val.name === "Gift Cards" && showMoreGiftOptions && additionalGiftsOptions.map((option) => (
-                    <NavIcon2
-                      key={option.name}
-                      onClick={() => navigate(option.path)}
-                      isSubActive={option.path === window.location.pathname}
-                    >
-                      {option.logo}
-                      <p>
-                        <IntlMassage id={option.name} />
-                      </p>
-                    </NavIcon2>
-                  ))}
-                  {val.name === "Frontpage Offer" && showMoreFrontPageOptions && additionalFrontPageOptions.map((option) => (
-                    <NavIcon2
-                      key={option.name}
-                      onClick={() => navigate(option.path)}
-                      isSubActive={option.path === window.location.pathname}
-                    >
-                      {option.logo}
-                      <p>
-                        <IntlMassage id={option.name} />
-                      </p>
-                    </NavIcon2>
-                  ))}
-                </div>
-              </>
-            )
+        {location.pathname === "/quickdollar/user/allusers" || location.pathname === "/quickdollar/user/allabused" || location.pathname === "/quickdollar/user/addadminuser" || location.pathname === "/quickdollar/user/decryptuserinfo" ? (
+          <NavIcon onClick={() => handleItemClick("Users")}>
+            <FaUsers />
+            <p>
+              <IntlMassage id="Users" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => handleItemClick("Users")}>
+            <FaUsers />
+            <p>
+              <IntlMassage id="Users" />
+            </p>
+          </NavIcon2>
+        )}
+        {showMoreUserOptions && (
+          <>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/user/allusers"} onClick={() => navigate("/quickdollar/user/allusers")}>
+              <p>
+                <IntlMassage id="All Users" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/user/allabused"} onClick={() => navigate("/quickdollar/user/allabused")}>
+              <p>
+                <IntlMassage id="All Abused Users" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/user/addadminuser"} onClick={() => navigate("/quickdollar/user/addadminuser")}>
+              <p>
+                <IntlMassage id="Add Admin User" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/user/decryptuserinfo"} onClick={() => navigate("/quickdollar/user/decryptuserinfo")}>
+              <p>
+                <IntlMassage id="Decrypt User info" />
+              </p>
+            </NavIcon2>
+          </>
+        )}
 
-          } else {
-            return (
-              <NavIcon2 key={val.name} onClick={() => navigate(val.path)}>
-                {val.logo}
-                <p>
-                  <IntlMassage id={val.name} />
-                </p>
-              </NavIcon2>
-            );
-          }
-        })}
+        {location.pathname === "/quickdollar/offer/alloffers" || location.pathname === "/quickdollar/offer/addoffer" || location.pathname === "/quickdollar/offer/addcustomoffers" || location.pathname === "/quickdollar/offer/viewcustomoffers" || location.pathname === "/quickdollar/offer/completedoffers" ? (
+          <NavIcon onClick={() => handleItemClick("Offers")}>
+            <IoMail />
+            <p>
+              <IntlMassage id="Offers" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => handleItemClick("Offers")}>
+            <IoMail />
+            <p>
+              <IntlMassage id="Offers" />
+            </p>
+          </NavIcon2>
+        )}
+        {showMoreOfferOptions && (
+          <>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/offer/alloffers"} onClick={() => navigate("/quickdollar/offer/alloffers")}>
+              <p>
+                <IntlMassage id="All Offers" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/offer/addoffer"} onClick={() => navigate("/quickdollar/offer/addoffer")}>
+              <p>
+                <IntlMassage id="Add Offer" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/offer/addcustomoffers"} onClick={() => navigate("/quickdollar/offer/addcustomoffers")}>
+              <p>
+                <IntlMassage id="Add Custom Offers" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/offer/viewcustomoffers"} onClick={() => navigate("/quickdollar/offer/viewcustomoffers")}>
+              <p>
+                <IntlMassage id="View Custom Offers" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/offer/completedoffers"} onClick={() => navigate("/quickdollar/offer/completedoffers")}>
+              <p>
+                <IntlMassage id="Completed Offers" />
+              </p>
+            </NavIcon2>
+          </>
+        )}
+
+        {location.pathname === "/quickdollar/giftcard/allgiftcard" || location.pathname === "/quickdollar/giftcard/addgiftcard" || location.pathname === "/quickdollar/giftcard/requestedgiftcard" || location.pathname === "/quickdollar/giftcard/deliveredgiftcard" ? (
+          <NavIcon onClick={() => handleItemClick("Gift Cards")}>
+            <FaGift />
+            <p>
+              <IntlMassage id="Gift Cards" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => handleItemClick("Gift Cards")}>
+            <FaGift />
+            <p>
+              <IntlMassage id="Gift Cards" />
+            </p>
+          </NavIcon2>
+        )}
+        {showMoreGiftOptions && (
+          <>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/allgiftcard"} onClick={() => navigate("/quickdollar/giftcard/allgiftcard")}>
+              <p>
+                <IntlMassage id="All Gift Cards" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/addgiftcard"} onClick={() => navigate("/quickdollar/giftcard/addgiftcard")}>
+              <p>
+                <IntlMassage id="Add Gift Card" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/requestedgiftcard"} onClick={() => navigate("/quickdollar/giftcard/requestedgiftcard")}>
+              <p>
+                <IntlMassage id="Requested Gift Cards" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/deliveredgiftcard"} onClick={() => navigate("/quickdollar/giftcard/deliveredgiftcard")}>
+              <p>
+                <IntlMassage id="Delivered Gift Cards" />
+              </p>
+            </NavIcon2>
+          </>
+        )}
+
+        {location.pathname === "/quickdollar/sendmessage" ? (
+          <NavIcon onClick={() => navigate("/quickdollar/sendmessage")}>
+            <IoMail />
+            <p>
+              <IntlMassage id="Send Message" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => navigate("/quickdollar/sendmessage")}>
+            <IoMail />
+            <p>
+              <IntlMassage id="Send Message" />
+            </p>
+          </NavIcon2>
+        )}
+
+        {location.pathname === "/quickdollar/frontpageoffer/allfrontageoffer" || location.pathname === "/quickdollar/frontpageoffer/addfrontpageoffer" ? (
+          <NavIcon onClick={() => handleItemClick("Frontpage Offer")}>
+            <IoMail />
+            <p>
+              <IntlMassage id="Frontpage Offer" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => handleItemClick("Frontpage Offer")}>
+            <IoMail />
+            <p>
+              <IntlMassage id="Frontpage Offer" />
+            </p>
+          </NavIcon2>
+        )}
+        {showMoreFrontPageOptions && (
+          <>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/allfrontageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/allfrontageoffer")}>
+              <p>
+                <IntlMassage id="All Frontpage Offer" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/addfrontpageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/addfrontpageoffer")}>
+              <p>
+                <IntlMassage id="Add Frontpage Offer" />
+              </p>
+            </NavIcon2>
+          </>
+        )}
+
+        {location.pathname === "/quickdollar/announcement" ? (
+          <NavIcon onClick={() => navigate("/quickdollar/announcement")}>
+            <FaBell />
+            <p>
+              <IntlMassage id="Annoouncement" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => navigate("/quickdollar/announcement")}>
+            <FaBell />
+            <p>
+              <IntlMassage id="Annoouncement" />
+            </p>
+          </NavIcon2>
+        )}
+
+        {location.pathname === "/quickdollar/promotionEmail" ? (
+          <NavIcon onClick={() => navigate("/quickdollar/promotionEmail")}>
+            <FaBell />
+            <p>
+              <IntlMassage id="Promotion Email" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => navigate("/quickdollar/promotionEmail")}>
+            <FaBell />
+            <p>
+              <IntlMassage id="Promotion Email" />
+            </p>
+          </NavIcon2>
+        )}
       </>
-    );
-  };
-
-
+    )
+  }
   const handleItemClick = (item) => {
-    switch (item.name) {
+    switch (item) {
       case "Users":
         setShowMoreUserOptions((prev) => !prev);
         break;
@@ -244,7 +260,6 @@ export default function Sidebar() {
         break;
     }
   };
-
 
   return (
     <SidebarContainer>
@@ -437,7 +452,9 @@ const NavIcon2 = styled.div`
   align-items: center;
   padding-top: 15px;
   padding-bottom: 15px;
-
+ &:hover {
+    color: #3892EE;
+  }
   @media (max-width: 982px) {
     justify-content: center;
     padding-left: 0px;
@@ -450,6 +467,10 @@ const NavIcon2 = styled.div`
     line-height: 1.3;
     margin: 0px;
     font-family: ${({ theme }) => theme?.fontFamily};
+
+    ${({ isActive }) => isActive && `
+    color: red;
+  `}
 
     @media (max-width: 982px) {
       display: none;
