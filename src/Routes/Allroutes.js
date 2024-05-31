@@ -37,6 +37,7 @@ import DeliveredGiftCards from "../Modules/GiftCards/DeliveredGiftCards/Delivere
 import MainFrontPageOffer from "../Modules/FrontPageOffer/MainFrontPageOffer";
 import AddFrontPageOffer from "../Modules/FrontPageOffer/AddFrontPageOffer/AddFrontPageOffer"
 import AllFrontPageOffer from "../Modules/FrontPageOffer/AllFrontPageOffer/AllFrontPageOffer";
+import ChangePassword from "../Modules/ChangePassword/ChangePassword";
 function PublicRoute({ isAuthenticated }) {
   if (isAuthenticated) return <Navigate to="/quickdollar/dashboard" replace />;
   return <Outlet />;
@@ -64,6 +65,8 @@ export default function GaspilRoutes() {
         </Route>
         <Route element={<PrivateRoute isAuthenticated={token} />}>
           <Route element={<Landing />} path="quickdollar">
+          <Route element={<ChangePassword />} path="profile" />
+
             <Route element={<Dashboard />} path="dashboard" />
 
             <Route element={<MainUser />} path="user">

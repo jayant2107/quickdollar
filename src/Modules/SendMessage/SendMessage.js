@@ -184,6 +184,7 @@ justify-content:start;
 margin-bottom: 0.5rem;
 margin-top: 0px;
 font-size: 17px;
+font-family: Poppins;
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;

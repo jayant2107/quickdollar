@@ -40,13 +40,9 @@ const Announcement = () => {
                                 <div>
                                     <Label>Select user to send notification</Label>
                                     <SelectField
-                                        defaultValue={initialValues.user}
+                                        style={{ width: '100%', marginBottom: "3px", }}
                                         placeholder="Please select"
-                                        style={{
-                                            width: "100%",
-                                            marginBottom: "3px",
-                                        }}
-                                        value={values.user}
+                                        value={values.user || undefined} 
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
                                             { value: 'jack', label: 'Jack' },
@@ -114,6 +110,7 @@ font-size: 24px;
 margin: 20px 0px;
 font-family: Poppins;
 color: rgb(0, 0, 0);
+font-family: Poppins;
 `
 
 const Footer = styled.p`
@@ -139,6 +136,7 @@ justify-content:start;
 margin-bottom: 0.5rem;
 margin-top: 0px;
 font-size: 17px;
+font-family: Poppins;
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;
