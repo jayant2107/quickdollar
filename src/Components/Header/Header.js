@@ -7,7 +7,6 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { authlogout } from "../../Store/Authentication";
-import { changelanguage } from "../../Store/Language";
 import IntlMassage from "../../Utils/IntlMassage";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
@@ -15,9 +14,6 @@ import { AiOutlineCar } from "react-icons/ai";
 import { FiUserPlus } from "react-icons/fi";
 import useWindowWidth from "../CustomHook/UseWindowWidth";
 import { GoThreeBars } from "react-icons/go";
-import { MdModeNight } from "react-icons/md";
-import { changebgcolor } from "../../Store/ColorTheme";
-import { RiSunFill } from "react-icons/ri";
 
 const Header = () => {
   const [type, setTtype] = useState(false);
@@ -26,18 +22,6 @@ const Header = () => {
   const dispatch = useDispatch();
   const [width] = useWindowWidth();
   const byTheme = useSelector((state) => state?.changeColors?.theme);
-  const SwitchLanguage = (type) => {
-    if (type === "Ar") {
-      dispatch(changelanguage({ language: "ar", dir: "rtl" }));
-    }
-    if (type === "En") {
-      dispatch(changelanguage({ language: "en", dir: "ltr" }));
-    }
-  };
-  const handleBgChange = (key) => {
-    console.log(key, "keyyyyy");
-    dispatch(changebgcolor(key));
-  };
 
   const SidebarData = [
     {
@@ -62,10 +46,6 @@ const Header = () => {
       const active = window.location.pathname === val.path;
       if (active) {
         return (
-          // <Selecteditem onClick={() => navigate(val.path)}>
-          //   <img className="dashImg" src={val.img} alt="" />
-          //   {val.Label}
-          // </Selecteditem>
           <NavIcon4 onClick={() => navigate(val.path)}>
             {val.logo}
             <p>
@@ -132,12 +112,6 @@ const Header = () => {
                 height: "110vh",
               }}
             >
-              {/* <div
-                style={{ display: "flex", float: "right" }}
-                onClick={handleClick}
-              >
-                <GoThreeBars style={{ fontSize: "30px" }} />
-              </div> */}
               <InnerContainer>
                 <LogoWrap>
                   <NavLogo src={Applogo}></NavLogo>
@@ -157,29 +131,6 @@ const Header = () => {
               right: "5px",
             }}
           >
-            <div className="nightMode">
-              {byTheme == "day" ? (
-                <MdModeNight
-                  className="moon"
-                  onClick={() => handleBgChange("night")}
-                />
-              ) : (
-                <RiSunFill
-                  className="sun"
-                  onClick={() => handleBgChange("day")}
-                />
-              )}
-            </div>
-            <div className="inputDiv">
-              <select onChange={(e) => SwitchLanguage(e.target.value)}>
-                <option value="En">
-                  <IntlMassage id="header.languageeng" />
-                </option>
-                <option value="Ar">
-                  <IntlMassage id="header.languagearb" />
-                </option>
-              </select>
-            </div>
             <div className="profileDiv">
               <img src={Addams} alt="" />
               <FiChevronDown
@@ -207,29 +158,6 @@ const Header = () => {
         </div>
       ) : (
         <div className="headerInner">
-          <div className="nightMode">
-            {byTheme == "day" ? (
-              <MdModeNight
-                className="moon"
-                onClick={() => handleBgChange("night")}
-              />
-            ) : (
-              <RiSunFill
-                className="sun"
-                onClick={() => handleBgChange("day")}
-              />
-            )}
-          </div>
-          <div className="inputDiv">
-            <select onChange={(e) => SwitchLanguage(e.target.value)}>
-              <option value="En">
-                <IntlMassage id="header.languageeng" />
-              </option>
-              <option value="Ar">
-                <IntlMassage id="header.languagearb" />
-              </option>
-            </select>
-          </div>
           <div className="profileDiv">
             <img src={Addams} alt="" />
             <FiChevronDown className="FiIcon" onClick={() => setTtype(!type)} />
@@ -252,28 +180,6 @@ const Header = () => {
           </div>
         </div>
       )}
-      {/* <div className="headerInner">
-        <div className="profileDiv">
-          <img src={image_url + profilePic} alt="" />
-          <FiChevronDown className="FiIcon" onClick={() => setTtype(!type)} />
-          {type && (
-            <div className="hiddenHeaderDiv">
-              <h4
-                className="hiddenHead1"
-                onClick={() => navigate("/landing/profile")}
-              >
-                <FaUser className="hiddenLogo" />
-                <IntlMassage id="header.profile" />
-              </h4>
-              <hr className="hrTag" />
-              <h4 className="hiddenHead2" onClick={() => handleLogout()}>
-                <RiLogoutCircleRLine className="hiddenLogo2" />
-                <IntlMassage id="header.logout" />
-              </h4>
-            </div>
-          )}
-        </div>
-      </div> */}
     </HeaderWrapper>
   );
 };
@@ -308,51 +214,6 @@ const HeaderWrapper = styled.div`
     gap: 35px;
     justify-content: end;
 
-    .nightMode {
-      display: flex;
-      align-items: center;
-      .moon {
-        rotate: 180deg;
-        font-size: 25px;
-        cursor: pointer;
-      }
-      .sun {
-        color: #fff;
-        font-size: 25px;
-        cursor: pointer;
-      }
-    }
-    .inputDiv {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      .bellIcon {
-        color: rgb(20, 93, 160);
-        font-size: 28px;
-      }
-      select {
-        width: 94px;
-        height: 48px;
-        border: none;
-        border-radius: 10px;
-        position: relative;
-        background: rgb(255, 255, 255);
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 17px;
-        color: rgba(0, 0, 0, 0.6);
-        box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
-        display: flex;
-        -webkit-box-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        align-items: center;
-        cursor: pointer;
-        padding: 0px 20px;
-        transition: all 0.3s ease-in 0s;
-        font-family: ${({ theme }) => theme?.fontFamily};
-      }
-    }
     .profileDiv {
       display: flex;
       align-items: center;
@@ -368,7 +229,6 @@ const HeaderWrapper = styled.div`
         color: ${({ byTheme }) => (byTheme == "day" ? "#000" : "#fff")};
       }
       img {
-        ${"" /* cursor: pointer; */}
         height: 42px;
         width: 42px;
         border-radius: 50%;
@@ -435,160 +295,88 @@ const NavIcon = styled.div`
   padding-right: 20px;
   font-size: 20px;
   cursor: pointer;
-  line-height: 17px;
-  color: ${({ theme }) => theme?.sidebarclickheadingcolor};
+  line-height: 50px;
   display: flex;
-  gap: 10px;
   align-items: center;
-  ${"" /* justify-content: center; */}
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-radius: 10px;
-
-  @media (max-width: 982px) {
-    justify-content: center;
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-
+  gap: 10px;
   p {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.3;
     margin: 0px;
-    font-family: ${({ theme }) => theme?.fontFamily};
-
-    @media (max-width: 982px) {
-      display: none;
-    }
   }
 `;
-
-const NavIcon4 = styled.div`
-  padding-left: 20px;
-  background: ${({ theme }) => theme?.secondaryColor};
-  padding-right: 20px;
-  font-size: 20px;
-  cursor: pointer;
-  line-height: 17px;
-  color: ${({ theme }) => theme?.sidebarclickheadingcolor};
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  ${"" /* justify-content: center; */}
-  padding-top: 15px;
-  padding-bottom: 15px;
-  border-radius: 10px;
-
-  @media (max-width: 982px) {
-    padding-left: 10px;
-    padding-right: 0px;
-  }
-
-  p {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.3;
-    margin: 0px;
-    font-family: ${({ theme }) => theme?.fontFamily};
-  }
-`;
-
 const NavIcon2 = styled.div`
   padding-left: 20px;
-  cursor: pointer;
   padding-right: 20px;
   font-size: 20px;
-  line-height: 17px;
-  color: ${({ theme }) => theme?.sidebarheadingcolor};
+  cursor: pointer;
+  line-height: 50px;
   display: flex;
-  gap: 10px;
   align-items: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
-
-  @media (max-width: 982px) {
-    justify-content: center;
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-
+  gap: 10px;
   p {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.3;
     margin: 0px;
-    font-family: ${({ theme }) => theme?.fontFamily};
-
-    @media (max-width: 982px) {
-      display: none;
-    }
   }
 `;
-
 const NavIcon3 = styled.div`
   padding-left: 20px;
-  cursor: pointer;
   padding-right: 20px;
   font-size: 20px;
-  line-height: 17px;
-  color: ${({ theme }) => theme?.sidebarheadingcolor};
+  cursor: pointer;
+  line-height: 50px;
   display: flex;
-  gap: 10px;
   align-items: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
-
-  @media (max-width: 982px) {
-    padding-left: 10px;
-    padding-right: 0px;
-  }
-
+  gap: 10px;
   p {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.3;
     margin: 0px;
-    font-family: ${({ theme }) => theme?.fontFamily};
+  }
+`;
+const NavIcon4 = styled.div`
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  background: ${({ theme }) => theme?.primaryColor};
+  color: ${({ theme }) => theme?.secondaryColor};
+  line-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  p {
+    margin: 0px;
   }
 `;
 
 const SidebarContainer = styled.div`
-  height: 100vh;
-  min-height: 550px;
-  width: 19%;
-  background-color: #252529;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 25px;
+  height: 100%;
+  padding: 10px 0px;
+`;
+
+const InnerContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
-  color: #000;
-  position: fixed;
-  transition: all ease-out 0.4s;
+  gap: 25px;
+  width: 100%;
+  height: 100%;
+`;
 
-  @media (max-width: 982px) {
-    width: 10%;
-  }
-`;
-const InnerContainer = styled.div`
-  width: 79%;
-  margin: 0 auto;
-  padding-top: 40px;
-`;
 const LogoWrap = styled.div`
   display: flex;
   justify-content: center;
-  padding-bottom: 30px;
-`;
-const NavLogo = styled.img`
-  width: 35%;
-`;
-const SidebarMenu = styled.ul`
-  display: flex;
-  ${"" /* align-items: center; */}
-  flex-direction: column;
-  list-style: none;
+  align-items: center;
   width: 100%;
-  margin: 0;
-  padding: 0;
+`;
+
+const NavLogo = styled.img`
+  height: 80px;
+  width: 100%;
+  max-width: 80px;
+`;
+
+const SidebarMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 `;

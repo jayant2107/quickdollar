@@ -144,12 +144,11 @@ const AllUserWrapper = styled.div`
     gap: 20px;
     padding: 24px;
     margin-top: 20px;
-    border: 1px solid var(--Greyscale-1000, #000000);
+    box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
     background: rgb(255, 255, 255);
     border-radius: 10px;
   }
 `;
-
 const StyledText = styled.span`
   color: ${({ color }) => color};
   border: 1px solid ${({ color }) => color};

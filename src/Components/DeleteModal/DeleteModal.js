@@ -66,6 +66,7 @@ const ServiceModalWrapper = styled.div`
     }
     .buttons {
       display: flex;
+      justify-content:center;
     }
     button {
       width: 208px;

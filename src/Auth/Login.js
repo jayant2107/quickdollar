@@ -1,4 +1,3 @@
-import { Button, CircularProgress } from "@mui/material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -48,7 +47,7 @@ const Login = () => {
           <Form>
             <LoginFormDiv>
               <LogoWrap>
-                <Logo src={Vector} alt="" />
+                <Logo src="http://localhost:3000/static/media/logo%20(2).eb046bd54ddd493aba30.png" alt="" />
               </LogoWrap>
               <Logintext>Log in to your account</Logintext>
               <div className="formik-wrap">
@@ -60,7 +59,7 @@ const Login = () => {
                     className="loginField"
                   ></Field>
                   <IconWrap>
-                    <Icon
+                  <Icon
                       // Direction={langDirection}
                       viewBox="0 0 14 19"
                       fill="none"
