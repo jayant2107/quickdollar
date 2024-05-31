@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoginWrapper, PasswordEyeWrapper } from "./Login";
 import { Applogo, BackgroundImg } from "../Utils/Images";
 import { Field, Form, Formik } from "formik";
 import InputField from "../validations/InputField";
 import { EyeIcon, HideEyeIcon } from "../Utils/SvgIcons";
 import * as yup from "yup";
+import { changePassword } from "../Services/Collection";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { authlogin, authlogout } from "../Store/Authentication";
 
 const SetNewPassword = () => {
   const [loading, setLoading] = useState(false);
   const [passwordType, setPasswordType] = useState("password");
   const [confirmpasswordType, setConfirmPasswordType] = useState("password");
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const initialValues = {
     newPassword: "",
@@ -69,8 +77,36 @@ const SetNewPassword = () => {
   });
 
   const handleSubmit = async (values) => {
-    console.log(values, "valuesvalues");
+    try {
+      setLoading(true);
+      let requestPayload = {
+        newPassword: values?.confirmPassword,
+      };
+      let res = await changePassword(requestPayload);
+      if (res?.status === 200) {
+        navigate("/");
+        setLoading(false);
+        toast.success("Password Changed Successfully");
+        dispatch(authlogout());
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(error?.message || "Something went wrong");
+    }
   };
+
+  useEffect(() => {
+    let token = new URLSearchParams(location?.search).get("token");
+    dispatch(authlogin({ token }));
+  }, []);
 
   return (
     <LoginWrapper>

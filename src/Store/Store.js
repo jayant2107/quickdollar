@@ -4,7 +4,7 @@ import Authentication from "./Authentication";
 import Language from "./Language";
 import { persistReducer, persistStore } from "redux-persist";
 import VerifyNum from "./VerifyNum";
-import  ColorTheme  from "./ColorTheme";
+import ColorTheme from "./ColorTheme";
 
 const reducers = combineReducers({
   Authlogin: Authentication,
@@ -13,7 +13,7 @@ const reducers = combineReducers({
   changeColors: ColorTheme,
 });
 const persistConfig = {
-  key: "root",
+  key: "0.1",
   storage,
 };
 const persistedReducer = persistReducer(persistConfig, reducers);
