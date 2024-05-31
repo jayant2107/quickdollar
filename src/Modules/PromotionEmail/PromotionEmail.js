@@ -3,14 +3,15 @@ import { Button, Checkbox, Select } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import TextArea from 'antd/es/input/TextArea';
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import MUIRichTextEditor from 'mui-rte'
 import * as yup from "yup";
 import PreviewPromotionEmail from './PreviewPromotionEmail';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const PromotionEmail = () => {
-    const [editorKey, setEditorKey] = useState(0);
     const [triggerModal, setTriggerModal] = useState(false);
+    const [previewData, setPreviewData] = useState({});
+
     const initialValues = {
         subject: '',
         heading: '',
@@ -23,6 +24,19 @@ const PromotionEmail = () => {
         customPostbackParm: '',
         offerDescription: ""
     };
+
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+    ];
+
+    const [value, setValue] = useState('');
 
     const validationSchema = yup.object().shape({
         subject: yup.string().required('Subject is required'),
@@ -45,12 +59,16 @@ const PromotionEmail = () => {
         offerDescription: yup.string().required('Offer description is required'),
     });
 
+    const handlePreview = (values) => {
+        setPreviewData(values);
+        setTriggerModal(true);
+    };
+
     const handleSubmit = (values, { resetForm, setFieldValue }) => {
         console.log('Form values:', values);
         resetForm();
         setFieldValue('additionalText', '');
-        setFieldValue('offerDescription', '');
-        setEditorKey(prevKey => prevKey + 1);
+        setValue('');
     };
 
     const options = [];
@@ -62,6 +80,7 @@ const PromotionEmail = () => {
     };
 
     const [selectAll, setSelectAll] = useState(false);
+    const [isEmpty, setIsEmpty] = useState(false);
 
     return (
         <div>
@@ -72,7 +91,7 @@ const PromotionEmail = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ values, setFieldValue }) => (
+                    {({ values, setFieldValue, touched, errors, setFieldTouched }) => (
                         <Form>
                             <InputWrapper>
                                 <FieldWrapper>
@@ -97,23 +116,30 @@ const PromotionEmail = () => {
 
                                 <FieldWrapper>
                                     <Label>Offer Description</Label>
-                                    <FieldContainer>
-                                        <ThemeProvider theme={myTheme}>
-                                            <RichTextEditorWrapper>
-                                                <MUIRichTextEditor
-                                                    key={editorKey}
-                                                    label="Start typing..."
-                                                    onChange={(state) => {
-                                                        const content = state.getCurrentContent();
-                                                        setFieldValue('offerDescription', content.getPlainText());
-                                                    }}
-                                                />
-                                            </RichTextEditorWrapper>
-                                        </ThemeProvider>
+                                    <QuillFieldContainer>
+                                        <StyledReactQuill
+                                            theme="snow"
+                                            value={value}
+                                            onChange={(content) => {
+                                                setValue(content);
+                                                setFieldValue('offerDescription', content);
+                                                setIsEmpty(content === '<p><br></p>');
+                                            }}
+                                            modules={{ toolbar: toolbarOptions }}
+                                            tooltip={true}
+                                            onBlur={() => {
+                                                setFieldTouched('offerDescription', true);
+                                                if (isEmpty) {
+                                                    setFieldValue('offerDescription', '');
+                                                }
+                                            }}
+                                        />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="offerDescription" />
+                                            {touched.offerDescription && errors.offerDescription && (
+                                                <ErrorMessage name="offerDescription" />
+                                            )}
                                         </RequiredWrapper>
-                                    </FieldContainer>
+                                    </QuillFieldContainer>
                                 </FieldWrapper>
 
                                 <FieldWrapper>
@@ -210,14 +236,14 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
                             </InputWrapper>
                             <Footer>
-                                <ResetButton type="button" onClick={() => setTriggerModal(true)}>Preview</ResetButton>
+                                <ResetButton type="button" onClick={() => handlePreview(values)}>Preview</ResetButton>
                                 <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
                 </Formik>
             </AnnouncementWrapper>
-            <PreviewPromotionEmail triggerModal={triggerModal} setTriggerModal={setTriggerModal} />
+            <PreviewPromotionEmail triggerModal={triggerModal} setTriggerModal={setTriggerModal} previewData={previewData} />
         </div>
     )
 }
@@ -361,33 +387,6 @@ color: ${({ theme }) => theme?.primaryColor};
 background: ${({ theme }) => theme?.secondaryColor};
 border: none;
 `
-const myTheme = createTheme({
-    palette: {
-        primary: {
-            main: '#1976d2',
-        },
-        secondary: {
-            main: '#dc004e',
-        },
-    },
-    typography: {
-        fontFamily: 'Poppins, sans-serif',
-    },
-});
-
-const RichTextEditorWrapper = styled.div`
-height: 300px;
-width: 100%;
-overflow-y: scroll;
-background: white;
-border: 1px solid #e5e5e5;
-border-radius: 5px;
-margin-bottom: 3px;
-    &::-webkit-scrollbar {
-        display: none;
-    }
-`;
-
 const RequiredWrapper = styled.div`
 color: red;
 text-align: left;
@@ -397,3 +396,30 @@ margin-bottom: 1rem;
 const FieldContainer = styled.div`
 width: 100%;
 `
+const StyledReactQuill = styled(ReactQuill)`
+    .ql-container {
+        height: 180px;
+        margin-bottom:3px
+    }
+    .ql-toolbar.ql-snow + .ql-container.ql-snow{
+        border-radius: 0px 0px 5px 5px;
+        width:815px !important
+    }
+    .ql-toolbar.ql-snow {
+        border-radius: 5px 5px 0px 0px
+    }
+`;
+
+const QuillFieldContainer = styled.div`
+width: 100%;
+margin-bottom:7px
+`
+const PreviewButton = styled(Button)`
+    background-color: #1890ff;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    &:hover {
+        background-color: #40a9ff;
+    }
+`;

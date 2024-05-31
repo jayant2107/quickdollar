@@ -8,27 +8,15 @@ import { GrTwitter } from "react-icons/gr";
 import { FaInstagram } from "react-icons/fa";
 import { FaPinterest } from "react-icons/fa";
 
-const PreviewPromotionEmail = ({ triggerModal, setTriggerModal }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
+const PreviewPromotionEmail = ({ triggerModal, setTriggerModal, previewData }) => {
 
     const handleCancel = () => {
-        setIsModalOpen(false);
         setTriggerModal(false);
     };
-
-    useEffect(() => {
-        if (triggerModal) {
-            showModal();
-        }
-    }, [triggerModal]);
-
+    console.log(previewData, "preview")
     return (
         <Modal
-            visible={isModalOpen}
+            visible={triggerModal}
             onCancel={handleCancel}
             footer={null}
             modalRender={(modal) => <StyledModalContent>{modal}</StyledModalContent>}
@@ -41,15 +29,11 @@ const PreviewPromotionEmail = ({ triggerModal, setTriggerModal }) => {
                 <DeatilWrapper>
 
                     <EmailDetails>
-                        <PTag>Offer TextOffer Text</PTag>
+                        <PTag>{previewData?.offerText}</PTag>
                         <PTag><SpanText>Dear Mike</SpanText>(username),</PTag>
                         <SpanText>Quick Dollar invites you to share your opinions in an important <br /> new survey.</SpanText>
-                        <PTag>Offer DescriptionOffer DescriptionOffer DescriptionOffer DescriptionOffer Description
-                            Offer DescriptionOffer DescriptionOffer DescriptionOffer DescriptionOffer Description
-                            Offer DescriptionOffer DescriptionOffer DescriptionOffer DescriptionOffer Description
-
-                        </PTag>
-                        <PTag>Additional TextAdditional TextAdditional TextAdditional TextAdditional TextAdditional Text</PTag>
+                        <PTag>{previewData?.offerDescription}</PTag>
+                        <PTag>{previewData?.additionalText}</PTag>
                     </EmailDetails>
 
                     <div>
@@ -188,6 +172,7 @@ font-size: 12px;
 
 const PTag = styled.p`
 margin: 0px;
+width:100%
 `
 
 const DeatilWrapper = styled.div`

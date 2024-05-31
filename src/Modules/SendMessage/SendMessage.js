@@ -2,12 +2,24 @@ import React, { useState } from 'react'
 import { Button, Select } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import MUIRichTextEditor from 'mui-rte'
 import * as yup from "yup";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const SendMessage = () => {
-    const [editorKey, setEditorKey] = useState(0);
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [value, setValue] = useState('');
+
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video', 'formula'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+    ];
 
     const initialValues = {
         user: '',
@@ -21,12 +33,10 @@ const SendMessage = () => {
         message: yup.string().required('Message is required')
     });
 
-    const handleSubmit = (values, { resetForm, setFieldValue }) => {
+    const handleSubmit = (values, { resetForm }) => {
         console.log('Form values:', values);
         resetForm()
-        setFieldValue('message', '');
-        setEditorKey(prevKey => prevKey + 1);
-
+        setValue('');
     };
 
     return (
@@ -40,7 +50,7 @@ const SendMessage = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ setFieldValue, values }) => (
+                    {({ setFieldValue, values, touched, errors, setFieldTouched }) => (
                         <Form>
                             <InputWrapper>
                                 <div>
@@ -89,21 +99,30 @@ const SendMessage = () => {
 
                                 <div>
                                     <Label>Your Message</Label>
-                                    <ThemeProvider theme={myTheme}>
-                                        <RichTextEditorWrapper>
-                                            <MUIRichTextEditor
-                                                key={editorKey}
-                                                label="Start typing..."
-                                                onChange={(state) => {
-                                                    const content = state.getCurrentContent();
-                                                    setFieldValue('message', content.getPlainText());
-                                                }}
-                                            />
-                                        </RichTextEditorWrapper>
-                                    </ThemeProvider>
-                                    <RequiredWrapper>
-                                        <ErrorMessage name="message" />
-                                    </RequiredWrapper>
+                                    <QuillFieldContainer>
+                                        <StyledReactQuill
+                                            theme="snow"
+                                            value={value}
+                                            onChange={(content) => {
+                                                setValue(content);
+                                                setFieldValue('message', content);
+                                                setIsEmpty(content === '<p><br></p>');
+                                            }}
+                                            modules={{ toolbar: toolbarOptions }}
+                                            tooltip={true}
+                                            onBlur={() => {
+                                                setFieldTouched('message', true);
+                                                if (isEmpty) {
+                                                    setFieldValue('message', '');
+                                                }
+                                            }}
+                                        />
+                                        <RequiredWrapper>
+                                            {touched.message && errors.message && (
+                                                <ErrorMessage name="message" />
+                                            )}
+                                        </RequiredWrapper>
+                                    </QuillFieldContainer>
                                 </div>
 
                             </InputWrapper>
@@ -215,33 +234,6 @@ const SelectField = styled(Select)`
   }
 `;
 
-const myTheme = createTheme({
-    palette: {
-        primary: {
-            main: '#1976d2',
-        },
-        secondary: {
-            main: '#dc004e',
-        },
-    },
-    typography: {
-        fontFamily: 'Poppins, sans-serif',
-    },
-});
-
-const RichTextEditorWrapper = styled.div`
-height: 200px;
-width: 100%;
-overflow-y: scroll;
-background: white;
-border: 1px solid #e5e5e5;
-border-radius: 5px;
-margin-bottom: 1rem;
-&::-webkit-scrollbar {
-        display: none;
-    }
-`;
-
 const RequiredWrapper = styled.div`
 color: red;
 text-align: left;
@@ -251,4 +243,22 @@ margin-bottom: 1rem;
 const SubmitBtn = styled(Button)`
 color: ${({ theme }) => theme?.primaryColor};
 background: ${({ theme }) => theme?.secondaryColor};
+`
+
+const StyledReactQuill = styled(ReactQuill)`
+    .ql-container {
+        height: 180px;
+        margin-bottom:3px
+    }
+    .ql-toolbar.ql-snow + .ql-container.ql-snow{
+        border-radius: 0px 0px 5px 5px;
+    }
+    .ql-toolbar.ql-snow {
+        border-radius: 5px 5px 0px 0px
+    }
+`;
+
+const QuillFieldContainer = styled.div`
+width: 100%;
+margin-bottom:7px
 `
