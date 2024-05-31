@@ -16,7 +16,7 @@ Api.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 Api.interceptors.request.use(
   (config) => {
     if (store.getState().Authlogin.data !== null) {
-      const token = `b ${store.getState().Authlogin.data.token}`;
+      const token = `B ${store.getState().Authlogin.data.token}`;
       // console.log(token, "uu");
       config.headers = {
         Authorization: token,
@@ -86,6 +86,40 @@ export const getApi = async (url) => {
       } else {
         return result.data.message;
       }
+    }
+  } catch (e) {
+    if (e) {
+      return e;
+    }
+  }
+};
+
+//put Api
+export const putApi = async (url, data) => {
+  try {
+    let result = await Api.put(url, data);
+    if (result.status === 200) {
+      if (result.data) {
+        return { ...result.data, status: 200 };
+      } else {
+        return result.data.message;
+      }
+    }
+  } catch (e) {
+    if (e) {
+      return e;
+    }
+  }
+};
+
+//patch Api
+export const patchApi = async (url, data) => {
+  try {
+    let result = await Api.patch(url, data);
+    if (result.status === 200) {
+      return { ...result.data, status: 200 };
+    } else {
+      return result.data.message;
     }
   } catch (e) {
     if (e) {
