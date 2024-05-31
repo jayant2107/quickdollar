@@ -40,13 +40,9 @@ const Announcement = () => {
                                 <div>
                                     <Label>Select user to send notification</Label>
                                     <SelectField
-                                        defaultValue={initialValues.user}
+                                        style={{ width: '100%', marginBottom: "3px", }}
                                         placeholder="Please select"
-                                        style={{
-                                            width: "100%",
-                                            marginBottom: "3px",
-                                        }}
-                                        value={values.user}
+                                        value={values.user || undefined} 
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
                                             { value: 'jack', label: 'Jack' },
