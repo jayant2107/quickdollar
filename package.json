@@ -22,6 +22,7 @@
     "font-awesome": "^4.7.0",
     "formik": "^2.2.9",
     "hooks": "^0.3.2",
+    "luxon": "^3.4.4",
     "mui-rte": "^2.0.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",

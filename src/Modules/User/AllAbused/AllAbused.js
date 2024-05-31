@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
@@ -11,6 +11,9 @@ import { RxCross2 } from "react-icons/rx";
 import { RiAdminFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
+import { getAllAbusedUser } from "../../../Services/Collection";
+import { toast } from "react-toastify";
+import { DateTime } from "luxon";
 
 const AllAbusedUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -19,7 +22,34 @@ const AllAbusedUsers = () => {
   const [sendModal, setSendModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [activeModal, setActiveModal] = useState(false); // State for active modal
+  const [activeModal, setActiveModal] = useState(false);
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getAllAbusedUser();
+        if (res?.status === 200) {
+          setUserData(res?.data);
+        } else {
+          let message =
+            res?.response?.data?.message ||
+            res?.message ||
+            res?.error ||
+            "Something went wrong";
+          toast.error(message);
+        }
+      } catch (error) {
+        console.log(error, "error");
+        toast.error(error?.message || "Something went wrong");
+      } finally {
+        setLoader(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(userData, "daataaaaaaaaa")
 
   const columns = [
     {
@@ -28,41 +58,76 @@ const AllAbusedUsers = () => {
       dataIndex: "name",
       key: "name",
       fixed: "left",
+      render: (text, record) => {
+        const capitalizeFirstLetter = (str) => {
+          return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+        const capitalizedFirstName = capitalizeFirstLetter(record.firstName || '');
+        const capitalizedLastName = capitalizeFirstLetter(record.lastName || '');
+        const fullName = `${capitalizedFirstName} ${capitalizedLastName}`.trim();
+        return fullName ? fullName : 'NA';
+      },
     },
     {
       title: "Country",
       dataIndex: "country",
       key: "country",
+      render: (text, record) => record?.countryCode || 'NA'
+
     },
     {
       title: "Points",
       dataIndex: "points",
       key: "points",
+      render: (text, record) => record?.Points || '0'
     },
     {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (text, record) => (
-        <RoleStyledText role={record.role}>{record.role}
-        {record.role === "Admin" ? (
-          <RiAdminFill style={{ color: "white",fontSize:'20px' }} />
-        ) : (
-          <FaUser style={{ color: "white",fontSize:'20px' }} />
-        )}</RoleStyledText>
-      ),
+      render: (text, record) => {
+        let roleName;
+        let roleIcon;
+
+        switch (record?.userRoleID) {
+          case 1:
+            roleName = "SuperAdmin";
+            roleIcon = <RiAdminFill style={{ color: "white", fontSize: "20px" }} />;
+            break;
+          case 2:
+            roleName = "Admin";
+            roleIcon = <FaUser style={{ color: "white", fontSize: "20px" }} />;
+            break;
+          case 3:
+            roleName = "Normal";
+            roleIcon = <FaUser style={{ color: "white", fontSize: "20px" }} />;
+            break;
+          default:
+            roleName = "NA";
+            roleIcon = null;
+        }
+        return (
+          <RoleStyledText>
+            {roleName}
+            {roleIcon}
+          </RoleStyledText>
+        );
+      }
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (text, record) => (
-        <StatusStyledText status={record.status} onClick={() => showActiveModal(record)}>
-          {record.status}
-          {record.status === "Active" ? (
-            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+        <StatusStyledText
+          status={record.isActive ? "Active" : "Inactive"}
+          onClick={() => showActiveModal(record)}
+        >
+          {record.isActive ? "Active" : "Inactive"}
+          {record.isActive ? (
+            <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
           ) : (
-            <RxCross2 style={{ color: "white",fontSize:'20px' }} />
+            <RxCross2 style={{ color: "white", fontSize: "20px" }} />
           )}
         </StatusStyledText>
       ),
@@ -79,6 +144,10 @@ const AllAbusedUsers = () => {
       title: "Created Date",
       dataIndex: "createdat",
       key: "createdat",
+      render: (text, record) => {
+        const date = DateTime.fromISO(record?.createdAt);
+        return date.toFormat("MMM dd yyyy, HH : mm : ss");
+      }
     },
     {
       title: "Action",
@@ -96,29 +165,6 @@ const AllAbusedUsers = () => {
           onDelete={() => showDeleteModal(record)}
         />
       ),
-    },
-  ];
-
-  const userData = [
-    {
-      key: 1,
-      name: "John Doe",
-      country: "USA",
-      points: 100,
-      role: "Admin",
-      status: "Active",
-      usertype: "Web",
-      createdat: "2024-05-29",
-    },
-    {
-      key: 2,
-      name: "Jane Smith",
-      country: "Canada",
-      points: 75,
-      role: "User",
-      status: "Deactivate",
-      usertype: "Android",
-      createdat: "2024-05-28",
     },
   ];
 
