@@ -5,6 +5,7 @@ import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
 import { FaGift } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 const EditUserModal = ({
   handleEditCancel,
   showEditModal,
@@ -28,6 +29,7 @@ const EditUserModal = ({
     suspendAccount: "",
   };
 
+  const navigate  = useNavigate();
   const validationSchema = yup.object().shape({
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last name is required"),
@@ -84,10 +86,10 @@ const EditUserModal = ({
                   <div>
                      
                       <FieldWrapper>
-                        <Button className="offerBtn">
+                        <Button className="offerBtn" onClick={() => navigate("/quickdollar/offer/completedoffers")}>
                           <MdEmail/>
                           Complete Offer</Button>
-                        <Button className="offerBtn">
+                        <Button className="offerBtn" onClick={() => navigate("/quickdollar/giftcard/requestedgiftcard")}>
                           <FaGift/>
                           Requested Gift Card
                         </Button>
