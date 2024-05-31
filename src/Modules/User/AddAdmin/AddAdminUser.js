@@ -130,6 +130,7 @@ const AddAdminUser = () => {
 export default AddAdminUser;
 
 const AddAdminUserWrapper = styled.div`
+font-family: ${({ theme }) => theme?.fontFamily};
 width: 100%;
 height: 100%;
 background: rgb(255, 255, 255);

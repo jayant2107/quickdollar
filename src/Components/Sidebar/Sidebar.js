@@ -317,7 +317,7 @@ const LogoWrap = styled.div`
   padding-bottom: 30px;
 `;
 const NavLogo = styled.img`
-  width: 45%;
+  width: 80%;
 `;
 const SidebarMenu = styled.ul`
   display: flex;

@@ -1,50 +1,47 @@
 import { Modal } from "antd";
 import styled from "styled-components";
 
-const DeleteModal = ({ handleCancel,  deleteModal }) => {
-
-
-  return (
-    <>
-      <Modal
-        maskStyle={{
-          backgroundColor: " rgb(0 0 0 / 60%)",
-        }}
-        centered
-        open={deleteModal}
-        // onOk={handleCancel}
-        onCancel={handleCancel}
-        footer={false}
-        closable=""
-       
-      >
-        <ServiceModalWrapper  >
-          <div className="serviceModalUpperDiv">
-            <div className="deleteMain">
-             
-              <h4 className="upperDivHead1">
-                Are you sure you want to delete?
-              </h4>
+const ActiveModal = ({ handleCancel, handleConfirm, activeModal }) => {
+    return (
+      <>
+        <Modal
+          maskStyle={{
+            backgroundColor: " rgb(0 0 0 / 60%)",
+          }}
+          centered
+          open={activeModal}
+          onCancel={handleCancel}
+          footer={false}
+          closable=""
+        >
+          <ActiveModalWrapper>
+            <div className="activeModalUpperDiv">
+              <div className="deleteMain">
+                <h4 className="upperDivHead1">
+                  Are you sure?
+                </h4>
+              </div>
+              <div className="buttons">
+                <button onClick={handleCancel}>Cancel</button>
+                <button onClick={handleConfirm} className="confirm-button">
+                  Confirm
+                </button>
+              </div>
             </div>
-            <div className="buttons">
-              <button  onClick={handleCancel}>Cancel</button>
-              <button onClick={handleCancel} className="delete-button">Delete</button>
-            </div>
-          </div>
-        </ServiceModalWrapper>
-      </Modal>
-    </>
-  );
-};
-export default DeleteModal;
+          </ActiveModalWrapper>
+        </Modal>
+      </>
+    );
+  };
+  export default ActiveModal;
 
 
 
 
 
-const ServiceModalWrapper = styled.div`
+const ActiveModalWrapper= styled.div`
 font-family: ${({ theme }) => theme?.fontFamily};
-  .serviceModalUpperDiv {
+  .activeModalUpperDiv {
     height:142px;
     text-align: center;
     display: flex;
@@ -86,7 +83,7 @@ font-family: ${({ theme }) => theme?.fontFamily};
       cursor: pointer;
       background:transparent;
     }
-    .delete-button{
+    .confirm-button{
       width: 208px;
       color: white;
       // box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
@@ -101,7 +98,7 @@ font-family: ${({ theme }) => theme?.fontFamily};
       margin: 5px 10px;
       cursor: pointer;
       border: none;
-    background: var(--Alerts-Error-Base, #E03137);
+    background: #007bff;
 
     }
     .upperDivHead1 {

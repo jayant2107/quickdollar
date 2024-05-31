@@ -1,8 +1,10 @@
 .ant-modal-content {
   /* background: #f4f4f4 !important; */
+  font-family: Poppins !important;
   box-shadow: 0px 1.53804px 4.61413px rgba(0, 0, 0, 0.1),
     0px 1.53804px 3.07609px rgba(0, 0, 0, 0.06) !important;
   border-radius: 10px !important;
+  padding: 32px !important;
 }
 .ant-modal-close {
   position: absolute !important;
@@ -82,7 +84,7 @@ Header {
   padding: 0px;
 }
 .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: Poppins !important;
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.4375em;
