@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import InputField from "../validations/InputField";
 import { EyeIcon, HideEyeIcon } from "../Utils/SvgIcons";
+import { authlogin } from "../Store/Authentication";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ const Login = () => {
 
   const handleSubmit = async (values) => {
     console.log(values, "values");
+    dispatch(authlogin({ phoneNumber: "12346" }));
   };
   return (
     <LoginWrapper>
