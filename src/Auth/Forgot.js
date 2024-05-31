@@ -1,115 +1,118 @@
 import React, { useState } from "react";
-// import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { Formik } from "formik";
-import {
-  LoginForm,
-  FieldWrap,
-  IconWrap,
-  Icon,
-  InputField,
-  LogoWrap,
-  Logo,
-  Logintext,
-} from "./Style";
-import { CircularProgress } from "@mui/material";
-import { Vector } from "../Utils/Images";
-import { ForMikWrap } from "../Pages/Styles";
-import { PrimaryBtn } from "../GlobalStyle";
-import useHistory from "use-history";
-import { Background, FormWrap } from "../Layout/Style";
+import { Field, Form, Formik } from "formik";
+import { Applogo, BackgroundImg } from "../Utils/Images";
+import { LoginWrapper } from "./Login";
+import * as yup from "yup";
+import InputField from "../validations/InputField";
+import { useNavigate } from "react-router-dom";
 
 export default function Forgot() {
-  const history = useHistory;
-  //   const langDirection = useSelector((state) => state.Language.dir);
   const [loading, setLoading] = useState(false);
-  const [passwordGenerated, setPasswordGenerated] = useState(false);
-  const goToLogin = () => {
-    history.replace("/");
-  };
-  return (
-    <Background>
-      <FormWrap>
-        <Formik
-          initialValues={{ email: "" }}
-          validate={(values) => {
-            const errors = {};
-            if (!values.email) {
-              errors.email = "Required";
-            } else if (
-              !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-            ) {
-              errors.email = "Invalid email address";
-            }
+  const navigate = useNavigate();
 
-            return errors;
-          }}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-          }) => (
-            <LoginForm onSubmit={handleSubmit}>
-              <LogoWrap>
-                <Logo src={Vector} alt="contolio" />
-              </LogoWrap>
-              <Logintext>Forgot Password</Logintext>
-              {passwordGenerated ? (
-                <span className="generate-password-text">
-                  New Generated Password has been sent to your email address.
-                </span>
-              ) : (
-                <ForMikWrap>
-                  <FieldWrap>
-                    <InputField
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      name="email"
-                      placeholder="Email"
-                      type="text"
-                      value={values.email}
-                    />
-                    <IconWrap>
-                      <Icon
-                        // Direction={langDirection}
-                        viewBox="0 0 14 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M0.129731 1.95507C0.253995 1.56197 0.73689 1.48591 1.05883 1.74346L5.25085 5.09709C6.27347 5.91518 7.72653 5.91518 8.74916 5.09709L12.9412 1.74346C13.2631 1.48591 13.746 1.56197 13.8703 1.95507C13.9546 2.22167 14 2.50551 14 2.79997V8.39997C14 9.94634 12.7464 11.2 11.2 11.2H2.8C1.2536 11.2 0 9.94634 0 8.39997V2.79997C0 2.50551 0.0454509 2.22167 0.129731 1.95507Z" />
-                        <path d="M1.93216 0.649278C1.73449 0.491141 1.76757 0.184107 2.01048 0.112854C2.26088 0.0394031 2.52584 0 2.8 0H11.2C11.4742 0 11.7391 0.0394031 11.9895 0.112854C12.2324 0.184107 12.2655 0.491141 12.0679 0.649278L7.87458 4.00389C7.3633 4.41294 6.6367 4.41294 6.12542 4.00389L1.93216 0.649278Z" />
-                      </Icon>
-                    </IconWrap>
-                  </FieldWrap>
-                  {errors.email && touched.email && (
-                    <p className="err-msg">{errors.email}</p>
-                  )}
-                </ForMikWrap>
-              )}
-              <BtnWrap>
-                {loading ? (
-                  <CircularProgress />
-                ) : passwordGenerated ? (
-                  <PrimaryBtn onClick={goToLogin}>OK</PrimaryBtn>
-                ) : (
-                  <PrimaryBtn type="submit">VERIFY</PrimaryBtn>
+  const initialValues = {
+    email: "",
+  };
+  const FormikFieldValues = [
+    {
+      label: "Email",
+      name: "email",
+      type: "email",
+      placeholder: "Enter email",
+      component: InputField,
+    },
+  ];
+
+  const validationSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("Email must be a valid email")
+      .required("Email is required"),
+  });
+
+  const handleSubmit = async (values) => {
+    console.log(values, "values");
+  };
+
+  return (
+    <LoginWrapper>
+      <div className="flex-div">
+        <div className="gradient-bg">
+          <img src={BackgroundImg} alt="" />
+        </div>
+        <div className="inner-wrap">
+          <img src={Applogo} alt="" />
+          <div className="inner-part">
+            <div className="main-box">
+              <div className="logo-div">
+                <h4>Forgot Password</h4>
+              </div>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                validationSchema={validationSchema}
+                render={() => (
+                  <Form>
+                    <div className="content">
+                      {FormikFieldValues?.map((field) => (
+                        <div style={{ position: "relative" }}>
+                          <label>{field?.label}</label>
+                          <Field
+                            name={field?.name}
+                            type={field?.type}
+                            placeholder={field?.placeholder}
+                            component={field?.component}
+                          />
+                          {field?.ForgotPassword && field?.ForgotPassword}
+                        </div>
+                      ))}
+
+                      <BtnWrap>
+                        <span
+                          className="back-btn"
+                          style={{ fontFamily: "Poppins" }}
+                          onClick={() => navigate(-1)}
+                        >
+                          Back
+                        </span>
+                        {loading ? (
+                          <button style={{ fontFamily: "Poppins" }}>
+                            Loading...
+                          </button>
+                        ) : (
+                          <button
+                            type="submit"
+                            style={{ fontFamily: "Poppins" }}
+                          >
+                            Send link to the email
+                          </button>
+                        )}
+                      </BtnWrap>
+                    </div>
+                  </Form>
                 )}
-              </BtnWrap>
-            </LoginForm>
-          )}
-        </Formik>
-      </FormWrap>
-    </Background>
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </LoginWrapper>
   );
 }
 
 const BtnWrap = styled.div`
-  width: 100%;
   display: flex;
-  justify-content: center;
-  margin-top: 30px;
+  gap: 10px;
+  margin: 0;
+
+  .back-btn {
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+  }
 `;

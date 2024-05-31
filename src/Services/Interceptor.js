@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from "../Store/Store";
 
-const BaseUrl = process.env.REACT_APP_URL; 
+const BaseUrl = process.env.REACT_APP_URL;
 // const LiveUrl = "http://chayadapp-env.eba-kenpmbrm.us-east-1.elasticbeanstalk.com";
 
 const EndPoint = BaseUrl;
