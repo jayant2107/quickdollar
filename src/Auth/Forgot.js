@@ -6,12 +6,14 @@ import { LoginWrapper } from "./Login";
 import * as yup from "yup";
 import InputField from "../validations/InputField";
 import { useNavigate } from "react-router-dom";
+import { forgotPassword } from "../Services/Collection";
+import { toast } from "react-toastify";
 
 export default function Forgot() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const initialValues = {
+  let initialValues = {
     email: "",
   };
   const FormikFieldValues = [
@@ -32,7 +34,27 @@ export default function Forgot() {
   });
 
   const handleSubmit = async (values) => {
-    console.log(values, "values");
+    try {
+      setLoading(true);
+      let requestPayload = { emailAddress: values?.email };
+      let res = await forgotPassword(requestPayload);
+      if (res?.status === 200) {
+        toast.success("Email Sent Successfully");
+        navigate(-1);
+        setLoading(false);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        setLoading(false);
+        toast.error(message);
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(error?.message || "Something went wrong");
+    }
   };
 
   return (
