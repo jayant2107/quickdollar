@@ -44,12 +44,14 @@ const AllUsers = () => {
       dataIndex: "role",
       key: "role",
       render: (text, record) => (
-        <RoleStyledText role={record.role}>{record.role}
-        {record.role === "Admin" ? (
-          <RiAdminFill style={{ color: "white",fontSize:'20px' }} />
-        ) : (
-          <FaUser style={{ color: "white",fontSize:'20px' }} />
-        )}</RoleStyledText>
+        <RoleStyledText role={record.role}>
+          {record.role}
+          {record.role === "Admin" ? (
+            <RiAdminFill style={{ color: "white", fontSize: "20px" }} />
+          ) : (
+            <FaUser style={{ color: "white", fontSize: "20px" }} />
+          )}
+        </RoleStyledText>
       ),
     },
     {
@@ -57,12 +59,15 @@ const AllUsers = () => {
       dataIndex: "status",
       key: "status",
       render: (text, record) => (
-        <StatusStyledText status={record.status} onClick={() => showActiveModal(record)}>
+        <StatusStyledText
+          status={record.status}
+          onClick={() => showActiveModal(record)}
+        >
           {record.status}
           {record.status === "Active" ? (
-            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+            <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
           ) : (
-            <RxCross2 style={{ color: "white",fontSize:'20px' }} />
+            <RxCross2 style={{ color: "white", fontSize: "20px" }} />
           )}
         </StatusStyledText>
       ),
@@ -165,6 +170,7 @@ const AllUsers = () => {
     setSelectedRecord(record);
     setActiveModal(true);
   };
+
   const handleActiveCancel = () => {
     setActiveModal(false);
     setSelectedRecord(null);
@@ -203,6 +209,7 @@ const AllUsers = () => {
           handleCancel={() => setActiveModal(false)}
           activeModal={activeModal}
           handleConfirm={handleActiveCancel}
+          selectedRecord={selectedRecord}
         />
       )}
       <div className="allUsersHeader">
@@ -211,7 +218,12 @@ const AllUsers = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} loader={loader} />
+        <TableNew
+          columns={columns}
+          data={userData}
+          scroll={scrollConfig}
+          loader={loader}
+        />
       </div>
     </AllUserWrapper>
   );

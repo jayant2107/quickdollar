@@ -49,9 +49,7 @@ font-family: ${({ theme }) => theme?.fontFamily};
     text-align: center;
     display: flex;
     flex-direction: column;
-    // justify-content: space-evenly;
     gap:32px;
-    // min-height:206px;
     .deleteMain {
       display: flex;
       flex-direction: column;
@@ -59,7 +57,7 @@ font-family: ${({ theme }) => theme?.fontFamily};
       align-items: center;
       .upperDivHead1{
         font-size:24px;
-        font-weight:700;
+        font-weight:600;
       }
       
         

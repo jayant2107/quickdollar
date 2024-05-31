@@ -1,7 +1,11 @@
 import { Modal } from "antd";
 import styled from "styled-components";
 
-const ActiveModal = ({ handleCancel, handleConfirm, activeModal }) => {
+const ActiveModal = ({ handleCancel, handleConfirm, activeModal,selectedRecord  }) => {
+
+    const confirmMessage = selectedRecord?.status === "Active" 
+    ? "Are you sure you want to deactivate?" 
+    : "Are you sure you want to activate?";
     return (
       <>
         <Modal
@@ -18,7 +22,7 @@ const ActiveModal = ({ handleCancel, handleConfirm, activeModal }) => {
             <div className="activeModalUpperDiv">
               <div className="deleteMain">
                 <h4 className="upperDivHead1">
-                  Are you sure?
+                {confirmMessage}
                 </h4>
               </div>
               <div className="buttons">
@@ -42,13 +46,11 @@ const ActiveModal = ({ handleCancel, handleConfirm, activeModal }) => {
 const ActiveModalWrapper= styled.div`
 font-family: ${({ theme }) => theme?.fontFamily};
   .activeModalUpperDiv {
-    height:142px;
+    min-height:142px;
     text-align: center;
     display: flex;
     flex-direction: column;
-    // justify-content: space-evenly;
     gap:32px;
-    // min-height:206px;
     .deleteMain {
       display: flex;
       flex-direction: column;
@@ -56,7 +58,7 @@ font-family: ${({ theme }) => theme?.fontFamily};
       align-items: center;
       .upperDivHead1{
         font-size:24px;
-        font-weight:700;
+        font-weight:600;
       }
       
         
