@@ -8,6 +8,8 @@ import styled from "styled-components";
 import InputField from "../validations/InputField";
 import { EyeIcon, HideEyeIcon } from "../Utils/SvgIcons";
 import { authlogin } from "../Store/Authentication";
+import { adminLogin } from "../Services/Collection";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ const Login = () => {
       ),
       ForgotPassword: (
         <div className="forgot-password">
-          <p onClick={() => navigate("forgot")}>
+          <p style={{ userSelect: "none" }} onClick={() => navigate("forgot")}>
             <u>Forgot Password?</u>
           </p>
         </div>
@@ -65,8 +67,36 @@ const Login = () => {
   });
 
   const handleSubmit = async (values) => {
-    console.log(values, "values");
-    dispatch(authlogin({ phoneNumber: "12346" }));
+    try {
+      setLoading(true);
+      let requestPayload = {
+        emailAddress: values?.email,
+        Password: values?.password,
+      };
+      let res = await adminLogin(requestPayload);
+      if (res?.status === 200) {
+        let filterData = {
+          ...res?.data,
+          token: res?.token,
+        };
+        toast.success("Login Successfully");
+        navigate("/quickdollar/dashboard");
+        dispatch(authlogin(filterData));
+        setLoading(false);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
   };
   return (
     <LoginWrapper>

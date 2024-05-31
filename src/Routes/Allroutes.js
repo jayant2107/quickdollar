@@ -28,16 +28,16 @@ import AddCustomOffer from "../Modules/Offer/AddCustomOffer/AddCustomOffer";
 import ViewCustomOffer from "../Modules/Offer/ViewCustomOffer/ViewCustomOffer";
 import CompletedOffer from "../Modules/Offer/CompletedOffer/CompletedOffer";
 import AddAdminUser from "../Modules/User/AddAdmin/AddAdminUser";
-import DecryptUserInfo from "../Modules/User/DecryptUser/DecryptUserInfo";
 import MainGiftCards from "../Modules/GiftCards/MainGiftCards";
 import AllGiftCards from "../Modules/GiftCards/AllGiftCards/AllGiftCatds";
 import AddGiftCard from "../Modules/GiftCards/AddGiftCard/AddGiftCard";
 import RequestedGiftCards from "../Modules/GiftCards/RequestedGiftCard/RequestedGiftCards";
-import DeliveredGiftCards from "../Modules/GiftCards/DeliveredGiftCards/DeliveredGiftCards"
+import DeliveredGiftCards from "../Modules/GiftCards/DeliveredGiftCards/DeliveredGiftCards";
 import MainFrontPageOffer from "../Modules/FrontPageOffer/MainFrontPageOffer";
-import AddFrontPageOffer from "../Modules/FrontPageOffer/AddFrontPageOffer/AddFrontPageOffer"
+import AddFrontPageOffer from "../Modules/FrontPageOffer/AddFrontPageOffer/AddFrontPageOffer";
 import AllFrontPageOffer from "../Modules/FrontPageOffer/AllFrontPageOffer/AllFrontPageOffer";
 import ChangePassword from "../Modules/ChangePassword/ChangePassword";
+import SetNewPassword from "../Auth/SetNewPassword";
 function PublicRoute({ isAuthenticated }) {
   if (isAuthenticated) return <Navigate to="/quickdollar/dashboard" replace />;
   return <Outlet />;
@@ -49,14 +49,12 @@ function PrivateRoute({ isAuthenticated }) {
 }
 
 export default function GaspilRoutes() {
-  const isAutharised = useSelector(
-    (state) => state?.Authlogin?.data?.phoneNumber
-  );
-  console.log(isAutharised, "ysss");
+  const isAutharised = useSelector((state) => state?.Authlogin?.data?.token);
   const token = isAutharised;
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/set-new-password" element={<SetNewPassword />} />
         <Route element={<PublicRoute isAuthenticated={token} />}>
           <Route element={<Login />} path="/" />
           <Route element={<Verify />} path="verify" />
@@ -65,7 +63,7 @@ export default function GaspilRoutes() {
         </Route>
         <Route element={<PrivateRoute isAuthenticated={token} />}>
           <Route element={<Landing />} path="quickdollar">
-          <Route element={<ChangePassword />} path="profile" />
+            <Route element={<ChangePassword />} path="profile" />
 
             <Route element={<Dashboard />} path="dashboard" />
 
@@ -73,7 +71,6 @@ export default function GaspilRoutes() {
               <Route element={<AllUsers />} path="allusers" />
               <Route element={<AllAbusedUsers />} path="allabused" />
               <Route element={<AddAdminUser />} path="addadminuser" />
-              <Route element={<DecryptUserInfo />} path="decryptuserinfo" />
             </Route>
 
             <Route element={<MainOffer />} path="offer">
@@ -87,8 +84,14 @@ export default function GaspilRoutes() {
             <Route element={<MainGiftCards />} path="giftcard">
               <Route element={<AllGiftCards />} path="allgiftcard" />
               <Route element={<AddGiftCard />} path="addgiftcard" />
-              <Route element={<RequestedGiftCards />} path="requestedgiftcard" />
-              <Route element={<DeliveredGiftCards />} path="deliveredgiftcard" />
+              <Route
+                element={<RequestedGiftCards />}
+                path="requestedgiftcard"
+              />
+              <Route
+                element={<DeliveredGiftCards />}
+                path="deliveredgiftcard"
+              />
             </Route>
 
             <Route element={<SendMessage />} path="sendmessage" />

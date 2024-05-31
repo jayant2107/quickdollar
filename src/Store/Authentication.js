@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  data: [],
+  data: null,
 };
 
 const Authentication = createSlice({
@@ -9,10 +9,10 @@ const Authentication = createSlice({
   reducers: {
     authlogin: (state, action) => {
       state.data = action.payload;
-      console.log(action,'state---')
+      console.log(action, "state---");
     },
     authlogout: (state, action) => {
-      state.data = [];
+      state.data = null;
     },
   },
 });
