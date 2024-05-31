@@ -43,7 +43,7 @@ export default DeleteModal;
 
 
 const ServiceModalWrapper = styled.div`
-
+font-family: ${({ theme }) => theme?.fontFamily};
   .serviceModalUpperDiv {
     height:142px;
     text-align: center;

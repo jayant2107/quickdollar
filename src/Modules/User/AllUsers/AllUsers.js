@@ -88,7 +88,6 @@ const AllUsers = () => {
       render: (text, record) => (
         <TableAction
           apply={formActions.apply}
-          view={formActions.view}
           edit={formActions.edit}
           deleteAction={formActions.delete}
           onSend={() => showSendModal(record)}

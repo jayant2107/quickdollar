@@ -76,7 +76,7 @@ export default TableNew;
 
 const TableWrapper = styled.div`
   margin-bottom: 20px;
-
+  font-family: ${({ theme }) => theme?.fontFamily};
   .tableContent {
     display: flex;
     flex-direction: column;

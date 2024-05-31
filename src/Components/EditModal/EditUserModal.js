@@ -259,7 +259,8 @@ const EditUserModal = ({
 };
 export default EditUserModal;
 
-const AnnouncementWrapper = styled.div``;
+const AnnouncementWrapper = styled.div`
+font-family: ${({ theme }) => theme?.fontFamily};`;
 
 const Header = styled.p`
   display: flex;

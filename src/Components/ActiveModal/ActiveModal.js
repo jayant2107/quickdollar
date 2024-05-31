@@ -40,7 +40,7 @@ const ActiveModal = ({ handleCancel, handleConfirm, activeModal }) => {
 
 
 const ActiveModalWrapper= styled.div`
-
+font-family: ${({ theme }) => theme?.fontFamily};
   .activeModalUpperDiv {
     height:142px;
     text-align: center;
