@@ -117,7 +117,6 @@ const AllUsers = () => {
             {roleIcon}
           </RoleStyledText>
         );
-        // Test commit
       },
     },
     {
@@ -137,6 +136,7 @@ const AllUsers = () => {
           )}
         </StatusStyledText>
       ),
+      // Test commit
     },
     {
       title: "UserType",
