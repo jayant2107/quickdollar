@@ -17,38 +17,55 @@ import { DateTime } from "luxon";
 
 const AllUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [userData, setUserData] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(5);
   const [loader, setLoader] = useState(true);
   const [editModal, setEditModal] = useState(false);
   const [sendModal, setSendModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [activeModal, setActiveModal] = useState(false);
-  const [userData, setUserData] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getAllUser();
-        if (res?.status === 200) {
-          setUserData(res?.data?.findUsers);
-        } else {
-          let message =
-            res?.response?.data?.message ||
-            res?.message ||
-            res?.error ||
-            "Something went wrong";
-          toast.error(message);
-        }
-      } catch (error) {
-        console.log(error, "error");
-        toast.error(error?.message || "Something went wrong");
-      } finally {
-        setLoader(false);
+  const fetchData = async () => {
+    setLoader(true);
+    try {
+      const res = await getAllUser(currentPage, pageSize);
+      if (res?.status === 200) {
+        setUserData(res?.data?.findUsers);
+        setTotalUsers(res?.data?.totalUsers);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
       }
-    };
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
 
-    fetchData();
-  }, []);
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
+    },
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
 
   const columns = [
     {
@@ -138,12 +155,7 @@ const AllUsers = () => {
       ),
       // Test commit
     },
-    // {
-    //   title: "UserType",
-    //   dataIndex: "userApplicationtype",
-    //   key: "usertype",
-    //   render: (text) => <StyledText color="orange">{text || "N/A"}</StyledText>,
-    // },
+
     {
       title: "UserType",
       dataIndex: "userApplicationtype",
@@ -151,16 +163,16 @@ const AllUsers = () => {
       render: (text, record) => {
         let userType;
         switch (record?.userApplicationtype) {
-          case 0:
+          case "0":
             userType = "iOS";
             break;
-          case 1:
+          case "1":
             userType = "Android";
             break;
-          case 2:
+          case "2":
             userType = "All Users";
             break;
-          case 3:
+          case "3":
             userType = "Web";
             break;
           default:
@@ -246,6 +258,10 @@ const AllUsers = () => {
     setSelectedRecord(null);
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageSize]);
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (
@@ -287,12 +303,17 @@ const AllUsers = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew
-          columns={columns}
-          data={userData}
-          scroll={scrollConfig}
-          loader={loader}
-        />
+        {loader ? (
+          <p>Loading...</p> // Or any loading indicator component you prefer
+        ) : (
+          <TableNew
+            columns={columns}
+            data={userData}
+            scroll={scrollConfig}
+            pagination={paginationConfig}
+            loader={loader} 
+          />
+        )}
       </div>
     </AllUserWrapper>
   );

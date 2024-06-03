@@ -24,32 +24,35 @@ const AllAbusedUsers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [activeModal, setActiveModal] = useState(false);
   const [userData, setUserData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getAllAbusedUser();
-        if (res?.status === 200) {
-          setUserData(res?.data);
-        } else {
-          let message =
-            res?.response?.data?.message ||
-            res?.message ||
-            res?.error ||
-            "Something went wrong";
-          toast.error(message);
-        }
-      } catch (error) {
-        console.log(error, "error");
-        toast.error(error?.message || "Something went wrong");
-      } finally {
-        setLoader(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalUsers, setTotalUsers] = useState(5);
+  
+  const fetchData = async () => {
+    setLoader(true);
+    try {
+      const res = await getAllAbusedUser(currentPage, pageSize);
+      if (res?.status === 200) {
+        // console.log(res.data)
+        setUserData(res?.data?.findInActiveUsers);
+        setTotalUsers(res?.data?.totalAbusedUsers);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
       }
-    };
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
 
-    fetchData();
-  }, []);
-  console.log(userData, "daataaaaaaaaa")
+  console.log(userData, "daataaaaaaaaa");
 
   const columns = [
     {
@@ -62,24 +65,28 @@ const AllAbusedUsers = () => {
         const capitalizeFirstLetter = (str) => {
           return str.charAt(0).toUpperCase() + str.slice(1);
         };
-        const capitalizedFirstName = capitalizeFirstLetter(record.firstName || '');
-        const capitalizedLastName = capitalizeFirstLetter(record.lastName || '');
-        const fullName = `${capitalizedFirstName} ${capitalizedLastName}`.trim();
-        return fullName ? fullName : 'NA';
+        const capitalizedFirstName = capitalizeFirstLetter(
+          record.firstName || ""
+        );
+        const capitalizedLastName = capitalizeFirstLetter(
+          record.lastName || ""
+        );
+        const fullName =
+          `${capitalizedFirstName} ${capitalizedLastName}`.trim();
+        return fullName ? fullName : "NA";
       },
     },
     {
       title: "Country",
       dataIndex: "country",
       key: "country",
-      render: (text, record) => record?.countryCode || 'NA'
-
+      render: (text, record) => record?.countryCode || "NA",
     },
     {
       title: "Points",
       dataIndex: "points",
       key: "points",
-      render: (text, record) => record?.Points || '0'
+      render: (text, record) => record?.Points || "0",
     },
     {
       title: "Role",
@@ -92,7 +99,9 @@ const AllAbusedUsers = () => {
         switch (record?.userRoleID) {
           case 1:
             roleName = "SuperAdmin";
-            roleIcon = <RiAdminFill style={{ color: "white", fontSize: "20px" }} />;
+            roleIcon = (
+              <RiAdminFill style={{ color: "white", fontSize: "20px" }} />
+            );
             break;
           case 2:
             roleName = "Admin";
@@ -112,7 +121,7 @@ const AllAbusedUsers = () => {
             {roleIcon}
           </RoleStyledText>
         );
-      }
+      },
     },
     {
       title: "Status",
@@ -134,11 +143,28 @@ const AllAbusedUsers = () => {
     },
     {
       title: "UserType",
-      dataIndex: "usertype",
+      dataIndex: "userApplicationtype",
       key: "usertype",
-      render: (text, record) => (
-        <StyledText color="orange">{record.usertype}</StyledText>
-      ),
+      render: (text, record) => {
+        let userType;
+        switch (record?.userApplicationtype) {
+          case "0":
+            userType = "iOS";
+            break;
+          case "1":
+            userType = "Android";
+            break;
+          case "2":
+            userType = "All Users";
+            break;
+          case "3":
+            userType = "Web";
+            break;
+          default:
+            userType = "NA";
+        }
+        return <StyledText>{userType}</StyledText>;
+      },
     },
     {
       title: "Created Date",
@@ -147,7 +173,7 @@ const AllAbusedUsers = () => {
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
-      }
+      },
     },
     {
       title: "Action",
@@ -167,6 +193,22 @@ const AllAbusedUsers = () => {
       ),
     },
   ];
+
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
+    },
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
 
   const scrollConfig = {
     x: 1500, // Horizontal scrolling
@@ -217,6 +259,10 @@ const AllAbusedUsers = () => {
     setSelectedRecord(null);
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageSize]);
+
   return (
     <AllAbusedUserWrapper byTheme={byTheme}>
       {deleteModal && (
@@ -258,7 +304,17 @@ const AllAbusedUsers = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} loader={loader} />
+      {loader ? (
+          <p>Loading...</p> // Or any loading indicator component you prefer
+        ) : (
+        <TableNew
+          columns={columns}
+          data={userData}
+          scroll={scrollConfig}
+          loader={loader}
+          pagination={paginationConfig}
+        />
+        )}
       </div>
     </AllAbusedUserWrapper>
   );
@@ -267,7 +323,7 @@ const AllAbusedUsers = () => {
 export default AllAbusedUsers;
 
 const AllAbusedUserWrapper = styled.div`
-font-family: ${({ theme }) => theme?.fontFamily};
+  font-family: ${({ theme }) => theme?.fontFamily};
   padding-bottom: 35px;
   @media (max-width: 550px) {
     padding-bottom: 25px;
@@ -334,23 +390,26 @@ const RoleStyledText = styled.span`
 
 const StatusStyledText = styled.span`
   color: #fff;
-  background-color: ${({ status }) => (status === "Active" ? "#00e633" : "red")};
+  background-color: ${({ status }) =>
+    status === "Active" ? "#00e633" : "red"};
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  cursor:pointer;
+  cursor: pointer;
 `;
 
 const StyledText = styled.span`
   color: #fff;
-  background: linear-gradient(97.43deg, rgb(47, 128, 237) 0%, rgb(86, 204, 242) 100%);
+  background: linear-gradient(
+    97.43deg,
+    rgb(47, 128, 237) 0%,
+    rgb(86, 204, 242) 100%
+  );
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-
 `;
-

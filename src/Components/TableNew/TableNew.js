@@ -24,54 +24,37 @@ const GlobalStyle = createGlobalStyle`
 
 `;
 
-const TableNew = ({ columns, data, scroll }) => {
-  const [entries, setEntries] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
-  const columnsWithSno = [
-    {
-      title: "S.No",
-      dataIndex: "sno",
-      key: "sno",
-      fixed: "left",
-      width: 70,
-      render: (text, record, index) => (currentPage - 1) * entries + index + 1,
-    },
-    ...columns,
-    
-  ];
-
-  const paginationConfig = {
-    current: currentPage,
-    pageSize: entries,
-    showSizeChanger: true,
-    showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
-    pageSizeOptions: ["5", "10", "20", "50"],
-    onShowSizeChange: (current, size) => {
-      setEntries(size);
-      setCurrentPage(1); // Reset to first page whenever page size changes
-    },
-    onChange: (page) => setCurrentPage(page),
-
-  };
-
-  
+const TableNew = ({ columns, data, scroll, pagination, loader }) => {
+  const columnsWithSno = [...columns];
 
   return (
     <>
       <GlobalStyle />
       <TableWrapper>
-       
         <div className="tableContent">
           <div className="allUsersSearchDiv">
             <div className="searchDiv">
-             
               <div className="searchField">
-                <input className="alluserSearch" type="text" placeholder="Search" />
+                <input
+                  className="alluserSearch"
+                  type="text"
+                  placeholder="Search"
+                />
                 <CgSearch className="searchIcon" />
               </div>
             </div>
           </div>
-          <Table columns={columnsWithSno} dataSource={data} pagination={paginationConfig} scroll={scroll} />
+          {loader ? (
+            <p>Loading...</p> // Or any loading indicator component you prefer
+          ) : (
+            <Table
+              columns={columnsWithSno}
+              dataSource={data}
+              pagination={pagination}
+              scroll={scroll}
+              
+            />
+          )}
         </div>
       </TableWrapper>
     </>
