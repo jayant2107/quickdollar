@@ -1,75 +1,131 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
+import { getFrontPage } from "../../../Services/Collection";
+import { toast } from "react-toastify";
+import { DateTime } from "luxon";
+import TableAction from "../../../Components/TableNew/TableActions";
+import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
+import EditUserModal from "../../../Components/EditModal/EditUserModal";
 
 const AllFrontPageOffer = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [loader, setLoader] = useState();
+  const [userData, setUserData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalUsers, setTotalUsers] = useState(5);
+  const [editModal, setEditModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+
+  const fetchData = async () => {
+    setLoader(true);
+    try {
+      const res = await getFrontPage(currentPage, pageSize);
+      if (res?.status === 200) {
+        setUserData(res?.msg?.findUser || []);
+        setTotalUsers(res?.msg?.totalUsers || 0);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
+
+
   const columns = [
-    {
+    { 
       title: "Offer Text",
       width: 200,
-      dataIndex: "offertext",
+      dataIndex: "frontpageofferTitle",
       key: "offertext",
       fixed: "left",
+      render: (text, record) =>
+      record?.frontpageofferTitle || "NA",
+      
     },
     {
       title: "Offer Link",
-      dataIndex: "offerlink",
+      dataIndex: "frontpageofferLink",
       key: "offerlink",
-      render: (offerlink) => (
+      render: (text, record) => (
         <TableImageWrapper>
-          <a href={offerlink}>{offerlink}</a>
+          <a href={record?.frontpageofferLink}>{record?.frontpageofferLink || "NA" }</a>
         </TableImageWrapper>
       ),
     },
     {
       title: "Offer Image",
-      dataIndex: "offerimage",
+      dataIndex: "frontpageofferImage",
       key: "offerimage",
-      render: (offerimage) => (
+      render: (text, record) => (
         <TableImageWrapper>
-          <img src={offerimage} alt="" />
+          <img src={record?.frontpageofferImage} alt="NA" />
         </TableImageWrapper>
       ),
     },
     {
       title: "Offer Button Image",
-      dataIndex: "offerbuttonimage",
+      dataIndex: "frontpageofferButton",
       key: "offerbuttonimage",
-      render: (offerbuttonimage) => (
+      render: (text, record) => (
         <TableImageWrapper>
-          <img src={offerbuttonimage} alt="" />
+          <img src={record?.frontpageofferButton} alt="NA" />
         </TableImageWrapper>
       ),
     },
     {
       title: "Created Date",
-      dataIndex: "createdat",
+      dataIndex: "createdAt",
       key: "createdat",
+      render: (text, record) => {
+        const date = DateTime.fromISO(record?.createdAt);
+        return date.toFormat("MMM dd yyyy, HH : mm : ss");
+      },
+    },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 150,
+      render: (text, record) => (
+        <TableAction
+          apply={formActions.apply}
+          edit={formActions.edit}
+          deleteAction={formActions.delete}
+          onEdit={() => showEditModal(record)}
+          onDelete={() => showDeleteModal(record)}
+        />
+      ),
     },
   ];
 
-  const userData = [
-    {
-      key: 1,
-      offertext: "$5 Bonus Take surveys. Get PAID. Be an influencer. Share your opinion to help brands deliver better products & services. Earn Bonus today",
-      offerlink: "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png",
-      offerimage: "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png",
-      offerbuttonimage: "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png",
-      createdat: "2024-05-29",
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
     },
-    {
-      key: 2,
-      offertext: "Jane Smith",
-      offerlink: "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png",
-      offerimage: "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png",
-      offerbuttonimage: "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png",
-      createdat: "2024-05-28",
-    },
-  ];
-
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
   const scrollConfig = {
     x: 1000, // Horizontal scrolling
   };
@@ -78,22 +134,69 @@ const AllFrontPageOffer = () => {
     view: false,
     edit: true,
     delete: true,
-    pathname: "/home/owners/view",
-    pathnameEdit: "/home/owners/edit",
-    deletepath: "delete_owner/",
-    delete_key: "owners_id",
   };
+  const showEditModal = (record) => {
+    setSelectedRecord(record);
+    setEditModal(true);
+  };
+
+  const showDeleteModal = (record) => {
+    setSelectedRecord(record);
+    setDeleteModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+    setSelectedRecord(null);
+  };
+
+
+  const handleDeleteCancel = () => {
+    setDeleteModal(false);
+    setSelectedRecord(null);
+  };
+
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageSize]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
+      {deleteModal && (
+        <DeleteModal
+          showModal={showDeleteModal}
+          handleCancel={handleDeleteCancel}
+          deleteModal={deleteModal}
+          record={selectedRecord}
+          fetchData={fetchData}
+        />
+      )}
+      {editModal && (
+        <EditUserModal
+          showEditModal={showEditModal}
+          handleEditCancel={handleEditCancel}
+          editModal={editModal}
+          record={selectedRecord}
+          viewLoader={loader}
+          fetchData={fetchData}
+        />
+      )}
+      
       <div className="allabusedUserHeader">
         <h1 className="allabusedUserHeading">All Front Page Offers</h1>
         {/* <button>Export User Details</button> */}
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig} Actions={formActions}
-          loader={loader} />
+        <TableNew
+          columns={columns}
+          data={userData}
+          scroll={scrollConfig}
+          Actions={formActions}
+          loader={loader}
+          pagination={paginationConfig}
+        />
       </div>
     </AllUserWrapper>
   );
@@ -157,8 +260,8 @@ const AllUserWrapper = styled.div`
 `;
 
 const TableImageWrapper = styled.div`
-img {
-  width:100px;
-  object-fit:contain;
-}
+  img {
+    width: 100px;
+    object-fit: contain;
+  }
 `;

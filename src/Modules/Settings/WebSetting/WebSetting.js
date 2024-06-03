@@ -69,7 +69,7 @@ const WebSetting = () => {
 
     return (
         <div>
-            <Header>Email Preview</Header>
+            <Header>Settings</Header>
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
@@ -240,15 +240,14 @@ const WebSetting = () => {
                                 <FieldWrapper>
                                     <Label>Maintanance Mode ON ?</Label>
                                     <FieldContainer>
-                                    <Field
+                                        <Field
                                             name="maintananceMode"
                                             render={({ field }) => (
                                                 <Checkbox
                                                     {...field}
-                                                    checked={field.value}
-                                                    onChange={e => setFieldValue('maintananceMode', e.target.checked)}
+                                                    checked={field.value === 'true'}
+                                                    onChange={e => setFieldValue('maintananceMode', e.target.checked ? 'true' : 'false')}
                                                 >
-                                                    Enable
                                                 </Checkbox>
                                             )}
                                         />
