@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
-import EditUserModal from "../../../Components/EditModal/EditUserModal";
+import EditFrontpageModal from "../../../Components/EditFrontpageModal/EditFrontpageModal";
 
 const AllFrontPageOffer = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -172,8 +172,8 @@ const AllFrontPageOffer = () => {
           fetchData={fetchData}
         />
       )}
-      {editModal && (
-        <EditUserModal
+      {EditFrontpageModal && (
+        <EditFrontpageModal
           showEditModal={showEditModal}
           handleEditCancel={handleEditCancel}
           editModal={editModal}

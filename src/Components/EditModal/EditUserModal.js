@@ -20,19 +20,19 @@ const EditUserModal = ({
 }) => {
   console.log(record, "Recordddd")
   const initialValues = {
-    firstName: record.firstName,
-    lastName: record.lastName,
-    email: record.email,
-    paypalEmail: record.paypalEmail,
-    address1: record.addresslineone,
-    address2: record.addresslineotwo,
-    country: record.countryCode,
-    city: record.city,
-    state: record.state,
+    firstName: record.firstName||"",
+    lastName: record.lastName||"",
+    email: record.email||"",
+    paypalEmail: record.paypalEmail||"",
+    address1: record.addresslineone||"",
+    address2: record.addresslineotwo||"",
+    country: record.countryCode||"",
+    city: record.city||"",
+    state: record.state||"",
     zip: record.zipcode,
-    telephone: record.contactNumber,
-    userPoints: record.Points,
-    isAdmin: record.userRoleID ===2?"2":"",
+    telephone: record.contactNumber||"",
+    userPoints: record.Points||"",
+    isAdmin: record.userRoleID === 2 ? "2" : "3",
     suspendAccount: record.is_suspended ? "true" : "false",
   };
 
@@ -60,7 +60,7 @@ const EditUserModal = ({
   const handleSubmit = async (values, { resetForm }) => {
     const { firstName, lastName, email, paypalEmail, address1, address2, country, city, state, zip, telephone, userPoints, isAdmin, suspendAccount } = values;
     const payload = {
-      id:record.idUser,
+      id: record.idUser,
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -78,14 +78,14 @@ const EditUserModal = ({
 
     }
     console.log("Form values:", payload);
-    let res= await  EditAllUser(payload)
+    let res = await EditAllUser(payload)
     if (res?.status === 200) {
       console.log(res.status)
-    let fetch=fetchData()
-    console.log(fetch,"fetchhhh")
-    toast.success("Edit Successfully");
-    resetForm();
-    handleEditCancel();
+      let fetch = fetchData()
+      console.log(fetch, "fetchhhh")
+      toast.success("Edit Successfully");
+      resetForm();
+      handleEditCancel();
     }
     else {
       let message =
@@ -95,7 +95,7 @@ const EditUserModal = ({
         "Something went wrong";
       toast.error(message);
     }
-    
+
   };
 
   return (
@@ -240,7 +240,16 @@ const EditUserModal = ({
                           />
                           <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
                         </div>
-                        
+
+                    <div>
+                      <Field
+                        type="radio"
+                        name="isAdmin"
+                        value="3"
+                        id="suspendAccountNo"
+                      />
+                      <RadioLabel htmlFor="suspendAccountNo">No</RadioLabel>
+                    </div>
                       </FieldWrapper>
                       <RequiredWrapper>
                         <ErrorMessage name="isAdmin" />
