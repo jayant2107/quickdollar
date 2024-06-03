@@ -43,7 +43,7 @@ const AllOffers = () => {
       key: "status",
       dataIndex: "status",
       render: (text, record) => (
-        <StyledText color={`${ record.status == "Active" ? "green" : "red"}`}>{record.status}</StyledText>
+        <StatusStyledText status={record.status}>{record.status}</StatusStyledText>
       ),
     },
     {
@@ -56,7 +56,7 @@ const AllOffers = () => {
       key: "installation",
       dataIndex: "installation",
       render: (text, record) => (
-        <StyledText color={`${text == "Yes" ? "green" : "red"}`}>
+        <StyledText text={text}>
           {text}
         </StyledText>
       ),
@@ -66,7 +66,7 @@ const AllOffers = () => {
       key: "offer",
       dataIndex: "offer",
       render: (text, record) => (
-        <StyledText color={`${text == "Yes" ? "green" : "red"}`}>
+        <StyledText text={text}>
           {text}
         </StyledText>
       ),
@@ -76,7 +76,7 @@ const AllOffers = () => {
       key: "oneAndroid",
       dataIndex: "oneAndroid",
       render: (text, record) => (
-        <StyledText color={`${text == "Yes" ? "green" : "red"}`}>
+        <StyledText text={text}>
           {text}
         </StyledText>
       ),
@@ -86,7 +86,7 @@ const AllOffers = () => {
       key: "twoAndroid",
       dataIndex: "twoAndroid",
       render: (text, record) => (
-        <StyledText color={`${text == "Yes" ? "green" : "red"}`}>
+        <StyledText text={text}>
           {text}
         </StyledText>
       ),
@@ -96,7 +96,7 @@ const AllOffers = () => {
       key: "oneIos",
       dataIndex: "oneIos",
       render: (text, record) => (
-        <StyledText color={`${text == "Yes" ? "green" : "red"}`}>
+        <StyledText text={text}>
           {text}
         </StyledText>
       ),
@@ -106,7 +106,7 @@ const AllOffers = () => {
       key: "twoIos",
       dataIndex: "twoIos",
       render: (text, record) => (
-        <StyledText color={`${text == "Yes" ? "green" : "red"}`}>
+        <StyledText text={text}>
           {text}
         </StyledText>
       ),
@@ -278,8 +278,30 @@ const AllUserWrapper = styled.div`
 `;
 
 const StyledText = styled.span`
-  color: ${({ color }) => color};
-  border: 1px solid ${({ color }) => color};
-  padding: 5px 10px;
-  border-radius: 5px;
+  color: #fff;
+  // background: linear-gradient(
+  //   97.43deg,
+  //   rgb(47, 128, 237) 0%,
+  //   rgb(86, 204, 242) 100%
+  // );
+  background-color: ${({text}) =>
+    text == "Yes" ? "#00e633" : "red"};
+  
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const StatusStyledText = styled.span`
+  color: #fff;
+  background-color: ${({ status }) =>
+    status == "Active" ? "#00e633" : "red"};
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 `;
