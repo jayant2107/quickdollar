@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Table } from "antd";
 import { CgSearch } from "react-icons/cg";
+import Loader from "../Loader";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -45,14 +46,13 @@ const TableNew = ({ columns, data, scroll, pagination, loader }) => {
             </div>
           </div>
           {loader ? (
-            <p>Loading...</p> // Or any loading indicator component you prefer
+            <Loader size={28} />
           ) : (
             <Table
               columns={columnsWithSno}
               dataSource={data}
               pagination={pagination}
               scroll={scroll}
-              
             />
           )}
         </div>
