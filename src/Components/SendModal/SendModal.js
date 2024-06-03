@@ -4,28 +4,48 @@ import { Modal, Button } from "antd";
 import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
 import TextArea from "antd/es/input/TextArea";
+import { sendUserMessage } from "../../Services/Collection";
+import { toast } from "react-toastify";
 
 const SendModal = ({
   handleSendCancel,
   showSendModal,
   sendModal,
   viewLoader,
+  record,
 }) => {
   const initialValues = {
-    recipient: "",
-    subject: "",
-    message: "",
+    recipient: record?.email,
+    yourSubject: "",
+    yourMessage: "",
   };
 
   const validationSchema = yup.object().shape({
     recipient: yup.string().required("Recipient is required"),
-    subject: yup.string().required("Subject is required"),
-    message: yup.string().required("Message is required"),
+    yourSubject: yup.string().required("Subject is required"),
+    yourMessage: yup.string().required("Message is required"),
   });
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log("Form values:", values);
-    resetForm();
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      let res = await sendUserMessage(values);
+      console.log(res, "res");
+      if (res?.status === 200) {
+        toast.success("Message send Successfully");
+        handleSendCancel();
+        resetForm();
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
   };
 
   return (
@@ -66,25 +86,25 @@ const SendModal = ({
                     <div>
                       <Label>Your Subject</Label>
                       <InputField
-                        name="subject"
+                        name="yourSubject"
                         placeholder="Message Subject"
                       />
                       <RequiredWrapper>
-                        <ErrorMessage name="subject" />
+                        <ErrorMessage name="yourSubject" />
                       </RequiredWrapper>
                     </div>
                     <div>
                       <Label>Your Message</Label>
                       <TextAreaField
-                        name="message"
+                        name="yourMessage"
                         placeholder="Your Message"
                         rows={3}
                         onChange={(e) =>
-                          setFieldValue("message", e.target.value)
+                          setFieldValue("yourMessage", e.target.value)
                         }
                       />
                       <RequiredWrapper>
-                        <ErrorMessage name="message" />
+                        <ErrorMessage name="yourMessage" />
                       </RequiredWrapper>
                     </div>
                   </InputWrapper>
@@ -94,7 +114,7 @@ const SendModal = ({
                       Cancel
                     </ResetBtn>
                     <SubmitBtn type="primary" htmlType="submit">
-                    Send
+                      Send
                     </SubmitBtn>
                   </Footer>
                 </Form>
@@ -109,7 +129,8 @@ const SendModal = ({
 export default SendModal;
 
 const AnnouncementWrapper = styled.div`
-font-family: ${({ theme }) => theme?.fontFamily};`;
+  font-family: ${({ theme }) => theme?.fontFamily};
+`;
 
 const Header = styled.p`
   display: flex;

@@ -3,27 +3,52 @@ import { Button } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
+import { addFrontPage } from '../../../Services/Collection';
+import { toast } from "react-toastify";
 
 const AddFrontPageOffer = () => {
 
     const initialValues = {
-        offerTitle: '',
-        offerLink: '',
-        offerImg: '',
-        buttonImg: ''
+        frontpageofferTitle: '',
+        frontpageofferLink: '',
+        frontpageofferImage: null,
+        frontpageofferButton: null
     };
 
     const validationSchema = yup.object().shape({
-        offerTitle: yup.string().required('Offer title is required'),
-        offerLink: yup.string().required('Offer link is required'),
-        offerImg: yup.string().required('Offer image is required'),
-        buttonImg: yup.string().required('Button image is required'),
+        frontpageofferTitle: yup.string().required('Offer title is required'),
+        frontpageofferLink: yup.string().required('Offer link is required'),
+        frontpageofferImage: yup.string().required('Offer image is required'),
+        frontpageofferButton: yup.string().required('Button image is required'),
     });
 
-    const handleSubmit = (values, { resetForm }) => {
-        console.log('Form values:', values);
-        resetForm();
+   
+    const handleSubmit = async (values, { resetForm }) => {
+        const formData = new FormData();
+        formData.append('frontpageofferTitle', values.frontpageofferTitle);
+        formData.append('frontpageofferLink', values.frontpageofferLink);
+        formData.append('frontpageofferImage', values.frontpageofferImage);
+        formData.append('frontpageofferButton', values.frontpageofferButton);
+
+        try {
+            const res = await addFrontPage(formData);
+            if (res?.status === 200) {
+                toast.success("Message sent successfully");
+                resetForm();
+            } else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
     };
+
 
     return (
         <div>
@@ -44,9 +69,9 @@ const AddFrontPageOffer = () => {
                                 <FieldWrapper>
                                     <Label>Frontpage Offer Title</Label>
                                     <FieldContainer>
-                                        <InputField name="offerTitle" placeholder="Offer title" />
+                                        <InputField name="frontpageofferTitle" placeholder="Offer title" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="offerTitle" />
+                                            <ErrorMessage name="frontpageofferTitle" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -54,9 +79,9 @@ const AddFrontPageOffer = () => {
                                 <FieldWrapper>
                                     <Label>Frontpage Offer Link</Label>
                                     <FieldContainer>
-                                        <InputField name="offerLink" placeholder="Offer link" />
+                                        <InputField name="frontpageofferLink" placeholder="Offer link" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="offerLink" />
+                                            <ErrorMessage name="frontpageofferLink" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -66,13 +91,14 @@ const AddFrontPageOffer = () => {
                                     <FieldContainer>
                                         <ChooseContainer>
                                             <ChooseFile
-                                                name="offerImg"
+                                                name="frontpageofferImage"
                                                 type="file"
+                                                
                                             />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
                                         </ChooseContainer>
                                         <RequiredWrapper>
-                                            <ErrorMessage name="offerImg" />
+                                            <ErrorMessage name="frontpageofferImage" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -82,14 +108,14 @@ const AddFrontPageOffer = () => {
                                     <FieldContainer>
                                         <ChooseContainer>
                                             <ChooseFile
-                                                name="buttonImg"
+                                                name="frontpageofferButton"
                                                 type="file"
                                             />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px <br />
                                                 Add button image if you want to replace default Image</UploadInstruction>
                                         </ChooseContainer>
                                         <RequiredWrapper>
-                                            <ErrorMessage name="buttonImg" />
+                                            <ErrorMessage name="frontpageofferButton" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
