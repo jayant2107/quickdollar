@@ -27,7 +27,7 @@ const Announcement = () => {
 
     return (
         <div>
-            <Header>Send push notification</Header>
+            <Header>Send Push Notification</Header>
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
@@ -137,6 +137,9 @@ margin-bottom: 0.5rem;
 margin-top: 0px;
 font-size: 17px;
 font-family: Poppins;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    font-size: 15px;
+    }
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;
