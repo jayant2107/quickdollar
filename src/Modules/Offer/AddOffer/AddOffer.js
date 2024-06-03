@@ -8,20 +8,21 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const PromotionEmail = () => {
-  const [triggerModal, setTriggerModal] = useState(false);
-  const [previewData, setPreviewData] = useState({});
 
   const initialValues = {
     title: "",
-    H1Title: "",
-    description: "",
-    countries: [],
-    offerText: "",
+    h1Title: "",
+    offerImg: "",
+    offerLink: '',
     offerAmount: "",
-    offerId: "",
-    offerLink: "",
-    customPostbackParm: "",
-    offerDescription: "",
+    offerText: "",
+    offerShortDescription:'',
+    offerLongDescription:'',
+    offerCreatedFor:'',
+    customPostbaclParams: "",
+    countries: [],
+fraudUser:"",
+capLimit:"",
   };
 
   const toolbarOptions = [
@@ -38,41 +39,24 @@ const PromotionEmail = () => {
   const [value, setValue] = useState("");
 
   const validationSchema = yup.object().shape({
-    subject: yup.string().required("Subject is required"),
-    heading: yup.string().required("Heading is required"),
-    additionalText: yup.string().required("Additional text is required"),
-    countries: yup
-      .array()
-      .min(1, "Countries are required")
-      .required("Countries are required"),
-    offerText: yup.string().required("Offer text is required"),
-    offerAmount: yup
-      .string()
-      .required("Offer amount is required")
-      .test(
-        "is-number",
-        "Enter number only",
-        (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
-      ),
-    offerId: yup
-      .string()
-      .required("Offer ID is required")
-      .test(
-        "is-number",
-        "Enter number only",
-        (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
-      ),
-    offerLink: yup.string().required("Offer link is required"),
-    customPostbackParm: yup
-      .string()
-      .required("Custom postback parameter is required"),
-    offerDescription: yup.string().required("Offer description is required"),
+    title: yup.string().required("Title is Required"),
+    h1Title: yup.string().required('H1 title is required'),
+    offerImg: yup.string().required('Offer Image is required'),
+    offerLink: yup.string().required('Offer Link is required'),
+    offerAmount: yup.string().required('Offer amount is required').test(
+      'is-number',
+      'Enter number only',
+      value => !isNaN(value) && Number.isInteger(parseFloat(value))
+  ),
+  offerText: yup.string().required('Offer Text is required'),
+  offerShortDescription: yup.string().required('Offer Short Description is required'),
+    offerLongDescription: yup.string().required('Offer Long Description is required'),
+    offerCreatedFor: yup.string().required('Offer Created is required'),
+    customPostbaclParams: yup.string().required('Custom Postback Params is required'),
+    countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
+    fraudUser: yup.string().required('Fraud User is required'),
+    capLimit: yup.string().required('Cap Limit is required'),
   });
-
-  const handlePreview = (values) => {
-    setPreviewData(values);
-    setTriggerModal(true);
-  };
 
   const handleSubmit = (values, { resetForm, setFieldValue }) => {
     console.log("Form values:", values);
@@ -94,7 +78,7 @@ const PromotionEmail = () => {
 
   return (
     <div>
-      <Header>Email Preview</Header>
+      <Header>Add Offer</Header>
       <AnnouncementWrapper>
         <Formik
           initialValues={initialValues}
@@ -126,21 +110,21 @@ const PromotionEmail = () => {
                       value={value}
                       onChange={(content) => {
                         setValue(content);
-                        setFieldValue("H1Title", content);
+                        setFieldValue("h1Title", content);
                         setIsEmpty(content === "<p><br></p>");
                       }}
                       modules={{ toolbar: toolbarOptions }}
                       tooltip={true}
                       onBlur={() => {
-                        setFieldTouched("H1Title", true);
+                        setFieldTouched("h1Title", true);
                         if (isEmpty) {
-                          setFieldValue("H1Title", "");
+                          setFieldValue("H1h1TitleTitle", "");
                         }
                       }}
                     />
                     <RequiredWrapper>
-                      {touched.offerDescription && errors.offerDescription && (
-                        <ErrorMessage name="H1Title" />
+                      {touched.h1Title && errors.h1Title && (
+                        <ErrorMessage name="h1Title" />
                       )}
                     </RequiredWrapper>
                   </QuillFieldContainer>
@@ -195,19 +179,21 @@ const PromotionEmail = () => {
                   <Label>Offer Short Description</Label>
                   <FieldContainer>
                     <TextAreaField
-                      name="description"
+                      name="offerShortDescription"
                       placeholder="Offer Short Description"
                       rows={3}
                       onChange={(e) =>
-                        setFieldValue("description", e.target.value)
+                        setFieldValue("offerShortDescription", e.target.value)
                       }
-                      value={values.additionalText}
+                      value={values.offerShortDescription}
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="description" />
+                      <ErrorMessage name="offerShortDescription" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
+
+
 
                 <FieldWrapper>
                   <Label>Offer Long Description</Label>
@@ -217,21 +203,21 @@ const PromotionEmail = () => {
                       value={value}
                       onChange={(content) => {
                         setValue(content);
-                        setFieldValue("longDescription", content);
+                        setFieldValue("offerLongDescription", content);
                         setIsEmpty(content === "<p><br></p>");
                       }}
                       modules={{ toolbar: toolbarOptions }}
                       tooltip={true}
                       onBlur={() => {
-                        setFieldTouched("longDescription", true);
+                        setFieldTouched("offerLongDescription", true);
                         if (isEmpty) {
-                          setFieldValue("longDescription", "");
+                          setFieldValue("offerLongDescription", "");
                         }
                       }}
                     />
                     <RequiredWrapper>
-                      {touched.offerDescription && errors.offerDescription && (
-                        <ErrorMessage name="longDescription" />
+                      {touched.offerLongDescription && errors.offerLongDescription && (
+                        <ErrorMessage name="offerLongDescription" />
                       )}
                     </RequiredWrapper>
                   </QuillFieldContainer>
@@ -240,25 +226,27 @@ const PromotionEmail = () => {
                 <FieldWrapper>
                   <Label>Is Active</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="isOffer"
-                          value="yes"
-                          id="isOfferYes"
-                        />
-                        <RadioLabel htmlFor="isOfferYes">Yes</RadioLabel>
-                      </div>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="isOffer"
-                          value="no"
-                          id="isOfferNo"
-                        />
-                        <RadioLabel htmlFor="isOfferNo">No</RadioLabel>
-                      </div>
+                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                      <RdioWrapper>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="isOffer"
+                            value="yes"
+                            id="isOfferYes"
+                          />
+                          <RadioLabel htmlFor="isOfferYes">Yes</RadioLabel>
+                        </div>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="isOffer"
+                            value="no"
+                            id="isOfferNo"
+                          />
+                          <RadioLabel htmlFor="isOfferNo">No</RadioLabel>
+                        </div>
+                      </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
                       <ErrorMessage name="isOffer" />
@@ -269,25 +257,27 @@ const PromotionEmail = () => {
                 <FieldWrapper>
                   <Label>Is Hot Offer</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="isHotOffer"
-                          value="yes"
-                          id="isHotOfferYes"
-                        />
-                        <RadioLabel htmlFor="isHotOfferYes">Yes</RadioLabel>
-                      </div>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="isHotOffer"
-                          value="no"
-                          id="isHotOfferNo"
-                        />
-                        <RadioLabel htmlFor="isHotOfferNo">No</RadioLabel>
-                      </div>
+                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                      <RdioWrapper>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="isHotOffer"
+                            value="yes"
+                            id="isHotOfferYes"
+                          />
+                          <RadioLabel htmlFor="isHotOfferYes">Yes</RadioLabel>
+                        </div>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="isHotOffer"
+                            value="no"
+                            id="isHotOfferNo"
+                          />
+                          <RadioLabel htmlFor="isHotOfferNo">No</RadioLabel>
+                        </div>
+                      </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
                       <ErrorMessage name="isHotOffer" />
@@ -299,34 +289,36 @@ const PromotionEmail = () => {
                 <FieldWrapper>
                   <Label>Hot Offer For</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="hotOfferFor"
-                          value="yes"
-                          id="hotOfferForWeb"
-                        />
-                        <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
-                      </div>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="hotOfferFor"
-                          value="no"
-                          id="hotOfferForMobile"
-                        />
-                        <RadioLabel htmlFor="hotOfferForMobile">Mobile</RadioLabel>
-                      </div>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="hotOfferFor"
-                          value="no"
-                          id="hotOfferForBoth"
-                        />
-                        <RadioLabel htmlFor="hotOfferForBoth">Both</RadioLabel>
-                      </div>
+                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                      <RdioWrapper>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="hotOfferFor"
+                            value="yes"
+                            id="hotOfferForWeb"
+                          />
+                          <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
+                        </div>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="hotOfferFor"
+                            value="no"
+                            id="hotOfferForMobile"
+                          />
+                          <RadioLabel htmlFor="hotOfferForMobile">Mobile</RadioLabel>
+                        </div>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="hotOfferFor"
+                            value="no"
+                            id="hotOfferForBoth"
+                          />
+                          <RadioLabel htmlFor="hotOfferForBoth">Both</RadioLabel>
+                        </div>
+                      </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
                       <ErrorMessage name="hotOfferFor" />
@@ -338,25 +330,30 @@ const PromotionEmail = () => {
                 <FieldWrapper>
                   <Label>App Installation</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="appInstallation"
-                          value="yes"
-                          id="appInstallationYes"
-                        />
-                        <RadioLabel htmlFor="appInstallationYes">Yes</RadioLabel>
-                      </div>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="appInstallation"
-                          value="no"
-                          id="appInstallationNo"
-                        />
-                        <RadioLabel htmlFor="appInstallationNo">No</RadioLabel>
-                      </div>
+                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                      <RdioWrapper >
+                        <div>
+                          <Field
+                            type="radio"
+                            name="redeemBtn"
+                            value="false"
+                            id="redeemBtnNo"
+                          />
+                          <RadioLabel htmlFor="redeemBtnNo">No</RadioLabel>
+                        </div>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="redeemBtn"
+                            value="true"
+                            id="redeemBtnYes"
+                          />
+                          <RadioLabel htmlFor="redeemBtnYes">
+                            Yes
+                          </RadioLabel>
+                        </div>
+
+                      </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
                       <ErrorMessage name="appInstallation" />
@@ -364,126 +361,173 @@ const PromotionEmail = () => {
                   </FieldContainer>
                 </FieldWrapper>
 
-                
+
 
                 <FieldWrapper>
                   <Label>Conversion Callback Type</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="callbackType"
-                          value="yes"
-                          id="callbackTypeYes"
-                        />
-                        <RadioLabel htmlFor="callbackTypeYes">Remove from dashboard without conversion</RadioLabel>
-                      </div>
-                      <div>
-                        <Field
-                          type="radio"
-                          name="callbackType"
-                          value="no"
-                          id="callbackTypeNo"
-                        />
-                        <RadioLabel htmlFor="callbackTypeNo">Remove from dashboard with conversion</RadioLabel>
-                      </div>
+                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                      <RdioWrapper>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="callbackType"
+                            value="yes"
+                            id="callbackTypeYes"
+                          />
+                          <RadioLabel htmlFor="callbackTypeYes">Remove from dashboard without conversion</RadioLabel>
+                        </div>
+                        <div>
+                          <Field
+                            type="radio"
+                            name="callbackType"
+                            value="no"
+                            id="callbackTypeNo"
+                          />
+                          <RadioLabel htmlFor="callbackTypeNo">Remove from dashboard with conversion</RadioLabel>
+                        </div>
+                      </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
                       <ErrorMessage name="callbackType" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-                
 
 
-                
+
+
 
                 <FieldWrapper>
-                  <Label>Daily repeated Offer</Label>
-                  <FieldContainer>
-                    <FieldWrapper style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
+                  <Label>Daily repeated offer</Label>
+                  <FieldWrapper>
+                    <RdioWrapper >
                       <div>
                         <Field
                           type="radio"
-                          name="repeatedOffer"
-                          value="yes"
-                          id="repeatedOfferYes"
+                          name="redeemBtn"
+                          value="false"
+                          id="redeemBtnNo"
                         />
-                        <RadioLabel htmlFor="repeatedOfferYes">Yes</RadioLabel>
+                        <RadioLabel htmlFor="redeemBtnNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="repeatedOffer"
-                          value="no"
-                          id="repeatedOfferNo"
+                          name="redeemBtn"
+                          value="true"
+                          id="redeemBtnYes"
                         />
-                        <RadioLabel htmlFor="repeatedOfferNo">No</RadioLabel>
+                        <RadioLabel htmlFor="redeemBtnYes">
+                          Yes
+                        </RadioLabel>
                       </div>
-                    </FieldWrapper>
-                    <RequiredWrapper>
-                      <ErrorMessage name="repeatedOffer" />
-                    </RequiredWrapper>
-                  </FieldContainer>
+
+                    </RdioWrapper>
+                  </FieldWrapper>
                 </FieldWrapper>
 
 
                 <FieldWrapper>
                   <Label>Relist Offer</Label>
-                  <FieldContainer style={{display:"flex", flexDirection:"column", alignItems:"start"}}>
-                      <Checkbox
-                        checked={selectAll}
-                        onChange={(e) => {
-                          const { checked } = e.target;
-                          setSelectAll(checked);
-                          const allCountries = options.map(
-                            (option) => option.value
-                          );
-                          setFieldValue(
-                            "relistOffer",
-                            checked ? allCountries : []
-                          );
-                        }}
-                      >
-                        Relist Offer
-                      </Checkbox>
-                      <RequiredWrapper>
-                        <ErrorMessage name="relistOffer" />
-                      </RequiredWrapper>
-                  </FieldContainer>
-                </FieldWrapper>
-
-
-                
-
-
-
-
-                <FieldWrapper>
-                  <Label>Offer ID</Label>
-                  <FieldContainer>
-                    <InputField name="offerId" placeholder="1" />
+                  <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <Checkbox
+                      checked={selectAll}
+                      onChange={(e) => {
+                        const { checked } = e.target;
+                        setSelectAll(checked);
+                        const allCountries = options.map(
+                          (option) => option.value
+                        );
+                        setFieldValue(
+                          "relistOffer",
+                          checked ? allCountries : []
+                        );
+                      }}
+                    >
+                      Relist Offer
+                    </Checkbox>
                     <RequiredWrapper>
-                      <ErrorMessage name="offerId" />
+                      <ErrorMessage name="relistOffer" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
 
+
+                <FieldWrapper>
+                  <Label>Offer created for</Label>
+                  <SelectFieldWrapper>
+                  <SelectField
+                    placeholder="Select user"
+                    defaultValue={initialValues.offerCreatedFor}
+                    style={{
+                      width: "100%",
+                      marginBottom: "3px",
+                    }}
+                    value={values.offerCreatedFor || null}
+                    onChange={(value) => setFieldValue('offerCreatedFor', value)}
+                    options={[
+                      {
+                        value: '0',
+                        label: 'IOS',
+                      },
+                      {
+                        value: '1',
+                        label: 'Android',
+                      },
+                      {
+                        value: '2',
+                        label: 'All Users',
+                      },
+                    ]}
+                  />
+                  <RequiredWrapper>
+                    <ErrorMessage name="offerCreatedFor" />
+                  </RequiredWrapper>
+                  </SelectFieldWrapper>
+                </FieldWrapper>
+
+
+                <FieldWrapper>
+                  <Label>Select offer url type</Label>
+                  <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <Checkbox
+                      checked={selectAll}
+                      onChange={(e) => {
+                        const { checked } = e.target;
+                        setSelectAll(checked);
+                        const allCountries = options.map(
+                          (option) => option.value
+                        );
+                        setFieldValue(
+                          "relistOffer",
+                          checked ? allCountries : []
+                        );
+                      }}
+                    >
+                      is static URL
+                    </Checkbox>
+                    <RequiredWrapper>
+                      <ErrorMessage name="relistOffer" />
+                    </RequiredWrapper>
+                  </FieldContainer>
+                </FieldWrapper>
 
 
                 <FieldWrapper>
                   <Label>Custom Postback Params</Label>
                   <FieldContainer>
                     <InputField
-                      name="customPostbackParm"
-                      placeholder="Custom postback params"
+                      name="customPostbaclParams"
+                      placeholder="custom postback params
+"
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="customPostbackParm" />
+                      <ErrorMessage name="customPostbaclParams" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
+
 
                 <FieldWrapper>
                   <Label>Offer Country Code</Label>
@@ -520,14 +564,58 @@ const PromotionEmail = () => {
                     </ChooseCountry>
                   </FieldContainer>
                 </FieldWrapper>
+
+                <FieldWrapper>
+                  <Label>Daily CAP limit for offer</Label>
+                  <FieldContainer>
+                    <InputField
+                      name="capLimit"
+                      placeholder="Offer Title
+"
+                    />
+                    <RequiredWrapper>
+                      <ErrorMessage name="capLimit" />
+                    </RequiredWrapper>
+                  </FieldContainer>
+                </FieldWrapper>
+
+
+                <FieldWrapper>
+                  <Label>Slect fraud user to unlisted from offer</Label>
+                  <SelectFieldWrapper>
+                  <SelectField
+                    placeholder="Select user"
+                    defaultValue={initialValues.fraudUser}
+                    style={{
+                      width: "100%",
+                      marginBottom: "3px",
+                    }}
+                    value={values.senderId || null}
+                    onChange={(value) => setFieldValue('fraudUser', value)}
+                    options={[
+                      {
+                        value: '0',
+                        label: 'IOS',
+                      },
+                      {
+                        value: '1',
+                        label: 'Android',
+                      },
+                      {
+                        value: '2',
+                        label: 'All Users',
+                      },
+                    ]}
+                  />
+                  <RequiredWrapper>
+                    <ErrorMessage name="fraudUser" />
+                  </RequiredWrapper>
+                  </SelectFieldWrapper>
+                </FieldWrapper>
+
               </InputWrapper>
               <Footer>
-                <ResetButton
-                  type="button"
-                  onClick={() => handlePreview(values)}
-                >
-                  Preview
-                </ResetButton>
+                <Button type="primary" danger >Reset</Button>
                 <SubmitBtn type="primary" htmlType="submit">
                   Submit
                 </SubmitBtn>
@@ -611,7 +699,8 @@ const InputWrapper = styled.div`
 
 const FieldWrapper = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 10px;
+  width: 100%;
   @media only screen and (min-width: 320px) and (max-width: 480px) {
     flex-direction: column;
     gap: 0px;
@@ -760,3 +849,19 @@ const QuillFieldContainer = styled.div`
 const RadioLabel = styled.label`
   margin: 0;
 `;
+
+const RdioWrapper = styled.div`
+display: flex;
+flex-direction: column;
+gap: 7px;
+margin-bottom: 15px;
+align-items: flex-start;
+`
+
+const SelectFieldWrapper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+width: 100%;
+text-align: start;
+`
