@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
+import axios from "axios";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { Line } from "react-chartjs-2";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
+import { getAllGeoCodes } from "../../Services/Collection";
 import {
   Chart as ChartJS,
   LineElement,
@@ -24,6 +26,36 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+
+  // const [geoCodes, setGeoCodes] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await getAllGeoCodes();
+  //       if (res?.status === 200) {
+  //         console.log(res?.msg);
+  //         setGeoCodes(res?.msg);
+  //       } else {
+  //         let message =
+  //           res?.response?.data?.message ||
+  //           res?.message ||
+  //           res?.error ||
+  //           "Something went wrong";
+  //         toast.error(message);
+  //       }
+  //     } catch (error) {
+  //       console.log(error, "error");
+  //       toast.error(error?.message || "Something went wrong");
+  //     } finally {
+  //       setLoader(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+
   const cardData = [
     {
       backgroundImage:

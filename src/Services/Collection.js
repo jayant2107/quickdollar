@@ -11,6 +11,7 @@ const SEND_USER_MESSAGE = "sendUserMessgae";
 const Get_All_Abused_USER = "abusedusers";
 const SEND_MESSAGE = "sendMessage";
 const ADD_FRONT_PAGE = "addFrontPageOffer";
+const Get_All_GeoCodes = "getAllGeoCodes";
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -49,3 +50,5 @@ export const addAdminUser = (payload) => postApi(ADD_ADMIN_USER, payload);
 export const sendMessage = (payload) => postApi(SEND_MESSAGE, payload);
 
 export const addFrontPage = (payload) => postApi(ADD_FRONT_PAGE, payload);
+
+export const getAllGeoCodes = () => getApi(Get_All_GeoCodes);
