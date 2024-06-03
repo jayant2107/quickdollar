@@ -7,6 +7,8 @@ import { DownOutlined } from "@ant-design/icons";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { getCompletedoffers } from "../../../Services/Collection";
 import { toast } from "react-toastify";
+import { DateTime } from "luxon";
+import TableAction from "../../../Components/TableNew/TableActions";
 
 const CompletedOffers = () => {
   const [loader, setLoader] = useState();
@@ -39,73 +41,95 @@ const CompletedOffers = () => {
       setLoader(false);
     }
   };
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
+    },
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
+
 
   const columns = [
     {
       title: "User Name",
       key: "name",
       dataIndex: "name",
+      width: 150,
+      fixed: "left",
+      render: (text, record) => {
+        const capitalizeFirstLetter = (str) => {
+          return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+        const capitalizedFirstName = capitalizeFirstLetter(
+          record?.user?.firstName || ""
+        );
+        const capitalizedLastName = capitalizeFirstLetter(
+          record?.user?.lastName || ""
+        );
+        const fullName =
+          `${capitalizedFirstName} ${capitalizedLastName}`.trim();
+        return fullName ? fullName : "NA";
+      },
     },
     {
       title: "User Email",
       key: "email",
       dataIndex: "email",
-      render: (text, record) => <a>{record.email}</a>,
+      render: (text, record) => record?.user?.email,
     },
     {
       title: "Offer title",
       key: "title",
-      dataIndex: "title",
+      dataIndex: "offerTitle",
+      render: (text, record) => record?.offer?.offerTitle,
     },
     {
       title: "User Country",
       key: "country",
-      dataIndex: "country",
+      dataIndex: "countryCode",
+      render: (text, record) => record?.user?.countryCode,
     },
     {
       title: "Added Points",
       key: "points",
-      dataIndex: "points",
+      dataIndex: "offerPoints",
+      render: (text, record) => record?.offerPoints,
     },
+
     {
       title: "Date",
+      dataIndex: "createdAt",
       key: "date",
-      dataIndex: "date",
+      render: (text, record) => {
+        const date = DateTime.fromISO(record?.createdAt);
+        return date.toFormat("MMM dd yyyy, HH : mm : ss");
+      },
+    },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 150,
+      render: (text, record) => (
+        <TableAction
+          apply={formActions.apply}
+          edit={formActions.edit}
+          deleteAction={formActions.delete}
+          // onEdit={() => showEditModal(record)}
+          // onDelete={() => showDeleteModal(record)}
+        />
+      ),
     },
   ];
-  // const userData = [
-  //   {
-  //     key: "1",
-  //     name: "Joy Timmons",
-  //     email: "joymtimmons15@gmail.com",
-  //     title: "P Branded Surveys - CA 16950",
-  //     country: "United States",
-  //     points: "N/A",
-  //     date: "Nov 06, 2019 18:37:31",
-  //     action: (
-  //       <>
-  //         <EditOutlined style={{ fontSize: "30px" }} />
-  //         <DeleteOutlined style={{ fontSize: "30px" }} />
-  //       </>
-  //     ),
-  //   },
-  //   {
-  //     key: "2",
-  //     name: "mike Jaslow",
-  //     email: "comics30001@aol.com",
-  //     title: "P Branded Surveys - CA 16950",
-  //     country: "United States",
-  //     points: "N/A",
-  //     date: "Nov 06, 2019 18:37:31",
-  //     action: (
-  //       <>
-  //         <EditOutlined style={{ fontSize: "30px" }} />
-  //         <DeleteOutlined style={{ fontSize: "30px" }} />
-  //       </>
-  //     ),
-  //   },
-
-  // ];
 
   const formActions = {
     apply: false,
@@ -132,6 +156,7 @@ const CompletedOffers = () => {
           data={userData}
           scroll={scrollConfig}
           Actions={formActions}
+          pagination={paginationConfig}
         />
       </div>
     </AllUserWrapper>
