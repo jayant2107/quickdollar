@@ -94,7 +94,7 @@ const SendModal = ({
                       Cancel
                     </ResetBtn>
                     <SubmitBtn type="primary" htmlType="submit">
-                      Save
+                    Send
                     </SubmitBtn>
                   </Footer>
                 </Form>
