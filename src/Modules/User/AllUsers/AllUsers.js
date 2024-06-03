@@ -61,57 +61,88 @@ const AllUsers = () => {
         const capitalizeFirstLetter = (str) => {
           return str.charAt(0).toUpperCase() + str.slice(1);
         };
-        const capitalizedFirstName = capitalizeFirstLetter(record.firstName || '');
-        const capitalizedLastName = capitalizeFirstLetter(record.lastName || '');
-        const fullName = `${capitalizedFirstName} ${capitalizedLastName}`.trim();
-        return fullName ? fullName : 'NA';
+        const capitalizedFirstName = capitalizeFirstLetter(
+          record.firstName || ""
+        );
+        const capitalizedLastName = capitalizeFirstLetter(
+          record.lastName || ""
+        );
+        const fullName =
+          `${capitalizedFirstName} ${capitalizedLastName}`.trim();
+        return fullName ? fullName : "NA";
       },
     },
     {
       title: "Country",
       dataIndex: "countryCode",
       key: "country",
-      render: (text, record) => record?.countryCode || 'NA'
+      render: (text, record) => record?.countryCode || "NA",
     },
     {
       title: "Points",
       dataIndex: "Points",
       key: "points",
-      render: (text, record) => record?.Points || '0'
+      render: (text, record) => record?.Points || "0",
     },
     {
       title: "Role",
       dataIndex: "userRoleID",
       key: "role",
-      render: (text, record) => (
-        <RoleStyledText role={record.role}>{record.role}
-        {record.role === "Admin" ? (
-          <RiAdminFill style={{ color: "white",fontSize:'20px' }} />
-        ) : (
-          <FaUser style={{ color: "white",fontSize:'20px' }} />
-        )}</RoleStyledText>
-      ),
+      render: (text, record) => {
+        let roleName;
+        let roleIcon;
+
+        switch (record?.userRoleID) {
+          case 1:
+            roleName = "SuperAdmin";
+            roleIcon = (
+              <RiAdminFill style={{ color: "white", fontSize: "20px" }} />
+            );
+            break;
+          case 2:
+            roleName = "Admin";
+            roleIcon = <FaUser style={{ color: "white", fontSize: "20px" }} />;
+            break;
+          case 3:
+            roleName = "Normal";
+            roleIcon = <FaUser style={{ color: "white", fontSize: "20px" }} />;
+            break;
+          default:
+            roleName = "NA";
+            roleIcon = null;
+        }
+        return (
+          <RoleStyledText>
+            {roleName}
+            {roleIcon}
+          </RoleStyledText>
+        );
+      },
     },
     {
       title: "Status",
       dataIndex: "isActive",
       key: "status",
       render: (text, record) => (
-        <StatusStyledText status={record.status} onClick={() => showActiveModal(record)}>
-          {record.status}
-          {record.status === "Active" ? (
-            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+        <StatusStyledText
+          status={record.isActive ? "Active" : "Inactive"}
+          onClick={() => showActiveModal(record)}
+        >
+          {record.isActive ? "Active" : "Inactive"}
+          {record.isActive ? (
+            <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
           ) : (
             <RxCross2 style={{ color: "white", fontSize: "20px" }} />
           )}
         </StatusStyledText>
       ),
+      // Test commit
     },
     {
       title: "UserType",
       dataIndex: "userApplicationtype",
       key: "usertype",
-      render: (text) => <StyledText color="orange">{text || "N/A"}</StyledText>
+      render: (text) => <StyledText color="orange">{text || "N/A"}</StyledText>,
     },
     {
       title: "Created Date",
@@ -120,7 +151,7 @@ const AllUsers = () => {
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
-      }
+      },
     },
     {
       title: "Action",
