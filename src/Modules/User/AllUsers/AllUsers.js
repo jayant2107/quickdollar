@@ -270,6 +270,7 @@ const AllUsers = () => {
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
           record={selectedRecord}
+          fetchData={fetchData}
         />
       )}
       {editModal && (
@@ -279,6 +280,7 @@ const AllUsers = () => {
           editModal={editModal}
           record={selectedRecord}
           viewLoader={loader}
+          fetchData={fetchData}
         />
       )}
       {sendModal && (
@@ -303,9 +305,7 @@ const AllUsers = () => {
       </div>
 
       <div className="tableDiv">
-        {loader ? (
-          <p>Loading...</p> // Or any loading indicator component you prefer
-        ) : (
+        
           <TableNew
             columns={columns}
             data={userData}
@@ -313,7 +313,7 @@ const AllUsers = () => {
             pagination={paginationConfig}
             loader={loader} 
           />
-        )}
+       
       </div>
     </AllUserWrapper>
   );

@@ -1,13 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { getCompletedoffers } from "../../../Services/Collection";
+import { toast } from "react-toastify";
 
 const CompletedOffers = () => {
+  const [loader, setLoader] = useState();
   const byTheme = useSelector((state) => state?.changeColors?.theme);
+  const [userData, setUserData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalUsers, setTotalUsers] = useState(5);
+
+  const fetchData = async () => {
+    setLoader(true);
+    try {
+      const res = await getCompletedoffers(currentPage, pageSize);
+      if (res?.status === 200) {
+        console.log(res?.data?.findCompletedOffers, "completdOffer");
+        setUserData(res?.data?.findCompletedOffers || []);
+        setTotalUsers(res?.data?.totalCompletedOffers || 0);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
 
   const columns = [
     {
@@ -42,55 +73,53 @@ const CompletedOffers = () => {
       dataIndex: "date",
     },
   ];
-  const userData = [
-    {
-      key: "1",
-      name: "Joy Timmons",
-      email: "joymtimmons15@gmail.com",
-      title: "P Branded Surveys - CA 16950",
-      country: "United States",
-      points: "N/A",
-      date: "Nov 06, 2019 18:37:31",
-      action: (
-        <>
-          <EditOutlined style={{ fontSize: "30px" }} />
-          <DeleteOutlined style={{ fontSize: "30px" }} />
-        </>
-      ),
-    },
-    {
-      key: "2",
-      name: "mike Jaslow",
-      email: "comics30001@aol.com",
-      title: "P Branded Surveys - CA 16950",
-      country: "United States",
-      points: "N/A",
-      date: "Nov 06, 2019 18:37:31",
-      action: (
-        <>
-          <EditOutlined style={{ fontSize: "30px" }} />
-          <DeleteOutlined style={{ fontSize: "30px" }} />
-        </>
-      ),
-    },
+  // const userData = [
+  //   {
+  //     key: "1",
+  //     name: "Joy Timmons",
+  //     email: "joymtimmons15@gmail.com",
+  //     title: "P Branded Surveys - CA 16950",
+  //     country: "United States",
+  //     points: "N/A",
+  //     date: "Nov 06, 2019 18:37:31",
+  //     action: (
+  //       <>
+  //         <EditOutlined style={{ fontSize: "30px" }} />
+  //         <DeleteOutlined style={{ fontSize: "30px" }} />
+  //       </>
+  //     ),
+  //   },
+  //   {
+  //     key: "2",
+  //     name: "mike Jaslow",
+  //     email: "comics30001@aol.com",
+  //     title: "P Branded Surveys - CA 16950",
+  //     country: "United States",
+  //     points: "N/A",
+  //     date: "Nov 06, 2019 18:37:31",
+  //     action: (
+  //       <>
+  //         <EditOutlined style={{ fontSize: "30px" }} />
+  //         <DeleteOutlined style={{ fontSize: "30px" }} />
+  //       </>
+  //     ),
+  //   },
 
-  ];
+  // ];
 
   const formActions = {
     apply: false,
     view: false,
     edit: true,
     delete: true,
-    pathname: "/home/owners/view",
-    pathnameEdit: "/home/owners/edit",
-    deletepath: "delete_owner/",
-    delete_key: "owners_id",
   };
 
   const scrollConfig = {
     x: 2000, // Horizontal scrolling
   };
-
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageSize]);
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
@@ -161,4 +190,3 @@ const StyledText = styled.span`
   padding: 5px 10px;
   border-radius: 5px;
 `;
-
