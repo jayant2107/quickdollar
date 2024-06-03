@@ -10,23 +10,25 @@ const EditUserModal = ({
   handleEditCancel,
   showEditModal,
   editModal,
+  record,
   viewLoader,
 }) => {
+  console.log( record,"Recordddd")
   const initialValues = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    paypalEmail: "",
-    address1: "",
-    address2: "",
-    country: "",
+    firstName: record.firstName,
+    lastName: record.lastName,
+    email: record.email,
+    paypalEmail: record.paypalEmail,
+    address1: record.addresslineone,
+    address2: record.addresslineotwo,
+    country: record.countryCode,
     city: "",
-    state: "",
+    state: record.state,
     zip: "",
-    telephone: "",
-    userPoints: "",
-    isAdmin: "",
-    suspendAccount: "",
+    telephone: record.contactNumber,
+    userPoints: record.Points,
+    isAdmin: record.userRoleID,
+    suspendAccount: record.is_suspended ? "yes" : "no",
   };
 
   const navigate  = useNavigate();
