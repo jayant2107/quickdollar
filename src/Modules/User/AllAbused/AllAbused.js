@@ -31,6 +31,7 @@ const AllAbusedUsers = () => {
   const fetchData = async () => {
     setLoader(true);
     try {
+      
       const res = await getAllAbusedUser(currentPage, pageSize);
       if (res?.status === 200) {
         // console.log(res.data)
@@ -271,6 +272,7 @@ const AllAbusedUsers = () => {
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
           record={selectedRecord}
+          fetchData={fetchData}
         />
       )}
       {editModal && (
@@ -280,6 +282,7 @@ const AllAbusedUsers = () => {
           editModal={editModal}
           record={selectedRecord}
           viewLoader={loader}
+          fetchData={fetchData}
         />
       )}
       {sendModal && (
@@ -304,9 +307,7 @@ const AllAbusedUsers = () => {
       </div>
 
       <div className="tableDiv">
-      {loader ? (
-          <p>Loading...</p> // Or any loading indicator component you prefer
-        ) : (
+      
         <TableNew
           columns={columns}
           data={userData}
@@ -314,7 +315,7 @@ const AllAbusedUsers = () => {
           loader={loader}
           pagination={paginationConfig}
         />
-        )}
+        
       </div>
     </AllAbusedUserWrapper>
   );
