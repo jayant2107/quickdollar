@@ -6,6 +6,9 @@ import * as yup from "yup";
 import { FaGift } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { EditAllUser } from "../../Services/Collection";
+
+
 const EditUserModal = ({
   handleEditCancel,
   showEditModal,
@@ -13,7 +16,7 @@ const EditUserModal = ({
   record,
   viewLoader,
 }) => {
-  console.log( record,"Recordddd")
+  console.log(record, "Recordddd")
   const initialValues = {
     firstName: record.firstName,
     lastName: record.lastName,
@@ -31,7 +34,7 @@ const EditUserModal = ({
     suspendAccount: record.is_suspended ? "yes" : "no",
   };
 
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
   const validationSchema = yup.object().shape({
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last name is required"),
@@ -52,8 +55,29 @@ const EditUserModal = ({
     suspendAccount: yup.string().required("Suspend Account is required"),
   });
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log("Form values:", values);
+  const handleSubmit = async (values, { resetForm }) => {
+    const { firstName, lastName, email, paypalEmail, address1, address2, country, city, state, zip, telephone, userPoints, isAdmin, suspendAccount } = values;
+    const payload = {
+      id:record.idUser,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      paypalEmail: paypalEmail,
+      addresslineone: address1,
+      addresslineotwo: address2,
+      countryCode: country,
+      // city: city,
+      state: state,
+      zipcode: zip,
+      contactNumber: telephone,
+      Points: userPoints,
+      userRoleID: isAdmin,
+      is_suspended: suspendAccount,
+
+    }
+    console.log("Form values:", payload);
+    let res= await  EditAllUser(payload)
+    console.log(res,"ressssssssss")
     resetForm();
   };
 
@@ -85,14 +109,14 @@ const EditUserModal = ({
               {({ resetForm }) => (
                 <Form>
                   <InputWrapper>
-                  <div>
-                     
+                    <div>
+
                       <FieldWrapper>
                         <Button className="offerBtn" onClick={() => navigate("/quickdollar/offer/completedoffers")}>
-                          <MdEmail/>
+                          <MdEmail />
                           Complete Offer</Button>
                         <Button className="offerBtn" onClick={() => navigate("/quickdollar/giftcard/requestedgiftcard")}>
-                          <FaGift/>
+                          <FaGift />
                           Requested Gift Card
                         </Button>
                       </FieldWrapper>
@@ -199,15 +223,7 @@ const EditUserModal = ({
                           />
                           <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
                         </div>
-                        <div>
-                          <Field
-                            type="radio"
-                            name="isAdmin"
-                            value="no"
-                            id="isAdminNo"
-                          />
-                          <RadioLabel htmlFor="isAdminNo">No</RadioLabel>
-                        </div>
+                        
                       </FieldWrapper>
                       <RequiredWrapper>
                         <ErrorMessage name="isAdmin" />
@@ -220,7 +236,7 @@ const EditUserModal = ({
                           <Field
                             type="radio"
                             name="suspendAccount"
-                            value="yes"
+                            value="true"
                             id="suspendAccountYes"
                           />
                           <RadioLabel htmlFor="suspendAccountYes">
@@ -231,7 +247,7 @@ const EditUserModal = ({
                           <Field
                             type="radio"
                             name="suspendAccount"
-                            value="no"
+                            value="false"
                             id="suspendAccountNo"
                           />
                           <RadioLabel htmlFor="suspendAccountNo">No</RadioLabel>
@@ -241,7 +257,7 @@ const EditUserModal = ({
                         <ErrorMessage name="suspendAccount" />
                       </RequiredWrapper>
                     </div>
-                    
+
                   </InputWrapper>
 
                   <Footer>
