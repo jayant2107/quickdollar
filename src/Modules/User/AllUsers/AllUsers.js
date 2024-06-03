@@ -138,11 +138,36 @@ const AllUsers = () => {
       ),
       // Test commit
     },
+    // {
+    //   title: "UserType",
+    //   dataIndex: "userApplicationtype",
+    //   key: "usertype",
+    //   render: (text) => <StyledText color="orange">{text || "N/A"}</StyledText>,
+    // },
     {
       title: "UserType",
       dataIndex: "userApplicationtype",
       key: "usertype",
-      render: (text) => <StyledText color="orange">{text || "N/A"}</StyledText>,
+      render: (text, record) => {
+        let userType;
+        switch (record?.userApplicationtype) {
+          case 0:
+            userType = "iOS";
+            break;
+          case 1:
+            userType = "Android";
+            break;
+          case 2:
+            userType = "All Users";
+            break;
+          case 3:
+            userType = "Web";
+            break;
+          default:
+            userType = "NA";
+        }
+        return <StyledText>{userType}</StyledText>;
+      },
     },
     {
       title: "Created Date",

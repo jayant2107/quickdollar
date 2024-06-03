@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
 
 const TableNew = ({ columns, data, scroll }) => {
   const [entries, setEntries] = useState(5);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const columnsWithSno = [
     {
       title: "S.No",
@@ -34,18 +34,24 @@ const TableNew = ({ columns, data, scroll }) => {
       key: "sno",
       fixed: "left",
       width: 70,
-      render: (text, record, index) => index + 1,
+      render: (text, record, index) => (currentPage - 1) * entries + index + 1,
     },
     ...columns,
     
   ];
 
   const paginationConfig = {
+    current: currentPage,
     pageSize: entries,
     showSizeChanger: true,
     showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
     pageSizeOptions: ["5", "10", "20", "50"],
-    onChange: (pageSize) => setEntries(pageSize),
+    onShowSizeChange: (current, size) => {
+      setEntries(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
+    },
+    onChange: (page) => setCurrentPage(page),
+
   };
 
   
