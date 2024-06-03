@@ -59,9 +59,10 @@ export const postApi = async (url, data) => {
 };
 
 //delete Api
-export const deleteApi = async (url) => {
+export const deleteApi = async (url,data) => {
+  
   try {
-    let result = await Api.delete(url);
+    let result = await Api.delete(url, { params: data });
     if (result.status === 200) {
       if (result.data.status === 200) {
         return result.data;
