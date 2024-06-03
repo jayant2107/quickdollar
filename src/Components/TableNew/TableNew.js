@@ -25,7 +25,14 @@ const GlobalStyle = createGlobalStyle`
 
 `;
 
-const TableNew = ({ columns, data, scroll, pagination, loader }) => {
+const TableNew = ({
+  columns,
+  data,
+  scroll,
+  pagination,
+  loader,
+  handleSearch,
+}) => {
   const columnsWithSno = [...columns];
 
   return (
@@ -40,6 +47,9 @@ const TableNew = ({ columns, data, scroll, pagination, loader }) => {
                   className="alluserSearch"
                   type="text"
                   placeholder="Search"
+                  onChange={(e) =>
+                    handleSearch && handleSearch(e?.target?.value)
+                  }
                 />
                 <CgSearch className="searchIcon" />
               </div>

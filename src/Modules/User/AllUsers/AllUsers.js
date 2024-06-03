@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
@@ -14,6 +14,7 @@ import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
 import { getAllUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
+import { debounce } from "../../../Utils/CommonFunctions";
 
 const AllUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -27,11 +28,21 @@ const AllUsers = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [activeModal, setActiveModal] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = useCallback(
+    debounce((value) => setSearch(value)),
+    []
+  );
 
   const fetchData = async () => {
     setLoader(true);
     try {
-      const res = await getAllUser(currentPage, pageSize);
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      const res = await getAllUser(params);
       if (res?.status === 200) {
         setUserData(res?.data?.findUsers);
         setTotalUsers(res?.data?.totalUsers);
@@ -260,7 +271,7 @@ const AllUsers = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, search]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -305,15 +316,14 @@ const AllUsers = () => {
       </div>
 
       <div className="tableDiv">
-        
-          <TableNew
-            columns={columns}
-            data={userData}
-            scroll={scrollConfig}
-            pagination={paginationConfig}
-            loader={loader} 
-          />
-       
+        <TableNew
+          columns={columns}
+          data={userData}
+          scroll={scrollConfig}
+          pagination={paginationConfig}
+          loader={loader}
+          handleSearch={handleSearch}
+        />
       </div>
     </AllUserWrapper>
   );

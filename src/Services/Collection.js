@@ -21,16 +21,8 @@ export const forgotPassword = (payload) => postApi(FORGOT_PASSWORD, payload);
 
 export const changePassword = (payload) => putApi(CHANGE_PASSWORD, payload);
 
-export const getAllUser = async (page, limit) => {
-  try {
-    const queryParams = new URLSearchParams({ page, limit }).toString();
-    const res = await getApi(`${Get_All_USER}?${queryParams}`);
-    return res;
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
+export const getAllUser = async (query) =>
+  await getApi(`${Get_All_USER}?${query}`);
 
 export const getAllAbusedUser = async (page, limit) => {
   try {
