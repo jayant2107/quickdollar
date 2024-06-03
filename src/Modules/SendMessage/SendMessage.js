@@ -81,7 +81,7 @@ const SendMessage = () => {
                                             width: "100%",
                                             marginBottom: "3px",
                                         }}
-                                        value={values.senderId || undefined}
+                                        value={values.senderId || null}
                                         onChange={(value) => setFieldValue('senderId', value)}
                                         options={[
                                             {
@@ -222,7 +222,7 @@ const SelectField = styled(Select)`
     align-items: center;
     border-color: #e5e5e5 !important; 
     box-shadow: none !important;
-
+text-align: left;
     &:hover, &:focus {
       outline: none !important;
       box-shadow: none !important;

@@ -40,6 +40,9 @@ import ChangePassword from "../Modules/ChangePassword/ChangePassword";
 import SetNewPassword from "../Auth/SetNewPassword";
 import WebSetting from "../Modules/Settings/WebSetting/WebSetting";
 import MainSettings from "../Modules/Settings/MainSetting";
+import Android from "../Modules/Settings/Android/Android";
+import Ios from "../Modules/Settings/IOS/Ios";
+
 function PublicRoute({ isAuthenticated }) {
   if (isAuthenticated) return <Navigate to="/quickdollar/dashboard" replace />;
   return <Outlet />;
@@ -110,8 +113,8 @@ export default function GaspilRoutes() {
 
             <Route element={<MainSettings />} path="settings">
               <Route element={<WebSetting />} path="web" />
-              <Route element={<AllAbusedUsers />} path="allabused" />
-              <Route element={<AddAdminUser />} path="addadminuser" />
+              <Route element={<Android />} path="android" />
+              <Route element={<Ios />} path="ios" />
             </Route>
             
           </Route>

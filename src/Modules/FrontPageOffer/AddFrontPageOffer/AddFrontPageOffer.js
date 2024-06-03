@@ -106,10 +106,8 @@ const AddFrontPageOffer = () => {
                                             <input
                                                 name="frontpageofferButton"
                                                 type="file"
-                                                onChange={(e) => {
-                                                    console.log("Selected file:", e.target.files[0]);
-                                                    setFieldValue("frontpageofferButton", e.target.files[0]);
-                                                }}                                            />
+                                                onChange={(e) => setFieldValue("frontpageofferButton", e?.target?.files[0])}
+                                            />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px <br />
                                                 Add button image if you want to replace default Image</UploadInstruction>
                                         </ChooseContainer>

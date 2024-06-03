@@ -275,7 +275,7 @@ export default function Sidebar() {
                 <IntlMassage id="Android" />
               </p>
             </NavIcon2>
-            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/ios"} onClick={() => navigate("/quickdollar/android/ios")}>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/ios"} onClick={() => navigate("/quickdollar/settings/ios")}>
               <p>
                 <IntlMassage id="IOS" />
               </p>
