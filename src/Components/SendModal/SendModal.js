@@ -61,7 +61,7 @@ const SendModal = ({
         footer=""
         closable=""
         bodyStyle={{
-          maxHeight: "70vh", // Adjust the height as per your requirement
+          maxHeight: "80vh", // Adjust the height as per your requirement
           overflowY: "auto",
         }}
       >

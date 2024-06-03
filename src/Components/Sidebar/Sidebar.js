@@ -18,6 +18,7 @@ export default function Sidebar() {
   const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(false);
   const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
   const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
+  const [showMoreSettingOptions, setShowMoreSettingOptions] = useState(false);
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
 
@@ -246,6 +247,41 @@ export default function Sidebar() {
             </p>
           </NavIcon2>
         )}
+
+        {location.pathname === "/quickdollar/settings/web" || location.pathname === "/quickdollar/settings/android" || location.pathname === "/quickdollar/settings/ios" ? (
+          <NavIcon onClick={() => handleItemClick("Settings")}>
+            <SettingsIcon />
+            <p>
+              <IntlMassage id="Settings" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => handleItemClick("Settings")}>
+            <SettingsIcon />
+            <p>
+              <IntlMassage id="Settings" />
+            </p>
+          </NavIcon2>
+        )}
+         {showMoreSettingOptions && (
+          <>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/web"} onClick={() => navigate("/quickdollar/settings/web")}>
+              <p>
+                <IntlMassage id="WEB" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/android"} onClick={() => navigate("/quickdollar/settings/android")}>
+              <p>
+                <IntlMassage id="Android" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/ios"} onClick={() => navigate("/quickdollar/android/ios")}>
+              <p>
+                <IntlMassage id="IOS" />
+              </p>
+            </NavIcon2>
+          </>
+        )}
       </>
     )
   }
@@ -262,6 +298,9 @@ export default function Sidebar() {
         break;
       case "Frontpage Offer":
         setShowMoreFrontPageOptions((prev) => !prev);
+        break;
+        case "Settings":
+          setShowMoreSettingOptions((prev) => !prev);
         break;
       default:
         navigate(item.path);

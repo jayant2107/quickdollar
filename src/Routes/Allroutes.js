@@ -38,6 +38,8 @@ import AddFrontPageOffer from "../Modules/FrontPageOffer/AddFrontPageOffer/AddFr
 import AllFrontPageOffer from "../Modules/FrontPageOffer/AllFrontPageOffer/AllFrontPageOffer";
 import ChangePassword from "../Modules/ChangePassword/ChangePassword";
 import SetNewPassword from "../Auth/SetNewPassword";
+import WebSetting from "../Modules/Settings/WebSetting/WebSetting";
+import MainSettings from "../Modules/Settings/MainSetting";
 function PublicRoute({ isAuthenticated }) {
   if (isAuthenticated) return <Navigate to="/quickdollar/dashboard" replace />;
   return <Outlet />;
@@ -105,6 +107,13 @@ export default function GaspilRoutes() {
             <Route element={<PromotionEmail />} path="promotionEmail" />
             <Route element={<EditProfile />} path="profile/editprofile" />
             <Route element={<SkeletonLoader />} path="skelton" />
+
+            <Route element={<MainSettings />} path="settings">
+              <Route element={<WebSetting />} path="web" />
+              <Route element={<AllAbusedUsers />} path="allabused" />
+              <Route element={<AddAdminUser />} path="addadminuser" />
+            </Route>
+            
           </Route>
         </Route>
       </Routes>

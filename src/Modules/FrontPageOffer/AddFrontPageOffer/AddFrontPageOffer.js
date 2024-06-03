@@ -18,11 +18,10 @@ const AddFrontPageOffer = () => {
     const validationSchema = yup.object().shape({
         frontpageofferTitle: yup.string().required('Offer title is required'),
         frontpageofferLink: yup.string().required('Offer link is required'),
-        frontpageofferImage: yup.string().required('Offer image is required'),
-        frontpageofferButton: yup.string().required('Button image is required'),
+        frontpageofferImage: yup.mixed().required('Offer image is required'),
+        frontpageofferButton: yup.mixed().required('Button image is required'),
     });
 
-   
     const handleSubmit = async (values, { resetForm }) => {
         const formData = new FormData();
         formData.append('frontpageofferTitle', values.frontpageofferTitle);
@@ -49,7 +48,6 @@ const AddFrontPageOffer = () => {
         }
     };
 
-
     return (
         <div>
             <Header>
@@ -61,11 +59,9 @@ const AddFrontPageOffer = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ resetForm }) => (
+                    {({ resetForm, setFieldValue }) => (
                         <Form>
-
                             <InputWrapper>
-
                                 <FieldWrapper>
                                     <Label>Frontpage Offer Title</Label>
                                     <FieldContainer>
@@ -90,10 +86,10 @@ const AddFrontPageOffer = () => {
                                     <Label>Frontpage Offer Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
-                                            <ChooseFile
+                                            <input
                                                 name="frontpageofferImage"
                                                 type="file"
-                                                
+                                                onChange={(e) => setFieldValue("frontpageofferImage", e?.target?.files[0])}
                                             />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
                                         </ChooseContainer>
@@ -107,10 +103,13 @@ const AddFrontPageOffer = () => {
                                     <Label>Frontpage Button Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
-                                            <ChooseFile
+                                            <input
                                                 name="frontpageofferButton"
                                                 type="file"
-                                            />
+                                                onChange={(e) => {
+                                                    console.log("Selected file:", e.target.files[0]);
+                                                    setFieldValue("frontpageofferButton", e.target.files[0]);
+                                                }}                                            />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px <br />
                                                 Add button image if you want to replace default Image</UploadInstruction>
                                         </ChooseContainer>
@@ -119,7 +118,6 @@ const AddFrontPageOffer = () => {
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
-
                             </InputWrapper>
 
                             <Footer>
@@ -129,15 +127,12 @@ const AddFrontPageOffer = () => {
                         </Form>
                     )}
                 </Formik>
-
             </AnnouncementWrapper>
         </div>
-
     )
 }
 
 export default AddFrontPageOffer;
-
 const AnnouncementWrapper = styled.div`
 width: 100%;
 height: 100%;
