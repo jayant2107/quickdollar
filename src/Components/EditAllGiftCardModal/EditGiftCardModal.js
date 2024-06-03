@@ -100,7 +100,7 @@ const EditGiftCardModal = ({
 
                       <FieldWrapper>
                         <Label>Gift Card Image</Label>
-                        <FieldContainers>
+                        <FieldContainer>
                           <ChooseContainer>
                             <ChooseFile
                               name="giftImg"
@@ -116,7 +116,7 @@ const EditGiftCardModal = ({
                           {/* <RequiredWrapper>
                             <ErrorMessage name="giftImg" />
                           </RequiredWrapper> */}
-                        </FieldContainers>
+                        </FieldContainer>
                       </FieldWrapper>
 
                       <FieldWrapper>
@@ -322,13 +322,7 @@ const FieldContainer = styled.div`
 width: 100%;
 text-align: start;
 `
-const FieldContainers = styled.div`
-display:flex;
-width: 100%;
-align-items:center;
-justify-content:start;
-gap:30px;
-`
+
 
 const SubmitBtn = styled(Button)`
 color: ${({ theme }) => theme?.primaryColor};
