@@ -9,6 +9,7 @@ import { FaUsers, FaGift, FaBell } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { AiFillDashboard } from "react-icons/ai";
 import DecryptUserInfo from "../../Modules/User/DecryptUser/DecryptUserInfo";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export default function Sidebar() {
   const navigate = useNavigate();

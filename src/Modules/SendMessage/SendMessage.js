@@ -5,11 +5,14 @@ import styled from "styled-components";
 import * as yup from "yup";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useSelector } from 'react-redux';
+import { sendMessage } from '../../Services/Collection';
+import { toast } from "react-toastify";
 
 const SendMessage = () => {
     const [isEmpty, setIsEmpty] = useState(false);
     const [value, setValue] = useState('');
-
+    const userId = useSelector((state) => state?.Authlogin?.data?.idUser);
     const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],
         ['blockquote', 'code-block'],
@@ -22,21 +25,37 @@ const SendMessage = () => {
     ];
 
     const initialValues = {
-        user: '',
-        subject: '',
-        message: ''
+        senderId: '',
+        msgtitle: '',
+        msgcontent: ''
     };
 
     const validationSchema = yup.object().shape({
-        user: yup.string().required('User is required'),
-        subject: yup.string().required('Subject is required'),
-        message: yup.string().required('Message is required')
+        senderId: yup.string().required('User is required'),
+        msgtitle: yup.string().required('Subject is required'),
+        msgcontent: yup.string().required('Message is required')
     });
 
-    const handleSubmit = (values, { resetForm }) => {
-        console.log('Form values:', values);
-        resetForm()
-        setValue('');
+    const handleSubmit = async (values, { resetForm }) => {
+        try {
+            let res = await sendMessage({ ...values, idUser: userId });
+            if (res?.status === 200) {
+                toast.success("Message send Successfully");
+                resetForm()
+                setValue('');
+            }
+            else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
     };
 
     return (
@@ -57,43 +76,38 @@ const SendMessage = () => {
                                     <Label>Select user to send notification</Label>
                                     <SelectField
                                         placeholder="Select user"
-                                        defaultValue={initialValues.user}
+                                        defaultValue={initialValues.senderId}
                                         style={{
                                             width: "100%",
                                             marginBottom: "3px",
                                         }}
-                                        value={values.user || undefined} 
-                                        onChange={(value) => setFieldValue('user', value)}
+                                        value={values.senderId || undefined}
+                                        onChange={(value) => setFieldValue('senderId', value)}
                                         options={[
                                             {
-                                                value: 'jack',
-                                                label: 'Jack',
+                                                value: '0',
+                                                label: 'IOS',
                                             },
                                             {
-                                                value: 'lucy',
-                                                label: 'Lucy',
+                                                value: '1',
+                                                label: 'Android',
                                             },
                                             {
-                                                value: 'Yiminghe',
-                                                label: 'Yiminghe',
-                                            },
-                                            {
-                                                value: 'disabled',
-                                                label: 'Disabled',
-                                                disabled: true,
+                                                value: '2',
+                                                label: 'All Users',
                                             },
                                         ]}
                                     />
                                     <RequiredWrapper>
-                                        <ErrorMessage name="user" />
+                                        <ErrorMessage name="senderId" />
                                     </RequiredWrapper>
                                 </div>
 
                                 <div>
                                     <Label>Your Subject</Label>
-                                    <InputField name="subject" placeholder="Message subject" />
+                                    <InputField name="msgtitle" placeholder="Message subject" />
                                     <RequiredWrapper>
-                                        <ErrorMessage name="subject" />
+                                        <ErrorMessage name="msgtitle" />
                                     </RequiredWrapper>
                                 </div>
 
@@ -105,21 +119,21 @@ const SendMessage = () => {
                                             value={value}
                                             onChange={(content) => {
                                                 setValue(content);
-                                                setFieldValue('message', content);
+                                                setFieldValue('msgcontent', content);
                                                 setIsEmpty(content === '<p><br></p>');
                                             }}
                                             modules={{ toolbar: toolbarOptions }}
                                             tooltip={true}
                                             onBlur={() => {
-                                                setFieldTouched('message', true);
+                                                setFieldTouched('msgcontent', true);
                                                 if (isEmpty) {
-                                                    setFieldValue('message', '');
+                                                    setFieldValue('msgcontent', '');
                                                 }
                                             }}
                                         />
                                         <RequiredWrapper>
-                                            {touched.message && errors.message && (
-                                                <ErrorMessage name="message" />
+                                            {touched.msgcontent && errors.msgcontent && (
+                                                <ErrorMessage name="msgcontent" />
                                             )}
                                         </RequiredWrapper>
                                     </QuillFieldContainer>
