@@ -7,6 +7,7 @@ import { FaGift } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { EditAllUser } from "../../Services/Collection";
+import { toast } from "react-toastify";
 
 
 const EditUserModal = ({
@@ -15,6 +16,7 @@ const EditUserModal = ({
   editModal,
   record,
   viewLoader,
+  fetchData,
 }) => {
   console.log(record, "Recordddd")
   const initialValues = {
@@ -25,13 +27,13 @@ const EditUserModal = ({
     address1: record.addresslineone,
     address2: record.addresslineotwo,
     country: record.countryCode,
-    city: "",
+    city: record.city,
     state: record.state,
-    zip: "",
+    zip: record.zipcode,
     telephone: record.contactNumber,
     userPoints: record.Points,
-    isAdmin: record.userRoleID,
-    suspendAccount: record.is_suspended ? "yes" : "no",
+    isAdmin: record.userRoleID ===2?"2":"",
+    suspendAccount: record.is_suspended ? "true" : "false",
   };
 
   const navigate = useNavigate();
@@ -66,7 +68,7 @@ const EditUserModal = ({
       addresslineone: address1,
       addresslineotwo: address2,
       countryCode: country,
-      // city: city,
+      city: city,
       state: state,
       zipcode: zip,
       contactNumber: telephone,
@@ -77,8 +79,23 @@ const EditUserModal = ({
     }
     console.log("Form values:", payload);
     let res= await  EditAllUser(payload)
-    console.log(res,"ressssssssss")
+    if (res?.status === 200) {
+      console.log(res.status)
+    let fetch=fetchData()
+    console.log(fetch,"fetchhhh")
+    toast.success("Edit Successfully");
     resetForm();
+    handleEditCancel();
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+    
   };
 
   return (
@@ -218,7 +235,7 @@ const EditUserModal = ({
                           <Field
                             type="radio"
                             name="isAdmin"
-                            value="yes"
+                            value="2"
                             id="isAdminYes"
                           />
                           <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
