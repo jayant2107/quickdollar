@@ -28,7 +28,7 @@ const AddFrontPageOffer = () => {
     return (
         <div>
             <Header>
-                Add frontpage Offer
+                Add Frontpage Offer
             </Header>
             <AnnouncementWrapper>
                 <Formik
@@ -159,6 +159,9 @@ text-align: start;
 width: 210px;
 padding: 15px 0px 15px 15px;
 font-family: Poppins;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    margin-bottom: 0px;
+    }
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;
@@ -178,6 +181,9 @@ font-size: 14px;
 color: #666;
 border-radius: 5px;
 outline: none;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    padding: 0px 0px 5px 0px;
+}
 `;
 
 const InputWrapper = styled.div`
@@ -187,6 +193,10 @@ padding: 1.25rem;
 const FieldWrapper = styled.div`
 display:flex;
 gap: 20px;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+flex-direction:column;
+gap:0px
+}
 `
 const ChooseContainer = styled.div`
 display:flex;
@@ -206,6 +216,9 @@ margin-bottom: 0.5rem;
 margin-top: 0px;
 font-size: 14px;
 text-align: start;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    font-size: 12px;
+    }
 `
 const RequiredWrapper = styled.div`
 color: red;

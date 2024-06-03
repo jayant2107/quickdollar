@@ -62,7 +62,7 @@ const SendMessage = () => {
                                             width: "100%",
                                             marginBottom: "3px",
                                         }}
-                                        value={values.user}
+                                        value={values.user || undefined} 
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
                                             {

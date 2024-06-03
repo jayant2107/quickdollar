@@ -298,6 +298,9 @@ const Label = styled.p`
     width: 210px;
     padding: 15px 0px 15px 15px;
     font-family: Poppins;
+    @media only screen and (min-width: 320px) and (max-width: 480px) {
+        margin-bottom: 0px;
+        }
 `;
 
 const InputField = styled(Field)`
@@ -318,6 +321,10 @@ const InputWrapper = styled.div`
 const FieldWrapper = styled.div`
     display: flex;
     gap: 20px;
+    @media only screen and (min-width: 320px) and (max-width: 480px) {
+        flex-direction:column;
+        gap:0px
+        }
 `;
 
 const TextAreaField = styled(TextArea)`
@@ -399,28 +406,25 @@ width: 100%;
 `
 const StyledReactQuill = styled(ReactQuill)`
     .ql-container {
-        height: 180px;
-        margin-bottom:3px
+        height: 180px; 
+        margin-bottom: 3px;
+        overflow-y: auto; 
     }
-    .ql-toolbar.ql-snow + .ql-container.ql-snow{
+    .ql-toolbar.ql-snow + .ql-container.ql-snow {
         border-radius: 0px 0px 5px 5px;
-        width:815px !important
+        width: 100% !important; 
+        @media only screen and (min-width: 320px) and (max-width: 480px) {
+            width: 100% !important;
+        }
     }
     .ql-toolbar.ql-snow {
-        border-radius: 5px 5px 0px 0px
+        border-radius: 5px 5px 0px 0px;
+        width: 100% !important; // Make width responsive
     }
 `;
 
 const QuillFieldContainer = styled.div`
-width: 100%;
-margin-bottom:7px
-`
-const PreviewButton = styled(Button)`
-    background-color: #1890ff;
-    color: white;
-    border-radius: 4px;
-    border: none;
-    &:hover {
-        background-color: #40a9ff;
-    }
+    width: 100%;
+    margin-bottom: 7px;
+    overflow: hidden; // Ensure overflow is handled
 `;

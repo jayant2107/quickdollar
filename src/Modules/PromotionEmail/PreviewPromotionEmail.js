@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Modal } from 'antd';
 import styled from 'styled-components';
 import { Applogo } from '../../Utils/Images';
@@ -16,6 +16,7 @@ const PreviewPromotionEmail = ({ triggerModal, setTriggerModal, previewData }) =
     console.log(previewData, "preview")
     return (
         <Modal
+            style={{ display: 'flex', width: "100%", justifyContent: 'center', alignItems: 'center' }}
             visible={triggerModal}
             onCancel={handleCancel}
             footer={null}
@@ -85,6 +86,19 @@ const StyledModalContent = styled.div`
     height: 100% !important;
     padding: 40px 70px !important;
   }
+  @media only screen and (min-width: 320px) and (max-width: 480px) {
+    .ant-modal-content {
+        width: 300px !important;
+        padding: 20px 20px !important;
+
+    }
+  }
+  @media only screen and (min-width: 481px) and (max-width: 769px) {
+    .ant-modal-content {
+        width: 450px !important;
+        padding: 20px 20px !important;
+    }
+  }
 `;
 
 const HeaderLogo = styled.div`
@@ -111,7 +125,9 @@ align-items: center;
 justify-content: center;
 gap: 20px;
 padding: 30px 60px;
-
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    padding: 20px 20px;
+  }
 `
 
 const SurveyBtn = styled.div`
@@ -135,6 +151,9 @@ padding: 0px 60px;
     :hover{
         background-color: #b8215c;
     }
+    @media only screen and (min-width: 320px) and (max-width: 480px) {
+        width: 87%;
+      }
 }
 `
 const SurveyDetail = styled.div`
@@ -151,6 +170,9 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 gap: 10px;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    padding: 20px 20px;
+}
 `
 
 const RedirectLink = styled(Link)`
