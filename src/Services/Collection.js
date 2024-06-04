@@ -20,6 +20,7 @@ const ADD_OFFER = "addOffer";
 const Active_User = "deactivateAndActivateUser";
 const ActiveDeactive_All_Offers = "activateAndDeactivateAllOffers";
 const Get_Dashboard = "dashboard";
+const Delete_Offer="deleteOffer"
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -68,3 +69,5 @@ export const userActiveModal = async (payload) =>
   await patchApi(Active_User, payload);
 
 export const getDashboard = () => getApi(Get_Dashboard);
+
+export const deleteOffers=(id)=>deleteApi(Delete_Offer,id)

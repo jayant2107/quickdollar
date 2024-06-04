@@ -289,7 +289,7 @@ const AllUsers = () => {
           showModal={showDeleteModal}
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
-          record={selectedRecord}
+          id={selectedRecord.idUser}
           handleDelete={handleDelete}
         />
       )}

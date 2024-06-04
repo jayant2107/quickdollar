@@ -2,11 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { getCompletedoffers } from "../../../Services/Collection";
+import { deleteOffers, getCompletedoffers } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce } from "../../../Utils/CommonFunctions";
+import EditUserModal from "../../../Components/EditModal/EditUserModal";
+import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 
 const CompletedOffers = () => {
   const [loader, setLoader] = useState(true);
@@ -16,12 +18,43 @@ const CompletedOffers = () => {
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
+  const [editModal, setEditModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
     []
   );
+  const handleDelete=async(id)=>{
+    let res = await deleteOffers(id);
+    if (res?.status === 200) {
+       fetchData()
+    }
+    return res;
+   
+
+  }
+  const handleDeleteCancel = () => {
+    setDeleteModal(false);
+    setSelectedRecord(null);
+  };
+  const showEditModal = (record) => {
+    setSelectedRecord(record);
+    setEditModal(true);
+  };
+
+  const showDeleteModal = (record) => {
+    setSelectedRecord(record);
+    setDeleteModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+    setSelectedRecord(null);
+  };
+
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -132,8 +165,8 @@ const CompletedOffers = () => {
           apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
-          // onEdit={() => showEditModal(record)}
-          // onDelete={() => showDeleteModal(record)}
+          onEdit={() => showEditModal(record)}
+          onDelete={() => showDeleteModal(record)}
         />
       ),
     },
@@ -154,6 +187,25 @@ const CompletedOffers = () => {
   }, [currentPage, pageSize,search]);
   return (
     <AllUserWrapper byTheme={byTheme}>
+       {deleteModal && (
+        <DeleteModal
+          showModal={showDeleteModal}
+          handleCancel={handleDeleteCancel}
+          deleteModal={deleteModal}
+          id={selectedRecord.idCompletedOffer}
+          handleDelete={handleDelete}
+        />
+      )}
+      {editModal && (
+        <EditUserModal
+          showEditModal={showEditModal}
+          handleEditCancel={handleEditCancel}
+          editModal={editModal}
+          record={selectedRecord}
+          viewLoader={loader}
+          fetchData={fetchData}
+        />
+      )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Completed Offers</h1>
       </div>

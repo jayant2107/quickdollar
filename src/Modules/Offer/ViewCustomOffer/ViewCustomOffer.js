@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { toast } from "react-toastify";
-import { activateDeactivateAllOffers, getViewCustomOffers } from "../../../Services/Collection";
+import { activateDeactivateAllOffers, deleteOffers, getViewCustomOffers } from "../../../Services/Collection";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce } from "../../../Utils/CommonFunctions";
+import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
+import EditUserModal from "../../../Components/EditModal/EditUserModal";
 
 
 const ViewCustomOffers = () => {
@@ -28,6 +30,34 @@ const ViewCustomOffers = () => {
     debounce((value) => setSearch(value)),
     []
   );
+  const handleDelete=async(id)=>{
+    let res = await deleteOffers(id);
+    if (res?.status === 200) {
+       fetchData()
+    }
+    return res;
+   
+
+  }
+  const handleDeleteCancel = () => {
+    setDeleteModal(false);
+    setSelectedRecord(null);
+  };
+  const showEditModal = (record) => {
+    setSelectedRecord(record);
+    setEditModal(true);
+  };
+
+  const showDeleteModal = (record) => {
+    setSelectedRecord(record);
+    setDeleteModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+    setSelectedRecord(null);
+  };
+
 
 
   const fetchData = async () => {
@@ -221,8 +251,8 @@ const ViewCustomOffers = () => {
           apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
-        // onEdit={() => showEditModal(record)}
-        // onDelete={() => showDeleteModal(record)}
+        onEdit={() => showEditModal(record)}
+        onDelete={() => showDeleteModal(record)}
         />
       ),
     },
@@ -260,6 +290,25 @@ const ViewCustomOffers = () => {
   }, [currentPage, pageSize, search]);
   return (
     <AllUserWrapper byTheme={byTheme}>
+      {deleteModal && (
+        <DeleteModal
+          showModal={showDeleteModal}
+          handleCancel={handleDeleteCancel}
+          deleteModal={deleteModal}
+          id={selectedRecord.idOffer}
+          handleDelete={handleDelete}
+        />
+      )}
+      {editModal && (
+        <EditUserModal
+          showEditModal={showEditModal}
+          handleEditCancel={handleEditCancel}
+          editModal={editModal}
+          record={selectedRecord}
+          viewLoader={loader}
+          fetchData={fetchData}
+        />
+      )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>
@@ -269,7 +318,7 @@ const ViewCustomOffers = () => {
       </div>
 
       <div className="tableDiv">
-        <TableNew
+        <TableNew 
           columns={columns}
           data={userData}
           scroll={scrollConfig}
