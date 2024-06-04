@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { toast } from "react-toastify";
-import { getViewCustomOffers } from "../../../Services/Collection";
+import { activateDeactivateAllOffers, getViewCustomOffers } from "../../../Services/Collection";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
@@ -57,9 +57,44 @@ const ViewCustomOffers = () => {
       setLoader(false);
     }
   };
-  useEffect(() => {
-    fetchData();
-  }, [currentPage, pageSize, search]);
+  const ActiveAllUser=async()=>{
+    let res= await activateDeactivateAllOffers({isActive:"1"})
+    if (res?.status === 200) {
+      console.log(res.status)
+      let fetch = fetchData()
+      console.log(fetch, "fetchhhh")
+      toast.success("All Offers Activate Successfully");
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+
+  }
+  const DeactiveAllUser=async()=>{
+    let res= await activateDeactivateAllOffers({isActive:"0"})
+    console.log(res)
+    if (res?.status === 200) {
+      console.log(res.status)
+      let fetch = fetchData()
+      console.log(fetch, "fetchhhh")
+      toast.success("All Offers Deactivate Successfully");
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+
+  }
+
 
   const columns = [
     {
@@ -74,7 +109,7 @@ const ViewCustomOffers = () => {
       title: "Offer Link",
       key: "link",
       dataIndex: "link",
-      width:400,
+      width: 400,
 
       render: (text, record) => <a>{record?.offerLink || "NA"}</a>,
     },
@@ -88,7 +123,7 @@ const ViewCustomOffers = () => {
       title: "Offer Short Description",
       key: "description",
       dataIndex: "offerShortDescription",
-      width:400,
+      width: 400,
       render: (text, record) => record?.offerShortDescription || "NA"
 
 
@@ -97,7 +132,7 @@ const ViewCustomOffers = () => {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
-      render:(text, record) => record?.offerCountry || "NA" 
+      render: (text, record) => record?.offerCountry || "NA"
     },
     {
       title: "Status",
@@ -107,7 +142,7 @@ const ViewCustomOffers = () => {
       render: (text, record) => (
         <StatusStyledText
           status={record.isActive ? "Active" : "Inactive"}
-          
+
         >
           {record.isActive ? "Active" : "Inactive"}
           {record.isActive ? (
@@ -140,7 +175,7 @@ const ViewCustomOffers = () => {
       key: "offer",
       dataIndex: "isDailyOffer",
       width: 150,
-      render: (text, record) => <StyledText text={record?.isDailyOffer? "Yes" : "No"}>{record?.isDailyOffer? "Yes" : "No"}</StyledText>,
+      render: (text, record) => <StyledText text={record?.isDailyOffer ? "Yes" : "No"}>{record?.isDailyOffer ? "Yes" : "No"}</StyledText>,
     },
     {
       title: "APPLICATION GROUP ONE-ANDROID",
@@ -166,7 +201,7 @@ const ViewCustomOffers = () => {
       dataIndex: "twoIos",
       render: (text, record) => <StyledText text={text}>{text}</StyledText>,
     },
-    
+
     {
       title: "Date",
       dataIndex: "createdAt",
@@ -186,8 +221,8 @@ const ViewCustomOffers = () => {
           apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
-          // onEdit={() => showEditModal(record)}
-          // onDelete={() => showDeleteModal(record)}
+        // onEdit={() => showEditModal(record)}
+        // onDelete={() => showDeleteModal(record)}
         />
       ),
     },
@@ -208,7 +243,7 @@ const ViewCustomOffers = () => {
     showTotal: (total, range) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
-  
+
   const formActions = {
     apply: false,
     view: false,
@@ -220,13 +255,16 @@ const ViewCustomOffers = () => {
     x: 7000, // Horizontal scrolling
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageSize, search]);
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>
-          <button style={{ background: "red" }}>De-active All Offers</button>
-          <button>Active All Offers</button>
+          <button onClick={ActiveAllUser}>Active All Offers</button>
+          <button onClick={DeactiveAllUser} style={{ background: "red" }}>De-active All Offers</button>
         </div>
       </div>
 
