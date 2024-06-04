@@ -11,7 +11,7 @@ import { RxCross2 } from "react-icons/rx";
 import { RiAdminFill } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
-import { getAllUser } from "../../../Services/Collection";
+import { deleteUser, getAllUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import { debounce } from "../../../Utils/CommonFunctions";
@@ -268,6 +268,15 @@ const AllUsers = () => {
     setActiveModal(false);
     setSelectedRecord(null);
   };
+  const handleDelete=async(id)=>{
+    let res = await deleteUser(id);
+    if (res?.status === 200) {
+       fetchData()
+    }
+    return res;
+   
+
+  }
 
   useEffect(() => {
     fetchData();
@@ -281,7 +290,7 @@ const AllUsers = () => {
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
           record={selectedRecord}
-          fetchData={fetchData}
+          handleDelete={handleDelete}
         />
       )}
       {editModal && (
@@ -307,7 +316,8 @@ const AllUsers = () => {
           handleCancel={() => setActiveModal(false)}
           activeModal={activeModal}
           handleConfirm={handleActiveCancel}
-          selectedRecord={selectedRecord}
+          record={selectedRecord}
+          fetchData={fetchData}
         />
       )}
       <div className="allUsersHeader">

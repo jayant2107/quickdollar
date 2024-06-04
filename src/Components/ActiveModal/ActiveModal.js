@@ -1,49 +1,79 @@
 import { Modal } from "antd";
 import styled from "styled-components";
+import { userActiveModal } from "../../Services/Collection";
+import { toast } from "react-toastify";
 
-const ActiveModal = ({ handleCancel, handleConfirm, activeModal,selectedRecord  }) => {
+const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
+  // console.log(record)
 
-    const confirmMessage = selectedRecord?.status === "Active" 
-    ? "Are you sure you want to deactivate?" 
-    : "Are you sure you want to activate?";
-    return (
-      <>
-        <Modal
-          maskStyle={{
-            backgroundColor: " rgb(0 0 0 / 60%)",
-          }}
-          centered
-          open={activeModal}
-          onCancel={handleCancel}
-          footer={false}
-          closable=""
-        >
-          <ActiveModalWrapper>
-            <div className="activeModalUpperDiv">
-              <div className="deleteMain">
-                <h4 className="upperDivHead1">
+  const confirmMessage = record?.isActive === true
+    ? "Are you sure you want to deactivate?"
+    : "Are you sure you want to  activate?";
+
+  const activeModals = async () => {
+    const payload = {
+      idUser: record.idUser,
+      isActive: !record.isActive
+
+    }
+    console.log(payload)
+    let res = await userActiveModal(payload);
+    console.log(res)
+    if (res?.status === 200) {
+      console.log(res.status)
+      await fetchData()
+      
+      toast.success(payload?.isActive === true?"Active Successfully":"Deactive Successfully");
+      handleCancel();
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+
+  }
+  return (
+    <>
+      <Modal
+        maskStyle={{
+          backgroundColor: " rgb(0 0 0 / 60%)",
+        }}
+        centered
+        open={activeModal}
+        onCancel={handleCancel}
+        footer={false}
+        closable=""
+      >
+        <ActiveModalWrapper>
+          <div className="activeModalUpperDiv">
+            <div className="deleteMain">
+              <h4 className="upperDivHead1">
                 {confirmMessage}
-                </h4>
-              </div>
-              <div className="buttons">
-                <button onClick={handleCancel}>Cancel</button>
-                <button onClick={handleConfirm} className="confirm-button">
-                  Confirm
-                </button>
-              </div>
+              </h4>
             </div>
-          </ActiveModalWrapper>
-        </Modal>
-      </>
-    );
-  };
-  export default ActiveModal;
+            <div className="buttons">
+              <button onClick={handleCancel}>Cancel</button>
+              <button onClick={activeModals} className="confirm-button">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </ActiveModalWrapper>
+      </Modal>
+    </>
+  );
+};
+export default ActiveModal;
 
 
 
 
 
-const ActiveModalWrapper= styled.div`
+const ActiveModalWrapper = styled.div`
 font-family: ${({ theme }) => theme?.fontFamily};
   .activeModalUpperDiv {
     min-height:142px;

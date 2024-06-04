@@ -1,16 +1,12 @@
 import { Modal } from "antd";
 import styled from "styled-components";
-import { deleteUser } from "../../Services/Collection";
 import { toast } from "react-toastify";
 
-const DeleteModal = ({ handleCancel, deleteModal, record, fetchData }) => {
+const DeleteModal = ({ handleCancel, deleteModal, record, handleDelete }) => {
   console.log(record.idUser, "recorddd delete")
-  const handleDelete = async () => {
-    let res = await deleteUser({ id: record.idUser });
+  const handleDeletes = async () => {
+    let res =await handleDelete({ id: record.idUser })
     if (res?.status === 200) {
-      console.log(res.status)
-      let fetch = fetchData()
-      console.log(fetch, "fetchhhh")
       toast.success("Delete Successfully");
       handleCancel();
 
@@ -50,7 +46,7 @@ const DeleteModal = ({ handleCancel, deleteModal, record, fetchData }) => {
             </div>
             <div className="buttons">
               <button onClick={handleCancel}>Cancel</button>
-              <button onClick={handleDelete} className="delete-button">Delete</button>
+              <button onClick={handleDeletes} className="delete-button">Delete</button>
             </div>
           </div>
         </ServiceModalWrapper>
