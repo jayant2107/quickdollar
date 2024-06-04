@@ -32,6 +32,7 @@ const TableNew = ({
   pagination,
   loader,
   handleSearch,
+  onChange,
 }) => {
   const columnsWithSno = [...columns];
 
@@ -63,6 +64,7 @@ const TableNew = ({
               dataSource={data}
               pagination={pagination}
               scroll={scroll}
+              onChange={onChange}
             />
           )}
         </div>

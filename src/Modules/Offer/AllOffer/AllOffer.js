@@ -31,6 +31,8 @@ const AllOffers = () => {
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [sortField, setSortField] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
@@ -71,6 +73,8 @@ const AllOffers = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("sortColumn", sortField);
+      params.append("sortOrder", sortOrder);
       const res = await getAllOffers(params);
       if (res?.status === 200) {
         console.log(res.data.findOffers, "alloffer");
@@ -174,6 +178,7 @@ const AllOffers = () => {
       fixed: "left",
       width: 150,
       render: (text, record) => record?.offerTitle || "NA",
+      sorter:true,
     },
     {
       title: "Offer Link",
@@ -320,10 +325,15 @@ const AllOffers = () => {
     onClick: () => handleOptionClick(item),
   }));
 
+const handleTableChange=(pagination, filters, sorter)=>{
+  setSortField(sorter.field)
+  setSortOrder(sorter.order)
+  setCurrentPage(pagination.current)
+}
   useEffect(() => {
     fetchData();
     fetchGeoCordData(); // Fetch geo codes
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize, search,sortField,sortOrder]);
   return (
     <AllUserWrapper byTheme={byTheme}>
        {deleteModal && (
@@ -332,7 +342,8 @@ const AllOffers = () => {
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
           id={selectedRecord.idOffer}
-          handleDelete={handleDelete}
+          handleDele
+          te={handleDelete}
         />
       )}
       {editModal && (
@@ -390,6 +401,7 @@ const AllOffers = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
       </div>
     </AllUserWrapper>
