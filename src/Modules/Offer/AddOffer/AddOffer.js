@@ -6,30 +6,33 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { addOffer } from '../../../Services/Collection';
+import { toast } from "react-toastify";
 
 const PromotionEmail = () => {
 
   const initialValues = {
-    title: "",
+    offerTitle: "",
     h1Title: "",
-    offerImg: "",
+    offerImage: null,
     offerLink: '',
-    offerAmount: "",
+    offerPoints: "",
     offerText: "",
     offerShortDescription: '',
     offerLongDescription: '',
     offerCreatedFor: '',
-    countries: [],
+    offerCountry: [],
     fraudUser: "",
-    capLimit: "",
+    dailyCAPLimit: "",
+    customPostbaclParams: '',
     isActive: "false",
     isHotOffer: "false",
     hotOfferFor: 'hotOfferForWeb',
-    appInstallation: 'false',
-    callbackType: 'false',
-    repeatedOffer: 'false',
+    app_install: 'false',
+    conversionCallback: 'false',
+    isDailyOffer: 'false',
     relistOffer: false,
-    urlType: false,
+    StaticURL: false,
   };
 
   const toolbarOptions = [
@@ -44,11 +47,32 @@ const PromotionEmail = () => {
   ];
 
   const validationSchema = yup.object().shape({
-    title: yup.string().required("Title is Required"),
+    offerTitle: yup.string().required("Title is Required"),
     h1Title: yup.string().required('H1 title is required'),
-    offerImg: yup.string().required('Offer Image is required'),
+    offerImage: yup.mixed()
+      .required('Offer image is required')
+      .test(
+        'fileType',
+        'Only image files are allowed',
+        (value) => {
+          if (value) {
+            return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
+          }
+          return true;
+        }
+      )
+      .test(
+        'fileSize',
+        'File size must be less than 2MB',
+        (value) => {
+          if (value) {
+            return value.size <= 2 * 1024 * 1024;
+          }
+          return true;
+        }
+      ),
     offerLink: yup.string().required('Offer Link is required'),
-    offerAmount: yup.string().required('Offer amount is required').test(
+    offerPoints: yup.string().required('Offer amount is required').test(
       'is-number',
       'Enter number only',
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
@@ -58,17 +82,58 @@ const PromotionEmail = () => {
     offerLongDescription: yup.string().required('Offer Long Description is required'),
     offerCreatedFor: yup.string().required('Offer Created is required'),
     customPostbaclParams: yup.string(),
-    countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
+    offerCountry: yup.array().min(1, 'Countries are required').required('Countries are required'),
     fraudUser: yup.string().required('Fraud User is required'),
-    capLimit: yup.string().required('Cap Limit is required'),
+    dailyCAPLimit: yup.string().required('Cap Limit is required'),
   });
 
-  const handleSubmit = (values, { resetForm, setFieldValue }) => {
-    console.log("Form values:", values);
-    resetForm();
-    setFieldValue("additionalText", "");
-    setH1TitleValue("");
-    setLongDescriptionValue('');
+  const handleSubmit = async (values, { resetForm, setFieldValue, setH1TitleValue, setLongDescriptionValue }) => {
+    const formData = new FormData();
+    formData.append("offerTitle", values.offerTitle);
+    formData.append("h1Title", values.h1Title);
+    formData.append("offerImage", values.offerImage);
+    formData.append("offerLink", values.offerLink);
+    formData.append("offerPoints", values.offerPoints);
+    formData.append("offerText", values.offerText);
+    formData.append("offerShortDescription", values.offerShortDescription);
+    formData.append("offerLongDescription", values.offerLongDescription);
+    formData.append("offerCreatedFor", values.offerCreatedFor);
+    // values.offerCountry.forEach(country => {
+    //   formData.append("offerCountry[]", country);
+    // });
+    formData.append("offerCountry", values.offerCountry);
+    formData.append("fraudUser", values.fraudUser);
+    formData.append("dailyCAPLimit", values.dailyCAPLimit);
+    formData.append("customPostbaclParams", values.customPostbaclParams);
+    formData.append("isActive", values.isActive);
+    formData.append("isHotOffer", values.isHotOffer);
+    formData.append("hotOfferFor", values.hotOfferFor);
+    formData.append("app_install", values.app_install);
+    formData.append("conversionCallback", values.conversionCallback);
+    formData.append("isDailyOffer", values.isDailyOffer);
+    formData.append("relistOffer", values.relistOffer ? "true" : "false");
+    formData.append("StaticURL", values.StaticURL ? "true" : "false");
+    try {
+      const res = await addOffer(formData);
+      if (res?.status === 200) {
+        toast.success("Add Offer successfully");
+        setFieldValue("additionalText", "");
+        resetForm();
+        setH1TitleValue("");
+        setLongDescriptionValue('');
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
+
   };
 
   const options = [];
@@ -84,6 +149,12 @@ const PromotionEmail = () => {
   const [h1TitleValue, setH1TitleValue] = useState("");
   const [longDescriptionValue, setLongDescriptionValue] = useState("");
 
+  const handleReset = (resetForm) => {
+    resetForm();
+    setH1TitleValue("");
+    setLongDescriptionValue("");
+  };
+
   return (
     <div>
       <Header>Add Offer</Header>
@@ -93,19 +164,19 @@ const PromotionEmail = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ values, setFieldValue, touched, errors, setFieldTouched }) => (
+          {({ values, setFieldValue, touched, errors, setFieldTouched, resetForm }) => (
             <Form>
               <InputWrapper>
                 <FieldWrapper>
                   <Label>Offer Title</Label>
                   <FieldContainer>
                     <InputField
-                      name="title"
+                      name="offerTitle"
                       placeholder="Offer Title
 "
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="title" />
+                      <ErrorMessage name="offerTitle" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -143,13 +214,15 @@ const PromotionEmail = () => {
                   <Label>Offer Image</Label>
                   <FieldContainer>
                     <ChooseContainer>
-                      <ChooseFile name="offerImg" type="file" />
-                      <UploadInstruction>
-                        Max size 2MB and resolution is 150x150 px
-                      </UploadInstruction>
+                      <input
+                        name="offerImage"
+                        type="file"
+                        onChange={(e) => setFieldValue("offerImage", e?.target?.files[0])}
+                      />
+                      <UploadInstruction>Max size 2MB and resolution is 150x150 px</UploadInstruction>
                     </ChooseContainer>
                     <RequiredWrapper>
-                      <ErrorMessage name="offerImg" />
+                      <ErrorMessage name="offerImage" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -167,9 +240,9 @@ const PromotionEmail = () => {
                 <FieldWrapper>
                   <Label>Offer Amount in $</Label>
                   <FieldContainer>
-                    <InputField name="offerAmount" placeholder="Offer amount" />
+                    <InputField name="offerPoints" placeholder="Offer amount" />
                     <RequiredWrapper>
-                      <ErrorMessage name="offerAmount" />
+                      <ErrorMessage name="offerPoints" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -343,20 +416,20 @@ const PromotionEmail = () => {
                         <div>
                           <Field
                             type="radio"
-                            name="appInstallation"
+                            name="app_install"
                             value="false"
-                            id="appInstallationNo"
+                            id="app_installNo"
                           />
-                          <RadioLabel htmlFor="appInstallationNo">No</RadioLabel>
+                          <RadioLabel htmlFor="app_installNo">No</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="appInstallation"
+                            name="app_install"
                             value="true"
-                            id="appInstallationYes"
+                            id="app_installYes"
                           />
-                          <RadioLabel htmlFor="appInstallationYes">
+                          <RadioLabel htmlFor="app_installYes">
                             Yes
                           </RadioLabel>
                         </div>
@@ -364,7 +437,7 @@ const PromotionEmail = () => {
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
-                      <ErrorMessage name="appInstallation" />
+                      <ErrorMessage name="app_install" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -377,25 +450,25 @@ const PromotionEmail = () => {
                         <div>
                           <Field
                             type="radio"
-                            name="callbackType"
+                            name="conversionCallback"
                             value="false"
-                            id="callbackTypeYes"
+                            id="conversionCallbackYes"
                           />
-                          <RadioLabel htmlFor="callbackTypeYes">Remove from dashboard without conversion</RadioLabel>
+                          <RadioLabel htmlFor="conversionCallbackYes">Remove from dashboard without conversion</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="callbackType"
+                            name="conversionCallback"
                             value="true"
-                            id="callbackTypeNo"
+                            id="conversionCallbackNo"
                           />
-                          <RadioLabel htmlFor="callbackTypeNo">Remove from dashboard with conversion</RadioLabel>
+                          <RadioLabel htmlFor="conversionCallbackNo">Remove from dashboard with conversion</RadioLabel>
                         </div>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
-                      <ErrorMessage name="callbackType" />
+                      <ErrorMessage name="conversionCallback" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -407,20 +480,20 @@ const PromotionEmail = () => {
                       <div>
                         <Field
                           type="radio"
-                          name="repeatedOffer"
+                          name="isDailyOffer"
                           value="false"
-                          id="repeatedOfferNo"
+                          id="isDailyOfferNo"
                         />
-                        <RadioLabel htmlFor="repeatedOfferNo">No</RadioLabel>
+                        <RadioLabel htmlFor="isDailyOfferNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="repeatedOffer"
+                          name="isDailyOffer"
                           value="true"
-                          id="repeatedOfferYes"
+                          id="isDailyOfferYes"
                         />
-                        <RadioLabel htmlFor="repeatedOfferYes">
+                        <RadioLabel htmlFor="isDailyOfferYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -480,10 +553,10 @@ const PromotionEmail = () => {
 
                 <FieldWrapper>
                   <Label>Select offer url type</Label>
-                  <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                  <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center" }}>
                     <Checkbox
-                      checked={values.urlType}
-                      onChange={(e) => setFieldValue("urlType", e.target.checked)}
+                      checked={values.StaticURL}
+                      onChange={(e) => setFieldValue("StaticURL", e.target.checked)}
                     >
                       is static URL
                     </Checkbox>
@@ -493,7 +566,7 @@ const PromotionEmail = () => {
                   </FieldContainer>
                 </FieldWrapper>
 
-                {!values.urlType && (<FieldWrapper>
+                {!values.StaticURL && (<FieldWrapper>
                   <Label>Custom Postback Params</Label>
                   <FieldContainer>
                     <InputField
@@ -515,9 +588,9 @@ const PromotionEmail = () => {
                         mode="multiple"
                         allowClear
                         style={{ width: "100%" }}
-                        placeholder="Please select"
-                        value={values.countries}
-                        onChange={(value) => setFieldValue("countries", value)}
+                        placeholder="Select geo code"
+                        value={values.offerCountry}
+                        onChange={(value) => setFieldValue("offerCountry", value)}
                         options={options}
                       />
                       <Checkbox
@@ -525,19 +598,19 @@ const PromotionEmail = () => {
                         onChange={(e) => {
                           const { checked } = e.target;
                           setSelectAll(checked);
-                          const allCountries = options.map(
+                          const offerCountry = options.map(
                             (option) => option.value
                           );
                           setFieldValue(
-                            "countries",
-                            checked ? allCountries : []
+                            "offerCountry",
+                            checked ? offerCountry : []
                           );
                         }}
                       >
                         Select all country
                       </Checkbox>
                       <RequiredWrapper>
-                        <ErrorMessage name="countries" />
+                        <ErrorMessage name="offerCountry" />
                       </RequiredWrapper>
                     </ChooseCountry>
                   </FieldContainer>
@@ -547,12 +620,12 @@ const PromotionEmail = () => {
                   <Label>Daily CAP limit for offer</Label>
                   <FieldContainer>
                     <InputField
-                      name="capLimit"
-                      placeholder="Offer Title
+                      name="dailyCAPLimit"
+                      placeholder="Daily cap limit
 "
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="capLimit" />
+                      <ErrorMessage name="dailyCAPLimit" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -592,7 +665,7 @@ const PromotionEmail = () => {
 
               </InputWrapper>
               <Footer>
-                <Button type="primary" danger >Reset</Button>
+                <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                 <SubmitBtn type="primary" htmlType="submit">
                   Submit
                 </SubmitBtn>
@@ -749,17 +822,6 @@ const ChooseCountry = styled.div`
   text-align:left;
 `;
 
-const ChooseFile = styled(Field)`
-  width: -webkit-fill-available;
-  padding: 15px 0px 5px 0px;
-  font-size: 14px;
-  color: #666;
-  border-radius: 5px;
-  outline: none;
-  @media only screen and (min-width: 320px) and (max-width: 480px) {
-    padding: 0px 0px 5px 0px;
-  }
-`;
 const UploadInstruction = styled.p`
   font-weight: 400;
   line-height: 17px;
@@ -781,12 +843,6 @@ const ChooseContainer = styled.div`
   flex-direction: column;
   align-items: start;
   width: 100%;
-`;
-
-const ResetButton = styled(Button)`
-  background-color: #17a2b8;
-  border-color: #17a2b8;
-  color: white;
 `;
 
 const SubmitBtn = styled(Button)`

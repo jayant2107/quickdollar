@@ -18,8 +18,50 @@ const AddFrontPageOffer = () => {
     const validationSchema = yup.object().shape({
         frontpageofferTitle: yup.string().required('Offer title is required'),
         frontpageofferLink: yup.string().required('Offer link is required'),
-        frontpageofferImage: yup.mixed().required('Offer image is required'),
-        frontpageofferButton: yup.mixed().required('Button image is required'),
+        frontpageofferImage: yup.mixed()
+            .required('Offer image is required')
+            .test(
+                'fileType',
+                'Only image files are allowed',
+                (value) => {
+                    if (value) {
+                        return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
+                    }
+                    return true;
+                }
+            )
+            .test(
+                'fileSize',
+                'File size must be less than 2MB',
+                (value) => {
+                    if (value) {
+                        return value.size <= 2 * 1024 * 1024;
+                    }
+                    return true;
+                }
+            ),
+        frontpageofferButton: yup.mixed()
+            .required('Button image is required')
+            .test(
+                'fileType',
+                'Only image files are allowed',
+                (value) => {
+                    if (value) {
+                        return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
+                    }
+                    return true;
+                }
+            )
+            .test(
+                'fileSize',
+                'File size must be less than 2MB',
+                (value) => {
+                    if (value) {
+                        return value.size <= 2 * 1024 * 1024;
+                    }
+                    return true;
+                }
+            ),
     });
 
     const handleSubmit = async (values, { resetForm }) => {
@@ -32,7 +74,7 @@ const AddFrontPageOffer = () => {
         try {
             const res = await addFrontPage(formData);
             if (res?.status === 200) {
-                toast.success("Message sent successfully");
+                toast.success("Add Frontpage Offer successfully");
                 resetForm();
             } else {
                 let message =

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FiChevronDown } from "react-icons/fi";
-import {  Applogo } from "../../Utils/Images";
+import { Applogo } from "../../Utils/Images";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +13,8 @@ import { GoThreeBars } from "react-icons/go";
 import { FaUsers, FaGift, FaBell } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { AiFillDashboard } from "react-icons/ai";
+import SettingsIcon from '@mui/icons-material/Settings';
+
 
 const Header = () => {
   const [type, setTtype] = useState(false);
@@ -29,6 +31,7 @@ const Header = () => {
   const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
   const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showMoreSettingOptions, setShowMoreSettingOptions] = useState(false);
 
   const handleModalOpen = () => {
     setShowModal(true);
@@ -255,6 +258,41 @@ const Header = () => {
             </p>
           </NavIcon2>
         )}
+
+        {location.pathname === "/quickdollar/settings/web" || location.pathname === "/quickdollar/settings/android" || location.pathname === "/quickdollar/settings/ios" ? (
+          <NavIcon onClick={() => handleItemClick("Settings")}>
+            <SettingsIcon />
+            <p>
+              <IntlMassage id="Settings" />
+            </p>
+          </NavIcon>
+        ) : (
+          <NavIcon2 onClick={() => handleItemClick("Settings")}>
+            <SettingsIcon />
+            <p>
+              <IntlMassage id="Settings" />
+            </p>
+          </NavIcon2>
+        )}
+        {showMoreSettingOptions && (
+          <>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/web"} onClick={() => navigate("/quickdollar/settings/web")}>
+              <p>
+                <IntlMassage id="WEB" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/android"} onClick={() => navigate("/quickdollar/settings/android")}>
+              <p>
+                <IntlMassage id="Android" />
+              </p>
+            </NavIcon2>
+            <NavIcon2 isActive={location.pathname === "/quickdollar/settings/ios"} onClick={() => navigate("/quickdollar/settings/ios")}>
+              <p>
+                <IntlMassage id="IOS" />
+              </p>
+            </NavIcon2>
+          </>
+        )}
       </>
     )
   }
@@ -272,6 +310,9 @@ const Header = () => {
         break;
       case "Frontpage Offer":
         setShowMoreFrontPageOptions((prev) => !prev);
+        break;
+      case "Settings":
+        setShowMoreSettingOptions((prev) => !prev);
         break;
       default:
         navigate(item.path);

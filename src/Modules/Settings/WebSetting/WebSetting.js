@@ -69,7 +69,7 @@ const WebSetting = () => {
 
     return (
         <div>
-            <Header>Settings</Header>
+            <Header>Web Settings</Header>
             <AnnouncementWrapper>
                 <Formik
                     initialValues={initialValues}
@@ -389,6 +389,8 @@ const FieldWrapper = styled.div`
     display: flex;
     gap: 20px;
     width: 100%;
+    display: flex;
+    align-items: center;
     @media only screen and (min-width: 320px) and (max-width: 480px) {
         flex-direction:column;
         gap:0px
@@ -433,12 +435,6 @@ const ChooseCountry = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
-`;
-
-const ResetButton = styled(Button)`
-    background-color: #17A2B8;
-    border-color: #17A2B8;
-    color: white;
 `;
 
 const SubmitBtn = styled(Button)`
