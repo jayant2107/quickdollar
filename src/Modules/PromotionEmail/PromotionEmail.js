@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Checkbox, Select } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
@@ -7,6 +7,8 @@ import * as yup from "yup";
 import PreviewPromotionEmail from './PreviewPromotionEmail';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { getAllGeoCodes } from '../../Services/Collection';
+import { toast } from "react-toastify";
 
 const PromotionEmail = () => {
     const [triggerModal, setTriggerModal] = useState(false);
@@ -37,6 +39,7 @@ const PromotionEmail = () => {
     ];
 
     const [value, setValue] = useState('');
+    const [geoCodes, setGeoCodes] = useState([]);
 
     const validationSchema = yup.object().shape({
         subject: yup.string().required('Subject is required'),
@@ -71,16 +74,38 @@ const PromotionEmail = () => {
         setValue('');
     };
 
-    const options = [];
-    for (let i = 10; i < 36; i++) {
-        options.push({
-            label: i.toString(36) + i,
-            value: i.toString(36) + i,
-        });
-    };
-
     const [selectAll, setSelectAll] = useState(false);
     const [isEmpty, setIsEmpty] = useState(false);
+
+
+    const fetchGeoCordData = async () => {
+        try {
+            const res = await getAllGeoCodes();
+            if (res?.status === 200) {
+                setGeoCodes(res?.msg);
+            } else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
+    };
+
+    const options = geoCodes.map(jsonData => ({
+        label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+        value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    }));
+
+    useEffect(() => {
+        fetchGeoCordData();
+    }, [])
+
 
     return (
         <div>

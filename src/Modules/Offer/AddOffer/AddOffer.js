@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Select } from "antd";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import styled from "styled-components";
@@ -6,7 +6,7 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { addOffer } from '../../../Services/Collection';
+import { addOffer, getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
 
 const PromotionEmail = () => {
@@ -34,6 +34,7 @@ const PromotionEmail = () => {
     relistOffer: false,
     StaticURL: false,
   };
+  const [geoCodes, setGeoCodes] = useState([]);
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -98,10 +99,8 @@ const PromotionEmail = () => {
     formData.append("offerShortDescription", values.offerShortDescription);
     formData.append("offerLongDescription", values.offerLongDescription);
     formData.append("offerCreatedFor", values.offerCreatedFor);
-    // values.offerCountry.forEach(country => {
-    //   formData.append("offerCountry[]", country);
-    // });
-    formData.append("offerCountry", values.offerCountry);
+    formData.append("offerCountry", JSON.stringify(values.offerCountry));
+    // formData.append("offerCountry", values.offerCountry);
     formData.append("fraudUser", values.fraudUser);
     formData.append("dailyCAPLimit", values.dailyCAPLimit);
     formData.append("customPostbaclParams", values.customPostbaclParams);
@@ -136,13 +135,24 @@ const PromotionEmail = () => {
 
   };
 
-  const options = [];
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      label: i.toString(36) + i,
-      value: i.toString(36) + i,
-    });
-  }
+  const fetchGeoCordData = async () => {
+    try {
+      const res = await getAllGeoCodes();
+      if (res?.status === 200) {
+        setGeoCodes(res?.msg);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
+  };
 
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -154,6 +164,15 @@ const PromotionEmail = () => {
     setH1TitleValue("");
     setLongDescriptionValue("");
   };
+
+  const options = geoCodes.map(jsonData => ({
+    label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+  }));
+
+  useEffect(() => {
+    fetchGeoCordData();
+  }, [])
 
   return (
     <div>
@@ -180,7 +199,6 @@ const PromotionEmail = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
 
                 <FieldWrapper>
                   <Label>Offer H1 Title</Label>
