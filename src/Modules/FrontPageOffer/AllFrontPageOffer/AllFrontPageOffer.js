@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { getFrontPage } from "../../../Services/Collection";
+import { getAllFrontPage} from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditFrontpageModal from "../../../Components/EditFrontpageModal/EditFrontpageModal";
+import { debounce } from "../../../Utils/CommonFunctions";
+
 
 const AllFrontPageOffer = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -19,11 +21,21 @@ const AllFrontPageOffer = () => {
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = useCallback(
+    debounce((value) => setSearch(value)),
+    []
+  );
 
   const fetchData = async () => {
     setLoader(true);
     try {
-      const res = await getFrontPage(currentPage, pageSize);
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      const res = await getAllFrontPage(params);
       if (res?.status === 200) {
         setUserData(res?.msg?.findUser || []);
         setTotalUsers(res?.msg?.totalUsers || 0);
@@ -159,7 +171,7 @@ const AllFrontPageOffer = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, search]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -193,9 +205,9 @@ const AllFrontPageOffer = () => {
           columns={columns}
           data={userData}
           scroll={scrollConfig}
-          Actions={formActions}
           loader={loader}
           pagination={paginationConfig}
+          handleSearch={handleSearch}
         />
       </div>
     </AllUserWrapper>

@@ -1,27 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { getCompletedoffers } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
+import { debounce } from "../../../Utils/CommonFunctions";
 
 const CompletedOffers = () => {
-  const [loader, setLoader] = useState();
+  const [loader, setLoader] = useState(true);
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [userData, setUserData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
+  const [search, setSearch] = useState("");
 
+
+  const handleSearch = useCallback(
+    debounce((value) => setSearch(value)),
+    []
+  );
   const fetchData = async () => {
     setLoader(true);
     try {
-      const res = await getCompletedoffers(currentPage, pageSize);
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      const res = await getCompletedoffers(params);
       if (res?.status === 200) {
         console.log(res?.data?.findCompletedOffers, "completdOffer");
         setUserData(res?.data?.findCompletedOffers || []);
@@ -143,7 +151,7 @@ const CompletedOffers = () => {
   };
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize,search]);
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
@@ -157,6 +165,7 @@ const CompletedOffers = () => {
           scroll={scrollConfig}
           Actions={formActions}
           pagination={paginationConfig}
+          handleSearch={handleSearch}
         />
       </div>
     </AllUserWrapper>

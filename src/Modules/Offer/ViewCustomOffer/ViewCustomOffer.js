@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { Dropdown, Space } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { getViewCustomOffers } from "../../../Services/Collection";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { render } from "@testing-library/react";
-import { Widgets } from "@mui/icons-material";
+import { debounce } from "../../../Utils/CommonFunctions";
+
 
 const ViewCustomOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -24,11 +21,23 @@ const ViewCustomOffers = () => {
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [search, setSearch] = useState("");
+
+
+  const handleSearch = useCallback(
+    debounce((value) => setSearch(value)),
+    []
+  );
+
 
   const fetchData = async () => {
     setLoader(true);
     try {
-      const res = await getViewCustomOffers();
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      const res = await getViewCustomOffers(params);
       if (res?.status === 200) {
         console.log(res.data.findCustomOffers, "resview");
         setUserData(res?.data?.findCustomOffers || []);
@@ -50,7 +59,7 @@ const ViewCustomOffers = () => {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentPage, pageSize, search]);
 
   const columns = [
     {
@@ -226,9 +235,9 @@ const ViewCustomOffers = () => {
           columns={columns}
           data={userData}
           scroll={scrollConfig}
-          Actions={formActions}
           loader={loader}
           pagination={paginationConfig}
+          handleSearch={handleSearch}
         />
       </div>
     </AllUserWrapper>
@@ -299,7 +308,7 @@ const StyledText = styled.span`
   //   rgb(47, 128, 237) 0%,
   //   rgb(86, 204, 242) 100%
   // );
-  background-color: ${({ text }) => (text == "Yes" ? "#00e633" : "red")};
+  background-color: ${({ text }) => (text === "Yes" ? "#00e633" : "red")};
 
   padding: 4px 8px;
   border-radius: 12px;
@@ -310,7 +319,7 @@ const StyledText = styled.span`
 
 const StatusStyledText = styled.span`
   color: #fff;
-  background-color: ${({ status }) => (status == "Active" ? "#00e633" : "red")};
+  background-color: ${({ status }) => (status === "Active" ? "#00e633" : "red")};
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;

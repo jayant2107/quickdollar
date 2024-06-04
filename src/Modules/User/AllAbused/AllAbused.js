@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
@@ -14,6 +14,7 @@ import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
 import { getAllAbusedUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
+import { debounce } from "../../../Utils/CommonFunctions";
 
 const AllAbusedUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -27,12 +28,20 @@ const AllAbusedUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
-  
+  const [search, setSearch] = useState("");
+
+  const handleSearch = useCallback(
+    debounce((value) => setSearch(value)),
+    []
+  );
   const fetchData = async () => {
     setLoader(true);
     try {
-      
-      const res = await getAllAbusedUser(currentPage, pageSize);
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      const res = await getAllAbusedUser(params);
       if (res?.status === 200) {
         // console.log(res.data)
         setUserData(res?.data?.findInActiveUsers);
@@ -262,7 +271,7 @@ const AllAbusedUsers = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, search]);
 
   return (
     <AllAbusedUserWrapper byTheme={byTheme}>
@@ -314,6 +323,7 @@ const AllAbusedUsers = () => {
           scroll={scrollConfig}
           loader={loader}
           pagination={paginationConfig}
+          handleSearch={handleSearch}
         />
         
       </div>

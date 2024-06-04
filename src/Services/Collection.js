@@ -25,16 +25,8 @@ export const changePassword = (payload) => putApi(CHANGE_PASSWORD, payload);
 export const getAllUser = async (query) =>
   await getApi(`${Get_All_USER}?${query}`);
 
-export const getAllAbusedUser = async (page, limit) => {
-  try {
-    const queryParams = new URLSearchParams({ page, limit }).toString();
-    const res = await getApi(`${Get_All_Abused_USER}?${queryParams}`);
-    return res;
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
+export const getAllAbusedUser = async (query) =>
+  await getApi(`${Get_All_Abused_USER}?${query}`);
 
 export const EditAllUser = (payload) => patchApi(Edit_All_User, payload);
 
@@ -48,40 +40,17 @@ export const addFrontPage = (payload) => postApi(ADD_FRONT_PAGE, payload);
 
 export const getAllGeoCodes = () => getApi(Get_All_GeoCodes);
 
-export const getFrontPage = async (page, limit) => {
-  try {
-    const queryParams = new URLSearchParams({ page, limit }).toString();
-    const res = await getApi(`${Get_Front_Page}?${queryParams}`);
-    return res;
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
+export const getAllFrontPage = async (query) => 
+  await getApi(`${Get_Front_Page}?${query}`);
+ 
 
-export const getCompletedoffers = async (page, limit) => {
-  try {
-    const queryParams = new URLSearchParams({ page, limit }).toString();
-    const res = await getApi(`${Get_Completed_Offer}?${queryParams}`);
-    return res;
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
+export const getCompletedoffers = async (query) => 
+  await getApi(`${Get_Completed_Offer}?${query}`);
+  
 
 export const deleteUser = (id) => deleteApi(Delete_User, id);
 
-
-export const getViewCustomOffers = async (page, limit) => {
-  try {
-    const queryParams = new URLSearchParams({ page, limit }).toString();
-    const res = await getApi(`${Get_Custom_Offer}?${queryParams}`);
-    return res;
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error;
-  }
-};
-
-
+export const getViewCustomOffers = async (query) =>
+  await getApi(`${Get_Custom_Offer}?${query}`);
+  
+  
