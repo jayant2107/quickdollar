@@ -19,6 +19,7 @@ const Get_All_Offers = "getAllOffers";
 const ADD_OFFER = "addOffer";
 const Active_User = "deactivateAndActivateUser";
 const ActiveDeactive_All_Offers = "activateAndDeactivateAllOffers";
+const Get_Dashboard = "dashboard";
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -50,7 +51,7 @@ export const getAllFrontPage = async (query) =>
 export const getCompletedoffers = async (query) =>
   await getApi(`${Get_Completed_Offer}?${query}`);
 
-export const deleteUser = async(id) => await deleteApi(Delete_User, id);
+export const deleteUser = async (id) => await deleteApi(Delete_User, id);
 
 export const getViewCustomOffers = async (query) =>
   await getApi(`${Get_Custom_Offer}?${query}`);
@@ -59,7 +60,11 @@ export const getAllOffers = async (query) =>
   await getApi(`${Get_All_Offers}?${query}`);
 
 export const addOffer = (payload) => postApi(ADD_OFFER, payload);
+
 export const activateDeactivateAllOffers = async (payload) =>
   await patchApi(ActiveDeactive_All_Offers, payload);
+
 export const userActiveModal = async (payload) =>
   await patchApi(Active_User, payload);
+
+export const getDashboard = () => getApi(Get_Dashboard);
