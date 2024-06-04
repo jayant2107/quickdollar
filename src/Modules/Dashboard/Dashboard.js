@@ -461,7 +461,7 @@ C491.375,120.986,496,130.003,496,140.117z"
     },
   ];
 
-  // const handleCard = cardInfo?.map((info, index) => ({   
+  // const handleCard = cardInfo?.map((info, index) => ({
   // }));
 
   // const activeUsers = {count: cardInfo?.totalCompletedOffers,
@@ -469,8 +469,7 @@ C491.375,120.986,496,130.003,496,140.117z"
   //     cardOneData: offer?.months
   //   }),
 
-  };
-  console.log(activeUsers, "sdasd");
+  // console.log(activeUsers, "sdasd");
 
   const menuItems = geoCodes?.map((jsonData) => ({
     key: jsonData.id,
