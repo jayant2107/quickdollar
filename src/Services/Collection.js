@@ -15,6 +15,10 @@ const Get_All_GeoCodes = "getAllGeoCodes";
 const Get_Completed_Offer = "getCompletedOffers";
 const Delete_User = "deleteUser";
 const Get_Custom_Offer = "getCustomOffers";
+const Get_All_Offers = "getAllOffers";
+const ADD_OFFER = "addOffer";
+const Active_User = "deactivateAndActivateUser";
+const ActiveDeactive_All_Offers = "activateAndDeactivateAllOffers";
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -40,17 +44,22 @@ export const addFrontPage = (payload) => postApi(ADD_FRONT_PAGE, payload);
 
 export const getAllGeoCodes = () => getApi(Get_All_GeoCodes);
 
-export const getAllFrontPage = async (query) => 
+export const getAllFrontPage = async (query) =>
   await getApi(`${Get_Front_Page}?${query}`);
- 
 
-export const getCompletedoffers = async (query) => 
+export const getCompletedoffers = async (query) =>
   await getApi(`${Get_Completed_Offer}?${query}`);
-  
 
-export const deleteUser = (id) => deleteApi(Delete_User, id);
+export const deleteUser = async(id) => await deleteApi(Delete_User, id);
 
 export const getViewCustomOffers = async (query) =>
   await getApi(`${Get_Custom_Offer}?${query}`);
-  
-  
+
+export const getAllOffers = async (query) =>
+  await getApi(`${Get_All_Offers}?${query}`);
+
+export const addOffer = (payload) => postApi(ADD_OFFER, payload);
+export const activateDeactivateAllOffers = async (payload) =>
+  await patchApi(ActiveDeactive_All_Offers, payload);
+export const userActiveModal = async (payload) =>
+  await patchApi(Active_User, payload);

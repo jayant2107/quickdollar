@@ -1,27 +1,116 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { Dropdown, Space } from "antd";
+import { Dropdown, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { debounce } from "../../../Utils/CommonFunctions";
+import { toast } from "react-toastify";
+import { getAllGeoCodes, getAllOffers } from "../../../Services/Collection";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
+import { DateTime } from "luxon";
+import TableAction from "../../../Components/TableNew/TableActions";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [userData, setUserData] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(5);
+  const [loader, setLoader] = useState(true);
+  // const [editModal, setEditModal] = useState(false);
+  // const [sendModal, setSendModal] = useState(false);
+  // const [deleteModal, setDeleteModal] = useState(false);
+  // const [selectedRecord, setSelectedRecord] = useState(null);
+  const [search, setSearch] = useState("");
+  const [geoCodes, setGeoCodes] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("Select Geo Code");
+
+  const handleSearch = useCallback(
+    debounce((value) => setSearch(value)),
+    []
+  );
+
+  const fetchData = async () => {
+    setLoader(true);
+    try {
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      const res = await getAllOffers(params);
+      if (res?.status === 200) {
+        console.log(res.data.findOffers, "alloffer");
+        setUserData(res?.data?.findOffers);
+        setTotalUsers(res?.data?.totalOffers);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const fetchGeoCordData = async () => {
+    try {
+      const res = await getAllGeoCodes();
+      if (res?.status === 200) {
+        setGeoCodes(res?.msg);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
+    },
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
 
   const columns = [
     {
       title: "Offer Title",
       key: "title",
-      dataIndex: "title",
+      dataIndex: "offerTitle",
+      fixed: "left",
+      width: 150,
+      render: (text, record) => record?.offerTitle || "NA",
     },
     {
       title: "Offer Link",
       key: "link",
-      dataIndex: "link",
-      render: (text, record) => (
-        <a>{record.link}</a>
-      ),
+      dataIndex: "offerLink",
+      render: (text, record) => <a>{record?.offerLink}</a>,
     },
     {
       title: "Offer Amount in $",
@@ -31,43 +120,57 @@ const AllOffers = () => {
     {
       title: "Offer Short Description",
       key: "description",
-      dataIndex: "description",
+      dataIndex: "offerShortDescription",
+      render: (text, record) => record?.offerShortDescription || "NA",
     },
     {
       title: "Geo Code",
       key: "code",
-      dataIndex: "code",
+      dataIndex: "offerCountry",
+      render: (text, record) => record?.offerCountry || "NA",
     },
     {
       title: "Status",
+      dataIndex: "isActive",
       key: "status",
-      dataIndex: "status",
       render: (text, record) => (
-        <StatusStyledText status={record.status}>{record.status}</StatusStyledText>
+        <StatusStyledText
+          status={record.isActive ? "Active" : "Inactive"}
+          // onClick={() => showActiveModal(record)}
+        >
+          {record.isActive ? "Active" : "Inactive"}
+          {record.isActive ? (
+            <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
+          ) : (
+            <RxCross2 style={{ color: "white", fontSize: "20px" }} />
+          )}
+        </StatusStyledText>
       ),
+      // Test commit
     },
     {
       title: "Daily Cap Limit",
       key: "limit",
-      dataIndex: "limit",
+      dataIndex: "dailyCAPLimit",
+      render: (text, record) => record?.dailyCAPLimit || "NA",
     },
     {
       title: "App Installation",
       key: "installation",
-      dataIndex: "installation",
+      dataIndex: "app_install",
       render: (text, record) => (
-        <StyledText text={text}>
-          {text}
+        <StyledText text={record?.app_install ? "Yes" : "No"}>
+          {record?.app_install ? "Yes" : "No"}
         </StyledText>
       ),
     },
     {
       title: "Daily Offer",
       key: "offer",
-      dataIndex: "offer",
+      dataIndex: "isDailyOffer",
       render: (text, record) => (
-        <StyledText text={text}>
-          {text}
+        <StyledText text={record?.isDailyOffer ? "Yes" : "No"}>
+          {record?.isDailyOffer ? "Yes" : "No"}
         </StyledText>
       ),
     },
@@ -75,86 +178,50 @@ const AllOffers = () => {
       title: "APPLICATION GROUP ONE-ANDROID",
       key: "oneAndroid",
       dataIndex: "oneAndroid",
-      render: (text, record) => (
-        <StyledText text={text}>
-          {text}
-        </StyledText>
-      ),
+      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
     },
     {
       title: "APPLICATION GROUP TWO-ANDROID",
       key: "twoAndroid",
       dataIndex: "twoAndroid",
-      render: (text, record) => (
-        <StyledText text={text}>
-          {text}
-        </StyledText>
-      ),
+      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
     },
     {
       title: "APPLICATION GROUP ONE-IOS",
       key: "oneIos",
       dataIndex: "oneIos",
-      render: (text, record) => (
-        <StyledText text={text}>
-          {text}
-        </StyledText>
-      ),
+      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
     },
     {
       title: "APPLICATION GROUP TWO-IOS",
       key: "twoIos",
       dataIndex: "twoIos",
-      render: (text, record) => (
-        <StyledText text={text}>
-          {text}
-        </StyledText>
-      ),
+      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
     },
     {
       title: "Date",
-      key: "date",
-      dataIndex: "date",
+      dataIndex: "createdAt",
+      key: "createdat",
+      render: (text, record) => {
+        const date = DateTime.fromISO(record?.createdAt);
+        return date.toFormat("MMM dd yyyy, HH : mm : ss");
+      },
     },
-  ];
-  const userData = [
     {
-      key: "1",
-      title: "P Branded Surveys - CA 16950",
-      link: "https://www.bigcattracks.com/aff_c?offer_id=16950&aff_id=16085",
-      amount: "NA",
-      description: "$35 Per Survey",
-      code: "CA, IN",
-      status: "Active",
-      limit: "NA",
-      installation: "No",
-      offer: "No",
-      oneAndroid: "Yes",
-      twoAndroid: "No",
-      oneIos: "Yes",
-      twoIos: "No",
-      date: "Nov 06, 2019 18:37:31",
-      action: (
-        <>
-          <EditOutlined style={{ fontSize: "30px" }} />
-          <DeleteOutlined style={{ fontSize: "30px" }} />
-        </>
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 150,
+      render: (text, record) => (
+        <TableAction
+          apply={formActions.apply}
+          edit={formActions.edit}
+          deleteAction={formActions.delete}
+          // onSend={() => showSendModal(record)}
+          // onEdit={() => showEditModal(record)}
+          // onDelete={() => showDeleteModal(record)}
+        />
       ),
-    },
-  ];
-
-  const items = [
-    {
-      label: <a href="/">India(IN)</a>,
-      key: "0",
-    },
-    {
-      label: <a href="/">Japan(JP)</a>,
-      key: "1",
-    },
-    {
-      label: "Italy(IT)",
-      key: "2",
     },
   ];
 
@@ -163,37 +230,67 @@ const AllOffers = () => {
     view: false,
     edit: true,
     delete: true,
-    pathname: "/home/owners/view",
-    pathnameEdit: "/home/owners/edit",
-    deletepath: "delete_owner/",
-    delete_key: "owners_id",
   };
 
   const scrollConfig = {
     x: 2100, // Horizontal scrolling
   };
 
+  const menuItems = geoCodes?.map((jsonData) => ({
+    key: jsonData.id,
+    label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+  }));
+
+  const handleOptionClick = (option) => {
+    setSelectedOption(option?.label);
+  };
+
+  const items = menuItems?.map((item) => ({
+    key: item?.key,
+    label: item?.label,
+    onClick: () => handleOptionClick(item),
+  }));
+
+  useEffect(() => {
+    fetchData();
+    fetchGeoCordData(); // Fetch geo codes
+  }, [currentPage, pageSize, search]);
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
-        <Dropdown menu={{ items }} trigger={["click"]}>
-          <a className="dropdown" onClick={(e) => e.preventDefault()}>
-            <Space
+        <Dropdown
+            menu={{
+              items,
+              style: {
+                maxHeight: "200px",
+                overflowY: "auto",
+              },
+            }}
+            trigger={["click"]}
+            getPopupContainer={(trigger) => trigger.parentNode}
+          >
+            <div
               style={{
+                border: "1px solid #000",
+                padding: "10px",
+                width: "20rem",
+                borderRadius: "5px",
+                cursor: "pointer",
                 display: "flex",
                 justifyContent: "space-between",
-                opacity: "0.5",
+                alignItems: "center",
               }}
             >
-              Afghanistan AF
+              <span>{selectedOption}</span>
               <DownOutlined />
-            </Space>
-          </a>
-        </Dropdown>
+            </div>
+          </Dropdown>
         <div style={{ display: "flex", gap: "20px" }}>
-          <button style={{ background: "#ff0e0e" }} >De-active All Offers</button>
-          <button >Active All Offers</button>{" "}
+          <button style={{ background: "#ff0e0e" }}>
+            De-active All Offers
+          </button>
+          <button>Active All Offers</button>
         </div>
       </div>
 
@@ -202,7 +299,9 @@ const AllOffers = () => {
           columns={columns}
           data={userData}
           scroll={scrollConfig}
-          Actions={formActions}
+          loader={loader}
+          pagination={paginationConfig}
+          handleSearch={handleSearch}
         />
       </div>
     </AllUserWrapper>
@@ -210,6 +309,7 @@ const AllOffers = () => {
 };
 
 export default AllOffers;
+
 
 const AllUserWrapper = styled.div`
   padding-bottom: 35px;
@@ -279,14 +379,9 @@ const AllUserWrapper = styled.div`
 
 const StyledText = styled.span`
   color: #fff;
-  // background: linear-gradient(
-  //   97.43deg,
-  //   rgb(47, 128, 237) 0%,
-  //   rgb(86, 204, 242) 100%
-  // );
-  background-color: ${({text}) =>
-    text == "Yes" ? "#00e633" : "red"};
-  
+
+  background-color: ${({ text }) => (text == "Yes" ? "#00e633" : "red")};
+
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;
@@ -296,8 +391,7 @@ const StyledText = styled.span`
 
 const StatusStyledText = styled.span`
   color: #fff;
-  background-color: ${({ status }) =>
-    status == "Active" ? "#00e633" : "red"};
+  background-color: ${({ status }) => (status == "Active" ? "#00e633" : "red")};
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;

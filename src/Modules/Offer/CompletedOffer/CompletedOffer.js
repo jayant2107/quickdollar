@@ -166,6 +166,7 @@ const CompletedOffers = () => {
           Actions={formActions}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          loader={loader}
         />
       </div>
     </AllUserWrapper>
