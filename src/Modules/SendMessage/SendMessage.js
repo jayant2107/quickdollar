@@ -82,6 +82,7 @@ const SendMessage = () => {
                                             marginBottom: "3px",
                                         }}
                                         value={values.senderId || null}
+                                        onBlur={() => setFieldTouched('senderId', true)}
                                         onChange={(value) => setFieldValue('senderId', value)}
                                         options={[
                                             {
@@ -223,6 +224,9 @@ const SelectField = styled(Select)`
     border-color: #e5e5e5 !important; 
     box-shadow: none !important;
 text-align: left;
+.ant-select-selection-placeholder{
+    color:rgb(102, 102, 102) !important;
+  }
     &:hover, &:focus {
       outline: none !important;
       box-shadow: none !important;
