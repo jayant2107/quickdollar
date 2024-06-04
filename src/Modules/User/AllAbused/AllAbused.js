@@ -34,6 +34,7 @@ const AllAbusedUsers = () => {
     debounce((value) => setSearch(value)),
     []
   );
+
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -269,6 +270,7 @@ const AllAbusedUsers = () => {
     setSelectedRecord(null);
   };
   const handleDelete=async(id)=>{
+    console.log(id,"abused userrr")
     let res = await deleteUser(id);
     if (res?.status === 200) {
        fetchData()
@@ -289,7 +291,7 @@ const AllAbusedUsers = () => {
           showModal={showDeleteModal}
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
-          record={selectedRecord}
+          id={selectedRecord.idUser}
           handleDelete={handleDelete}
         />
       )}

@@ -2,10 +2,10 @@ import { Modal } from "antd";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 
-const DeleteModal = ({ handleCancel, deleteModal, record, handleDelete }) => {
-  console.log(record.idUser, "recorddd delete")
+const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
+  console.log(id, "recorddd delete")
   const handleDeletes = async () => {
-    let res =await handleDelete({ id: record.idUser })
+    let res =await handleDelete({ id: id})
     if (res?.status === 200) {
       toast.success("Delete Successfully");
       handleCancel();

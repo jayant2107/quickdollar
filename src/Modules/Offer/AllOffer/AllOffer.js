@@ -6,11 +6,13 @@ import { Dropdown, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { debounce } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
-import { getAllGeoCodes, getAllOffers } from "../../../Services/Collection";
+import { activateDeactivateAllOffers, deleteOffers, getAllGeoCodes, getAllOffers } from "../../../Services/Collection";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
+import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
+import EditUserModal from "../../../Components/EditModal/EditUserModal";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -26,11 +28,41 @@ const AllOffers = () => {
   const [search, setSearch] = useState("");
   const [geoCodes, setGeoCodes] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Select Geo Code");
+  const [editModal, setEditModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
     []
   );
+  const handleDelete=async(id)=>{
+    let res = await deleteOffers(id);
+    if (res?.status === 200) {
+       fetchData()
+    }
+    return res;
+   
+
+  }
+  const handleDeleteCancel = () => {
+    setDeleteModal(false);
+    setSelectedRecord(null);
+  };
+  const showEditModal = (record) => {
+    setSelectedRecord(record);
+    setEditModal(true);
+  };
+
+  const showDeleteModal = (record) => {
+    setSelectedRecord(record);
+    setDeleteModal(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModal(false);
+    setSelectedRecord(null);
+  };
 
   const fetchData = async () => {
     setLoader(true);
@@ -80,6 +112,43 @@ const AllOffers = () => {
       setLoader(false);
     }
   };
+  const ActiveAllUser=async()=>{
+    let res= await activateDeactivateAllOffers({isActive:"1"})
+    if (res?.status === 200) {
+      console.log(res.status)
+      let fetch = fetchData()
+      console.log(fetch, "fetchhhh")
+      toast.success("All Offers Activate Successfully");
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+
+  }
+  const DeactiveAllUser=async()=>{
+    let res= await activateDeactivateAllOffers({isActive:"0"})
+    console.log(res)
+    if (res?.status === 200) {
+      console.log(res.status)
+      let fetch = fetchData()
+      console.log(fetch, "fetchhhh")
+      toast.success("All Offers Deactivate Successfully");
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+
+  }
 
   const paginationConfig = {
     current: currentPage,
@@ -218,8 +287,8 @@ const AllOffers = () => {
           edit={formActions.edit}
           deleteAction={formActions.delete}
           // onSend={() => showSendModal(record)}
-          // onEdit={() => showEditModal(record)}
-          // onDelete={() => showDeleteModal(record)}
+          onEdit={() => showEditModal(record)}
+          onDelete={() => showDeleteModal(record)}
         />
       ),
     },
@@ -257,6 +326,25 @@ const AllOffers = () => {
   }, [currentPage, pageSize, search]);
   return (
     <AllUserWrapper byTheme={byTheme}>
+       {deleteModal && (
+        <DeleteModal
+          showModal={showDeleteModal}
+          handleCancel={handleDeleteCancel}
+          deleteModal={deleteModal}
+          id={selectedRecord.idOffer}
+          handleDelete={handleDelete}
+        />
+      )}
+      {editModal && (
+        <EditUserModal
+          showEditModal={showEditModal}
+          handleEditCancel={handleEditCancel}
+          editModal={editModal}
+          record={selectedRecord}
+          viewLoader={loader}
+          fetchData={fetchData}
+        />
+      )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
         <Dropdown
@@ -287,10 +375,10 @@ const AllOffers = () => {
             </div>
           </Dropdown>
         <div style={{ display: "flex", gap: "20px" }}>
-          <button style={{ background: "#ff0e0e" }}>
+          <button  onClick={ActiveAllUser}>Active All Offers</button>
+          <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }}>
             De-active All Offers
           </button>
-          <button>Active All Offers</button>
         </div>
       </div>
 
