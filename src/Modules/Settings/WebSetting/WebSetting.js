@@ -294,6 +294,7 @@ const WebSetting = () => {
                                                 value={values.countries}
                                                 onChange={(value) => setFieldValue('countries', value)}
                                                 options={options}
+                                                onBlur={() => setFieldTouched('countries', true)}
                                             />
                                             <RequiredWrapper>
                                                 <ErrorMessage name="countries" />
@@ -301,6 +302,7 @@ const WebSetting = () => {
                                         </ChooseCountry>
                                     </FieldContainer>
                                 </FieldWrapper>
+
                             </InputWrapper>
                             <Footer>
                                 <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
@@ -400,7 +402,9 @@ const SelectField = styled(Select)`
         align-items: center;
         border-color: #e5e5e5 !important; 
         box-shadow: none !important;
-
+        .ant-select-selection-placeholder{
+            color:rgb(102, 102, 102) !important;
+          }
         &:hover, &:focus {
             outline: none !important;
             box-shadow: none !important;

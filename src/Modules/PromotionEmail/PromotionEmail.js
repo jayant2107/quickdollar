@@ -150,9 +150,13 @@ const PromotionEmail = () => {
                                             placeholder="Additional text"
                                             rows={3}
                                             onChange={(e) => setFieldValue('additionalText', e.target.value)}
-                                            value={values.additionalText} />
+                                            value={values.additionalText}
+                                            onBlur={() => setFieldTouched("additionalText", true)}
+                                        />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="additionalText" />
+                                            {touched.additionalText && errors.additionalText && (
+                                                <ErrorMessage name="additionalText" />
+                                            )}
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -219,6 +223,7 @@ const PromotionEmail = () => {
                                                 value={values.countries}
                                                 onChange={(value) => setFieldValue('countries', value)}
                                                 options={options}
+                                                onBlur={() => setFieldTouched('countries', true)}
                                             />
                                             <Checkbox checked={selectAll} onChange={(e) => {
                                                 const { checked } = e.target;
@@ -353,7 +358,9 @@ const SelectField = styled(Select)`
         align-items: center;
         border-color: #e5e5e5 !important; 
         box-shadow: none !important;
-
+        .ant-select-selection-placeholder{
+            color:rgb(102, 102, 102) !important;
+          }
         &:hover, &:focus {
             outline: none !important;
             box-shadow: none !important;
@@ -382,6 +389,7 @@ const ChooseCountry = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+    text-align:left
 `;
 
 const ResetButton = styled(Button)`

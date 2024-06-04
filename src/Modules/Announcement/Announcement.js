@@ -34,7 +34,7 @@ const Announcement = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ setFieldValue, values }) => (
+                    {({ setFieldValue, values, setFieldTouched }) => (
                         <Form>
                             <InputWrapper>
                                 <div>
@@ -50,6 +50,7 @@ const Announcement = () => {
                                             { value: 'Yiminghe', label: 'Yiminghe' },
                                             { value: 'disabled', label: 'Disabled', disabled: true },
                                         ]}
+                                        onBlur={() => setFieldTouched('user', true)}
                                     />
                                     <RequiredWrapper>
                                         <ErrorMessage name="user" />
@@ -72,6 +73,7 @@ const Announcement = () => {
                                         rows={5}
                                         onChange={(e) => setFieldValue('message', e.target.value)}
                                         value={values.message}
+                                        onBlur={() => setFieldTouched('message', true)}
                                     />
                                     <RequiredWrapper>
                                         <ErrorMessage name="message" />
@@ -179,10 +181,13 @@ const SelectField = styled(Select)`
   .ant-select-selector {
     height: 43px !important;
     display: flex;
+    text-align: left;
     align-items: center;
     border-color: #e5e5e5 !important; 
     box-shadow: none !important;
-
+    .ant-select-selection-placeholder{
+        color:rgb(102, 102, 102) !important;
+      }
     &:hover, &:focus {
       outline: none !important;
       box-shadow: none !important;

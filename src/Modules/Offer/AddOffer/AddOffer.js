@@ -16,13 +16,20 @@ const PromotionEmail = () => {
     offerLink: '',
     offerAmount: "",
     offerText: "",
-    offerShortDescription:'',
-    offerLongDescription:'',
-    offerCreatedFor:'',
-    customPostbaclParams: "",
+    offerShortDescription: '',
+    offerLongDescription: '',
+    offerCreatedFor: '',
     countries: [],
-fraudUser:"",
-capLimit:"",
+    fraudUser: "",
+    capLimit: "",
+    isActive: "false",
+    isHotOffer: "false",
+    hotOfferFor: 'hotOfferForWeb',
+    appInstallation: 'false',
+    callbackType: 'false',
+    repeatedOffer: 'false',
+    relistOffer: false,
+    urlType: false,
   };
 
   const toolbarOptions = [
@@ -36,8 +43,6 @@ capLimit:"",
     [{ align: [] }],
   ];
 
-  const [value, setValue] = useState("");
-
   const validationSchema = yup.object().shape({
     title: yup.string().required("Title is Required"),
     h1Title: yup.string().required('H1 title is required'),
@@ -47,12 +52,12 @@ capLimit:"",
       'is-number',
       'Enter number only',
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
-  ),
-  offerText: yup.string().required('Offer Text is required'),
-  offerShortDescription: yup.string().required('Offer Short Description is required'),
+    ),
+    offerText: yup.string().required('Offer Text is required'),
+    offerShortDescription: yup.string().required('Offer Short Description is required'),
     offerLongDescription: yup.string().required('Offer Long Description is required'),
     offerCreatedFor: yup.string().required('Offer Created is required'),
-    customPostbaclParams: yup.string().required('Custom Postback Params is required'),
+    customPostbaclParams: yup.string(),
     countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
     fraudUser: yup.string().required('Fraud User is required'),
     capLimit: yup.string().required('Cap Limit is required'),
@@ -62,7 +67,8 @@ capLimit:"",
     console.log("Form values:", values);
     resetForm();
     setFieldValue("additionalText", "");
-    setValue("");
+    setH1TitleValue("");
+    setLongDescriptionValue('');
   };
 
   const options = [];
@@ -75,6 +81,8 @@ capLimit:"",
 
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [h1TitleValue, setH1TitleValue] = useState("");
+  const [longDescriptionValue, setLongDescriptionValue] = useState("");
 
   return (
     <div>
@@ -102,14 +110,15 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
+
                 <FieldWrapper>
                   <Label>Offer H1 Title</Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
-                      value={value}
+                      value={h1TitleValue}
                       onChange={(content) => {
-                        setValue(content);
+                        setH1TitleValue(content);
                         setFieldValue("h1Title", content);
                         setIsEmpty(content === "<p><br></p>");
                       }}
@@ -118,7 +127,7 @@ capLimit:"",
                       onBlur={() => {
                         setFieldTouched("h1Title", true);
                         if (isEmpty) {
-                          setFieldValue("H1h1TitleTitle", "");
+                          setFieldValue("h1Title", "");
                         }
                       }}
                     />
@@ -185,24 +194,25 @@ capLimit:"",
                       onChange={(e) =>
                         setFieldValue("offerShortDescription", e.target.value)
                       }
+                      onBlur={() => setFieldTouched("offerShortDescription", true)}
                       value={values.offerShortDescription}
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="offerShortDescription" />
+                      {touched.offerShortDescription && errors.offerShortDescription && (
+                        <ErrorMessage name="offerShortDescription" />
+                      )}
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
-
 
                 <FieldWrapper>
                   <Label>Offer Long Description</Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
-                      value={value}
+                      value={longDescriptionValue}
                       onChange={(content) => {
-                        setValue(content);
+                        setLongDescriptionValue(content);
                         setFieldValue("offerLongDescription", content);
                         setIsEmpty(content === "<p><br></p>");
                       }}
@@ -231,25 +241,25 @@ capLimit:"",
                         <div>
                           <Field
                             type="radio"
-                            name="isOffer"
-                            value="yes"
-                            id="isOfferYes"
+                            name="isActive"
+                            value="true"
+                            id="isActiveYes"
                           />
-                          <RadioLabel htmlFor="isOfferYes">Yes</RadioLabel>
+                          <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="isOffer"
-                            value="no"
-                            id="isOfferNo"
+                            name="isActive"
+                            value="false"
+                            id="isActiveNo"
                           />
-                          <RadioLabel htmlFor="isOfferNo">No</RadioLabel>
+                          <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
                         </div>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
-                      <ErrorMessage name="isOffer" />
+                      <ErrorMessage name="isActive" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -263,7 +273,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="isHotOffer"
-                            value="yes"
+                            value="true"
                             id="isHotOfferYes"
                           />
                           <RadioLabel htmlFor="isHotOfferYes">Yes</RadioLabel>
@@ -272,7 +282,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="isHotOffer"
-                            value="no"
+                            value="false"
                             id="isHotOfferNo"
                           />
                           <RadioLabel htmlFor="isHotOfferNo">No</RadioLabel>
@@ -285,7 +295,6 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
                 <FieldWrapper>
                   <Label>Hot Offer For</Label>
                   <FieldContainer>
@@ -295,7 +304,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="hotOfferFor"
-                            value="yes"
+                            value="hotOfferForWeb"
                             id="hotOfferForWeb"
                           />
                           <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
@@ -304,7 +313,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="hotOfferFor"
-                            value="no"
+                            value="hotOfferForMobile"
                             id="hotOfferForMobile"
                           />
                           <RadioLabel htmlFor="hotOfferForMobile">Mobile</RadioLabel>
@@ -313,7 +322,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="hotOfferFor"
-                            value="no"
+                            value="hotOfferForBoth"
                             id="hotOfferForBoth"
                           />
                           <RadioLabel htmlFor="hotOfferForBoth">Both</RadioLabel>
@@ -326,7 +335,6 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
                 <FieldWrapper>
                   <Label>App Installation</Label>
                   <FieldContainer>
@@ -335,20 +343,20 @@ capLimit:"",
                         <div>
                           <Field
                             type="radio"
-                            name="redeemBtn"
+                            name="appInstallation"
                             value="false"
-                            id="redeemBtnNo"
+                            id="appInstallationNo"
                           />
-                          <RadioLabel htmlFor="redeemBtnNo">No</RadioLabel>
+                          <RadioLabel htmlFor="appInstallationNo">No</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="redeemBtn"
+                            name="appInstallation"
                             value="true"
-                            id="redeemBtnYes"
+                            id="appInstallationYes"
                           />
-                          <RadioLabel htmlFor="redeemBtnYes">
+                          <RadioLabel htmlFor="appInstallationYes">
                             Yes
                           </RadioLabel>
                         </div>
@@ -361,8 +369,6 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
-
                 <FieldWrapper>
                   <Label>Conversion Callback Type</Label>
                   <FieldContainer>
@@ -372,7 +378,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="callbackType"
-                            value="yes"
+                            value="false"
                             id="callbackTypeYes"
                           />
                           <RadioLabel htmlFor="callbackTypeYes">Remove from dashboard without conversion</RadioLabel>
@@ -381,7 +387,7 @@ capLimit:"",
                           <Field
                             type="radio"
                             name="callbackType"
-                            value="no"
+                            value="true"
                             id="callbackTypeNo"
                           />
                           <RadioLabel htmlFor="callbackTypeNo">Remove from dashboard with conversion</RadioLabel>
@@ -394,10 +400,6 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
-
-
-
                 <FieldWrapper>
                   <Label>Daily repeated offer</Label>
                   <FieldWrapper>
@@ -405,20 +407,20 @@ capLimit:"",
                       <div>
                         <Field
                           type="radio"
-                          name="redeemBtn"
+                          name="repeatedOffer"
                           value="false"
-                          id="redeemBtnNo"
+                          id="repeatedOfferNo"
                         />
-                        <RadioLabel htmlFor="redeemBtnNo">No</RadioLabel>
+                        <RadioLabel htmlFor="repeatedOfferNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="redeemBtn"
+                          name="repeatedOffer"
                           value="true"
-                          id="redeemBtnYes"
+                          id="repeatedOfferYes"
                         />
-                        <RadioLabel htmlFor="redeemBtnYes">
+                        <RadioLabel htmlFor="repeatedOfferYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -427,23 +429,13 @@ capLimit:"",
                   </FieldWrapper>
                 </FieldWrapper>
 
-
                 <FieldWrapper>
                   <Label>Relist Offer</Label>
                   <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
                     <Checkbox
-                      checked={selectAll}
-                      onChange={(e) => {
-                        const { checked } = e.target;
-                        setSelectAll(checked);
-                        const allCountries = options.map(
-                          (option) => option.value
-                        );
-                        setFieldValue(
-                          "relistOffer",
-                          checked ? allCountries : []
-                        );
-                      }}
+                      name="relistOffer"
+                      checked={values.relistOffer}
+                      onChange={(e) => setFieldValue("relistOffer", e.target.checked)}
                     >
                       Relist Offer
                     </Checkbox>
@@ -453,57 +445,45 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
                 <FieldWrapper>
                   <Label>Offer created for</Label>
                   <SelectFieldWrapper>
-                  <SelectField
-                    placeholder="Select user"
-                    defaultValue={initialValues.offerCreatedFor}
-                    style={{
-                      width: "100%",
-                      marginBottom: "3px",
-                    }}
-                    value={values.offerCreatedFor || null}
-                    onChange={(value) => setFieldValue('offerCreatedFor', value)}
-                    options={[
-                      {
-                        value: '0',
-                        label: 'IOS',
-                      },
-                      {
-                        value: '1',
-                        label: 'Android',
-                      },
-                      {
-                        value: '2',
-                        label: 'All Users',
-                      },
-                    ]}
-                  />
-                  <RequiredWrapper>
-                    <ErrorMessage name="offerCreatedFor" />
-                  </RequiredWrapper>
+                    <SelectField
+                      placeholder="Select user"
+                      defaultValue={initialValues.offerCreatedFor}
+                      style={{
+                        width: "100%",
+                        marginBottom: "3px",
+                      }}
+                      value={values.offerCreatedFor || null}
+                      onChange={(value) => setFieldValue('offerCreatedFor', value)}
+                      options={[
+                        {
+                          value: '0',
+                          label: 'IOS',
+                        },
+                        {
+                          value: '1',
+                          label: 'Android',
+                        },
+                        {
+                          value: '2',
+                          label: 'All Users',
+                        },
+                      ]}
+                    />
+                    <RequiredWrapper>
+                      <ErrorMessage name="offerCreatedFor" />
+                    </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
-
 
                 <FieldWrapper>
                   <Label>Select offer url type</Label>
                   <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
                     <Checkbox
-                      checked={selectAll}
-                      onChange={(e) => {
-                        const { checked } = e.target;
-                        setSelectAll(checked);
-                        const allCountries = options.map(
-                          (option) => option.value
-                        );
-                        setFieldValue(
-                          "relistOffer",
-                          checked ? allCountries : []
-                        );
-                      }}
+                      checked={values.urlType}
+                      onChange={(e) => setFieldValue("urlType", e.target.checked)}
                     >
                       is static URL
                     </Checkbox>
@@ -513,8 +493,7 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
-                <FieldWrapper>
+                {!values.urlType && (<FieldWrapper>
                   <Label>Custom Postback Params</Label>
                   <FieldContainer>
                     <InputField
@@ -526,8 +505,7 @@ capLimit:"",
                       <ErrorMessage name="customPostbaclParams" />
                     </RequiredWrapper>
                   </FieldContainer>
-                </FieldWrapper>
-
+                </FieldWrapper>)}
 
                 <FieldWrapper>
                   <Label>Offer Country Code</Label>
@@ -579,37 +557,36 @@ capLimit:"",
                   </FieldContainer>
                 </FieldWrapper>
 
-
                 <FieldWrapper>
                   <Label>Slect fraud user to unlisted from offer</Label>
                   <SelectFieldWrapper>
-                  <SelectField
-                    placeholder="Select user"
-                    defaultValue={initialValues.fraudUser}
-                    style={{
-                      width: "100%",
-                      marginBottom: "3px",
-                    }}
-                    value={values.senderId || null}
-                    onChange={(value) => setFieldValue('fraudUser', value)}
-                    options={[
-                      {
-                        value: '0',
-                        label: 'IOS',
-                      },
-                      {
-                        value: '1',
-                        label: 'Android',
-                      },
-                      {
-                        value: '2',
-                        label: 'All Users',
-                      },
-                    ]}
-                  />
-                  <RequiredWrapper>
-                    <ErrorMessage name="fraudUser" />
-                  </RequiredWrapper>
+                    <SelectField
+                      placeholder="Select user"
+                      defaultValue={initialValues.fraudUser}
+                      style={{
+                        width: "100%",
+                        marginBottom: "3px",
+                      }}
+                      value={values.fraudUser || null}
+                      onChange={(value) => setFieldValue('fraudUser', value)}
+                      options={[
+                        {
+                          value: '0',
+                          label: 'IOS',
+                        },
+                        {
+                          value: '1',
+                          label: 'Android',
+                        },
+                        {
+                          value: '2',
+                          label: 'All Users',
+                        },
+                      ]}
+                    />
+                    <RequiredWrapper>
+                      <ErrorMessage name="fraudUser" />
+                    </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
 
@@ -736,6 +713,10 @@ const SelectField = styled(Select)`
     border-color: #e5e5e5 !important;
     box-shadow: none !important;
 
+.ant-select-selection-placeholder{
+      color:rgb(102, 102, 102) !important;
+    }
+
     &:hover,
     &:focus {
       outline: none !important;
@@ -765,6 +746,7 @@ const ChooseCountry = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  text-align:left;
 `;
 
 const ChooseFile = styled(Field)`
