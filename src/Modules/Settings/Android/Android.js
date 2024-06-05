@@ -6,24 +6,25 @@ import * as yup from "yup";
 import { Checkbox } from 'antd';
 import { getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
+import { addAndroidSetting } from '../../../Services/Collection';
 
 const Android = () => {
 
   const initialValues = {
-    title: '',
-    subTitle: '',
+    appTitle: '',
+    appSubTitle: '',
     headerText: '',
     currencySign: '',
-    countries: [],
-    redeemBtn: 'true',
-    userBalance: 'true',
-    bonusBtn: 'true',
-    bonusBalance: 'false',
-    maintananceMode: 'false',
-    displayCount: '',
-    allOffer: 'false',
+    cubeOfferCountryCode: [],
+    showRedeembutton: 'true',
+    showUserBalance: 'true',
+    showBonusButton: 'true',
+    showBonusBalance: 'true',
+    maintanancemodeon: 'false',
+    offerDisplayCount: '',
+    pauseAllOffers: 'false',
     locationService: 'true',
-    completedOffer: 'true',
+    completedOffers: 'true',
     payment: 'true',
     inviteModule: 'true',
   };
@@ -31,52 +32,68 @@ const Android = () => {
   const [geoCodes, setGeoCodes] = useState([]);
 
   const validationSchema = yup.object().shape({
-    title: yup.string().required('Title is required'),
-    subTitle: yup.string().required('Subtitle is required'),
+    appTitle: yup.string().required('Title is required'),
+    appSubTitle: yup.string().required('Subtitle is required'),
     headerText: yup.string().required('Header text is required'),
     currencySign: yup.string().required('Currency Sign text is required'),
-    countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
-    displayCount: yup.string().required('Display Count is required').test(
+    cubeOfferCountryCode: yup.array().min(1, 'Countries are required').required('Countries are required'),
+    offerDisplayCount: yup.string().required('Display Count is required').test(
       'is-number',
       'Enter number only',
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
     ),
   });
 
-  const handleSubmit = (values, { resetForm, setFieldValue }) => {
-    console.log('Form values:', values);
-    resetForm();
-    setFieldValue('additionalText', '');
+  const handleSubmit = async (values, { resetForm, setFieldValue }) => {
+    try {
+      let res = await addAndroidSetting(values);
+      if (res?.status === 200) {
+        toast.success("Message send Successfully");
+        resetForm();
+        setFieldValue('additionalText', '');
+      }
+      else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
   };
 
   const fetchGeoCordData = async () => {
     try {
-        const res = await getAllGeoCodes();
-        if (res?.status === 200) {
-            setGeoCodes(res?.msg);
-        } else {
-            let message =
-                res?.response?.data?.message ||
-                res?.message ||
-                res?.error ||
-                "Something went wrong";
-            toast.error(message);
-        }
+      const res = await getAllGeoCodes();
+      if (res?.status === 200) {
+        setGeoCodes(res?.msg);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
     } catch (error) {
-        console.log(error, "error");
-        toast.error(error?.message || "Something went wrong");
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
     }
-};
+  };
 
-const options = geoCodes.map(jsonData => ({
+  const options = geoCodes.map(jsonData => ({
     label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
     value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
   }));
 
-  
-useEffect(() => {
+
+  useEffect(() => {
     fetchGeoCordData();
-}, [])
+  }, [])
 
   return (
     <div>
@@ -93,9 +110,9 @@ useEffect(() => {
                 <FieldWrapper>
                   <Label>Application Title</Label>
                   <FieldContainer>
-                    <InputField name="title" placeholder="Application title" />
+                    <InputField name="appTitle" placeholder="Application title" />
                     <RequiredWrapper>
-                      <ErrorMessage name="title" />
+                      <ErrorMessage name="appTitle" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -103,9 +120,9 @@ useEffect(() => {
                 <FieldWrapper>
                   <Label>Application Sub-Title</Label>
                   <FieldContainer>
-                    <InputField name="subTitle" placeholder="Application sub-title" />
+                    <InputField name="appSubTitle" placeholder="Application sub-title" />
                     <RequiredWrapper>
-                      <ErrorMessage name="subTitle" />
+                      <ErrorMessage name="appSubTitle" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -138,20 +155,20 @@ useEffect(() => {
                       <div>
                         <Field
                           type="radio"
-                          name="redeemBtn"
+                          name="showRedeembutton"
                           value="false"
-                          id="redeemBtnNo"
+                          id="showRedeembuttonNo"
                         />
-                        <RadioLabel htmlFor="redeemBtnNo">No</RadioLabel>
+                        <RadioLabel htmlFor="showRedeembuttonNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="redeemBtn"
+                          name="showRedeembutton"
                           value="true"
-                          id="redeemBtnYes"
+                          id="showRedeembuttonYes"
                         />
-                        <RadioLabel htmlFor="redeemBtnYes">
+                        <RadioLabel htmlFor="showRedeembuttonYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -167,20 +184,20 @@ useEffect(() => {
                       <div>
                         <Field
                           type="radio"
-                          name="userBalance"
+                          name="showUserBalance"
                           value="false"
-                          id="userBalanceNo"
+                          id="showUserBalanceNo"
                         />
-                        <RadioLabel htmlFor="userBalanceNo">No</RadioLabel>
+                        <RadioLabel htmlFor="showUserBalanceNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="userBalance"
+                          name="showUserBalance"
                           value="true"
-                          id="userBalanceYes"
+                          id="showUserBalanceYes"
                         />
-                        <RadioLabel htmlFor="userBalanceYes">
+                        <RadioLabel htmlFor="showUserBalanceYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -196,20 +213,20 @@ useEffect(() => {
                       <div>
                         <Field
                           type="radio"
-                          name="bonusBtn"
+                          name="showBonusButton"
                           value="false"
-                          id="bonusBtnNo"
+                          id="showBonusButtonNo"
                         />
-                        <RadioLabel htmlFor="bonusBtnNo">No</RadioLabel>
+                        <RadioLabel htmlFor="showBonusButtonNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="bonusBtn"
+                          name="showBonusButton"
                           value="true"
-                          id="bonusBtnYes"
+                          id="showBonusButtonYes"
                         />
-                        <RadioLabel htmlFor="bonusBtnYes">
+                        <RadioLabel htmlFor="showBonusButtonYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -225,20 +242,20 @@ useEffect(() => {
                       <div>
                         <Field
                           type="radio"
-                          name="bonusBalance"
+                          name="showBonusBalance"
                           value="false"
-                          id="bonusBalanceNo"
+                          id="showBonusBalanceNo"
                         />
-                        <RadioLabel htmlFor="bonusBalanceNo">No</RadioLabel>
+                        <RadioLabel htmlFor="showBonusBalanceNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="bonusBalance"
+                          name="showBonusBalance"
                           value="true"
-                          id="bonusBalanceYes"
+                          id="showBonusBalanceYes"
                         />
-                        <RadioLabel htmlFor="bonusBalanceYes">
+                        <RadioLabel htmlFor="showBonusBalanceYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -252,12 +269,12 @@ useEffect(() => {
                   <Label>Maintanance Mode ON ?</Label>
                   <FieldContainer>
                     <Field
-                      name="maintananceMode"
+                      name="maintanancemodeon"
                       render={({ field }) => (
                         <Checkbox
                           {...field}
                           checked={field.value === 'true'}
-                          onChange={e => setFieldValue('maintananceMode', e.target.checked ? 'true' : 'false')}
+                          onChange={e => setFieldValue('maintanancemodeon', e.target.checked ? 'true' : 'false')}
                         >
                         </Checkbox>
                       )}
@@ -268,9 +285,9 @@ useEffect(() => {
                 <FieldWrapper>
                   <Label>Offer display count</Label>
                   <FieldContainer>
-                    <InputField name="displayCount" placeholder="Offer display count" />
+                    <InputField name="offerDisplayCount" placeholder="Offer display count" />
                     <RequiredWrapper>
-                      <ErrorMessage name="displayCount" />
+                      <ErrorMessage name="offerDisplayCount" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -282,20 +299,20 @@ useEffect(() => {
                       <div>
                         <Field
                           type="radio"
-                          name="allOffer"
+                          name="pauseAllOffers"
                           value="false"
-                          id="allOfferNo"
+                          id="pauseAllOffersNo"
                         />
-                        <RadioLabel htmlFor="allOfferNo">No</RadioLabel>
+                        <RadioLabel htmlFor="pauseAllOffersNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="allOffer"
+                          name="pauseAllOffers"
                           value="true"
-                          id="allOfferYes"
+                          id="pauseAllOffersYes"
                         />
-                        <RadioLabel htmlFor="allOfferYes">
+                        <RadioLabel htmlFor="pauseAllOffersYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -342,20 +359,20 @@ useEffect(() => {
                       <div>
                         <Field
                           type="radio"
-                          name="completedOffer"
+                          name="completedOffers"
                           value="false"
-                          id="completedOfferNo"
+                          id="completedOffersNo"
                         />
-                        <RadioLabel htmlFor="completedOfferNo">No</RadioLabel>
+                        <RadioLabel htmlFor="completedOffersNo">No</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
-                          name="completedOffer"
+                          name="completedOffers"
                           value="true"
-                          id="completedOfferYes"
+                          id="completedOffersYes"
                         />
-                        <RadioLabel htmlFor="completedOfferYes">
+                        <RadioLabel htmlFor="completedOffersYes">
                           Yes
                         </RadioLabel>
                       </div>
@@ -403,13 +420,13 @@ useEffect(() => {
                         allowClear
                         style={{ width: '100%' }}
                         placeholder="Please select"
-                        value={values.countries}
-                        onChange={(value) => setFieldValue('countries', value)}
+                        value={values.cubeOfferCountryCode}
+                        onChange={(value) => setFieldValue('cubeOfferCountryCode', value)}
                         options={options}
-                        onBlur={() => setFieldTouched('countries', true)}
+                        onBlur={() => setFieldTouched('cubeOfferCountryCode', true)}
                       />
                       <RequiredWrapper>
-                        <ErrorMessage name="countries" />
+                        <ErrorMessage name="cubeOfferCountryCode" />
                       </RequiredWrapper>
                     </ChooseCountry>
                   </FieldContainer>

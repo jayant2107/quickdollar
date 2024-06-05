@@ -8,22 +8,23 @@ import 'react-quill/dist/quill.snow.css';
 import { Checkbox } from 'antd';
 import { toast } from "react-toastify";
 import { getAllGeoCodes } from '../../../Services/Collection';
-
+import { addWebSetting } from '../../../Services/Collection';
 
 const WebSetting = () => {
 
     const initialValues = {
-        title: '',
-        subTitle: '',
+        appTitle: '',
+        appSubTitle: '',
         headerText: '',
         currencySign: '',
-        welcomeEmail: "",
-        countries: [],
-        redeemBtn: 'true',
-        userBalance: 'true',
-        bonusBtn: 'false',
-        bonusBalance: 'false',
-        maintananceMode: 'false',
+
+        emailcontent: "",
+        cubeOfferCountryCode: [],
+        showRedeembutton: 'true',
+        showUserBalance: 'true',
+        showBonusButton: 'false',
+        showBonusBalance: 'false',
+        maintanancemodeon: 'false',
     };
 
     const toolbarOptions = [
@@ -41,19 +42,35 @@ const WebSetting = () => {
     const [geoCodes, setGeoCodes] = useState([]);
 
     const validationSchema = yup.object().shape({
-        title: yup.string().required('Title is required'),
-        subTitle: yup.string().required('Subtitle is required'),
+        appTitle: yup.string().required('Title is required'),
+        appSubTitle: yup.string().required('Subtitle is required'),
         headerText: yup.string().required('Header text is required'),
         currencySign: yup.string().required('Currency Sign text is required'),
-        welcomeEmail: yup.string().required('Welcome email is required'),
-        countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
+        emailcontent: yup.string().required('Welcome email is required'),
+        cubeOfferCountryCode: yup.array().min(1, 'Countries are required').required('Countries are required'),
     });
 
-    const handleSubmit = (values, { resetForm, setFieldValue }) => {
-        console.log('Form values:', values);
-        resetForm();
-        setFieldValue('additionalText', '');
-        setValue('');
+    const handleSubmit = async (values, { resetForm, setFieldValue }) => {
+        try {
+            let res = await addWebSetting(values);
+            if (res?.status === 200) {
+                toast.success("Message send Successfully");
+                resetForm()
+                setFieldValue('additionalText', '');
+                setValue('');
+            }
+            else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
     };
 
     const [isEmpty, setIsEmpty] = useState(false);
@@ -80,9 +97,9 @@ const WebSetting = () => {
     const options = geoCodes.map(jsonData => ({
         label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
         value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-      }));
+    }));
 
-      
+
     useEffect(() => {
         fetchGeoCordData();
     }, [])
@@ -102,9 +119,9 @@ const WebSetting = () => {
                                 <FieldWrapper>
                                     <Label>Application Title</Label>
                                     <FieldContainer>
-                                        <InputField name="title" placeholder="Application title" />
+                                        <InputField name="appTitle" placeholder="Application title" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="title" />
+                                            <ErrorMessage name="appTitle" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -112,9 +129,9 @@ const WebSetting = () => {
                                 <FieldWrapper>
                                     <Label>Application Sub-Title</Label>
                                     <FieldContainer>
-                                        <InputField name="subTitle" placeholder="Application sub-title" />
+                                        <InputField name="appSubTitle" placeholder="Application sub-title" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="subTitle" />
+                                            <ErrorMessage name="appSubTitle" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -147,20 +164,20 @@ const WebSetting = () => {
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="redeemBtn"
+                                                    name="showRedeembutton"
                                                     value="false"
-                                                    id="redeemBtnNo"
+                                                    id="showRedeembuttonNo"
                                                 />
-                                                <RadioLabel htmlFor="redeemBtnNo">No</RadioLabel>
+                                                <RadioLabel htmlFor="showRedeembuttonNo">No</RadioLabel>
                                             </div>
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="redeemBtn"
+                                                    name="showRedeembutton"
                                                     value="true"
-                                                    id="redeemBtnYes"
+                                                    id="showRedeembuttonYes"
                                                 />
-                                                <RadioLabel htmlFor="redeemBtnYes">
+                                                <RadioLabel htmlFor="showRedeembuttonYes">
                                                     Yes
                                                 </RadioLabel>
                                             </div>
@@ -176,20 +193,20 @@ const WebSetting = () => {
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="userBalance"
+                                                    name="showUserBalance"
                                                     value="false"
-                                                    id="userBalanceNo"
+                                                    id="showUserBalanceNo"
                                                 />
-                                                <RadioLabel htmlFor="userBalanceNo">No</RadioLabel>
+                                                <RadioLabel htmlFor="showUserBalanceNo">No</RadioLabel>
                                             </div>
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="userBalance"
+                                                    name="showUserBalance"
                                                     value="true"
-                                                    id="userBalanceYes"
+                                                    id="showUserBalanceYes"
                                                 />
-                                                <RadioLabel htmlFor="userBalanceYes">
+                                                <RadioLabel htmlFor="showUserBalanceYes">
                                                     Yes
                                                 </RadioLabel>
                                             </div>
@@ -205,20 +222,20 @@ const WebSetting = () => {
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="bonusBtn"
+                                                    name="showBonusButton"
                                                     value="false"
-                                                    id="bonusBtnNo"
+                                                    id="showBonusButtonNo"
                                                 />
-                                                <RadioLabel htmlFor="bonusBtnNo">No</RadioLabel>
+                                                <RadioLabel htmlFor="showBonusButtonNo">No</RadioLabel>
                                             </div>
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="bonusBtn"
+                                                    name="showBonusButton"
                                                     value="true"
-                                                    id="bonusBtnYes"
+                                                    id="showBonusButtonYes"
                                                 />
-                                                <RadioLabel htmlFor="bonusBtnYes">
+                                                <RadioLabel htmlFor="showBonusButtonYes">
                                                     Yes
                                                 </RadioLabel>
                                             </div>
@@ -234,20 +251,20 @@ const WebSetting = () => {
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="bonusBalance"
+                                                    name="showBonusBalance"
                                                     value="false"
-                                                    id="bonusBalanceNo"
+                                                    id="showBonusBalanceNo"
                                                 />
-                                                <RadioLabel htmlFor="bonusBalanceNo">No</RadioLabel>
+                                                <RadioLabel htmlFor="showBonusBalanceNo">No</RadioLabel>
                                             </div>
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="bonusBalance"
+                                                    name="showBonusBalance"
                                                     value="true"
-                                                    id="bonusBalanceYes"
+                                                    id="showBonusBalanceYes"
                                                 />
-                                                <RadioLabel htmlFor="bonusBalanceYes">
+                                                <RadioLabel htmlFor="showBonusBalanceYes">
                                                     Yes
                                                 </RadioLabel>
                                             </div>
@@ -261,12 +278,12 @@ const WebSetting = () => {
                                     <Label>Maintanance Mode ON ?</Label>
                                     <FieldContainer>
                                         <Field
-                                            name="maintananceMode"
+                                            name="maintanancemodeon"
                                             render={({ field }) => (
                                                 <Checkbox
                                                     {...field}
                                                     checked={field.value === 'true'}
-                                                    onChange={e => setFieldValue('maintananceMode', e.target.checked ? 'true' : 'false')}
+                                                    onChange={e => setFieldValue('maintanancemodeon', e.target.checked ? 'true' : 'false')}
                                                 >
                                                 </Checkbox>
                                             )}
@@ -282,21 +299,21 @@ const WebSetting = () => {
                                             value={value}
                                             onChange={(content) => {
                                                 setValue(content);
-                                                setFieldValue('welcomeEmail', content);
+                                                setFieldValue('emailcontent', content);
                                                 setIsEmpty(content === '<p><br></p>');
                                             }}
                                             modules={{ toolbar: toolbarOptions }}
                                             tooltip={true}
                                             onBlur={() => {
-                                                setFieldTouched('welcomeEmail', true);
+                                                setFieldTouched('emailcontent', true);
                                                 if (isEmpty) {
-                                                    setFieldValue('welcomeEmail', '');
+                                                    setFieldValue('emailcontent', '');
                                                 }
                                             }}
                                         />
                                         <RequiredWrapper>
-                                            {touched.welcomeEmail && errors.welcomeEmail && (
-                                                <ErrorMessage name="welcomeEmail" />
+                                            {touched.emailcontent && errors.emailcontent && (
+                                                <ErrorMessage name="emailcontent" />
                                             )}
                                         </RequiredWrapper>
                                     </QuillFieldContainer>
@@ -311,13 +328,13 @@ const WebSetting = () => {
                                                 allowClear
                                                 style={{ width: '100%' }}
                                                 placeholder="Please select"
-                                                value={values.countries}
-                                                onChange={(value) => setFieldValue('countries', value)}
+                                                value={values.cubeOfferCountryCode}
+                                                onChange={(value) => setFieldValue('cubeOfferCountryCode', value)}
                                                 options={options}
-                                                onBlur={() => setFieldTouched('countries', true)}
+                                                onBlur={() => setFieldTouched('cubeOfferCountryCode', true)}
                                             />
                                             <RequiredWrapper>
-                                                <ErrorMessage name="countries" />
+                                                <ErrorMessage name="cubeOfferCountryCode" />
                                             </RequiredWrapper>
                                         </ChooseCountry>
                                     </FieldContainer>
