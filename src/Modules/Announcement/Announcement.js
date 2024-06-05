@@ -10,43 +10,41 @@ import { toast } from 'react-toastify';
 const Announcement = () => {
 
     const initialValues = {
-        user: '',
+        application_type: '',
         title: '',
         message: ''
     };
 
     const validationSchema = yup.object().shape({
-        user: yup.string().required('User is required'),
+        application_type: yup.string().required('User is required'),
         title: yup.string().required('Title is required'),
         message: yup.string().required('Message is required')
     });
 
     const handleSubmit =async (values, { resetForm, setFieldValue }) => {
-        console.log('Form values:', values);
-        let payload ={
-            "application_type":values.user,
-            "title": values.title,
-            "message": values.message
+        try {
+            let res= await announcement(values)
+            console.log('Form values:', values);
+    
+            if (res?.status === 200) {
+                console.log(res.status)
+                toast.success("Notification Sent Successfully");
+                resetForm();
+                setFieldValue('message', '');
+              }
+              else {
+                let message =
+                  res?.response?.data?.message ||
+                  res?.message ||
+                  res?.error ||
+                  "Something went wrong";
+                toast.error(message);
+              }  
+        }catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
         }
-        console.log(payload)
-        let res= await announcement(payload)
-        if (res?.status === 200) {
-            console.log(res.status)
-            toast.success("Notification Sent Successfully");
-            resetForm();
-          }
-          else {
-            let message =
-              res?.response?.data?.message ||
-              res?.message ||
-              res?.error ||
-              "Something went wrong";
-            toast.error(message);
-          }
-
-        resetForm();
-        setFieldValue('message', '');
-    };
+           };
 
     return (
         <div>
@@ -65,8 +63,8 @@ const Announcement = () => {
                                     <SelectField
                                         style={{ width: '100%', marginBottom: "3px", }}
                                         placeholder="Please select"
-                                        value={values.user || undefined}
-                                        onChange={(value) => setFieldValue('user', value)}
+                                        value={values.application_type || undefined}
+                                        onChange={(value) => setFieldValue('application_type', value)}
                                         options={[
                                             {
                                                 value: '0',
@@ -76,7 +74,7 @@ const Announcement = () => {
                                                 value: '1',
                                                 label: 'Android',
                                             },
-                                            {
+                                            { 
                                                 value: '2',
                                                 label: 'All Users',
                                             },
@@ -85,10 +83,10 @@ const Announcement = () => {
                                                 label: 'Web',
                                             },
                                         ]}
-                                        onBlur={() => setFieldTouched('user', true)}
+                                        onBlur={() => setFieldTouched('application_type', true)}
                                     />
                                     <RequiredWrapper>
-                                        <ErrorMessage name="user" />
+                                        <ErrorMessage name="application_type" />
                                     </RequiredWrapper>
                                 </div>
 
