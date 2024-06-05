@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
@@ -11,57 +11,19 @@ const AddFrontPageOffer = () => {
     const initialValues = {
         frontpageofferTitle: '',
         frontpageofferLink: '',
-        frontpageofferImage: null,
+        frontpageofferImage: '',
         frontpageofferButton: null
     };
+    const [offerImgPreview, setOfferImgPreview] = useState(null);
+    const [buttonImgPreview, setButtonImgPreview] = useState(null);
+    const offerImgInputRef = useRef(null);
+    const buttonImgInputRef = useRef(null);
 
     const validationSchema = yup.object().shape({
         frontpageofferTitle: yup.string().required('Offer title is required'),
         frontpageofferLink: yup.string().required('Offer link is required'),
-        frontpageofferImage: yup.mixed()
-            .required('Offer image is required')
-            .test(
-                'fileType',
-                'Only image files are allowed',
-                (value) => {
-                    if (value) {
-                        return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
-                    }
-                    return true;
-                }
-            )
-            .test(
-                'fileSize',
-                'File size must be less than 2MB',
-                (value) => {
-                    if (value) {
-                        return value.size <= 2 * 1024 * 1024;
-                    }
-                    return true;
-                }
-            ),
-        frontpageofferButton: yup.mixed()
-            .required('Button image is required')
-            .test(
-                'fileType',
-                'Only image files are allowed',
-                (value) => {
-                    if (value) {
-                        return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
-                    }
-                    return true;
-                }
-            )
-            .test(
-                'fileSize',
-                'File size must be less than 2MB',
-                (value) => {
-                    if (value) {
-                        return value.size <= 2 * 1024 * 1024;
-                    }
-                    return true;
-                }
-            ),
+        frontpageofferImage: yup.string().required('Offer image is required'),
+        frontpageofferButton: yup.string().required('Button image is required'),
     });
 
     const handleSubmit = async (values, { resetForm }) => {
@@ -76,6 +38,8 @@ const AddFrontPageOffer = () => {
             if (res?.status === 200) {
                 toast.success("Add Frontpage Offer successfully");
                 resetForm();
+                setOfferImgPreview(null);
+                setButtonImgPreview(null);
             } else {
                 let message =
                     res?.response?.data?.message ||
@@ -90,6 +54,23 @@ const AddFrontPageOffer = () => {
         }
     };
 
+    const handleFileChange = (e, setFieldValue, setPreview) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFieldValue(e.target.name, file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleReset = (resetForm) => {
+        resetForm();
+        setOfferImgPreview(null);
+        setButtonImgPreview(null);
+    };
     return (
         <div>
             <Header>
@@ -128,12 +109,18 @@ const AddFrontPageOffer = () => {
                                     <Label>Frontpage Offer Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
+                                            <UploadButton onClick={() => offerImgInputRef.current.click()}>Upload</UploadButton>
                                             <input
+                                                ref={offerImgInputRef}
                                                 name="frontpageofferImage"
                                                 type="file"
-                                                onChange={(e) => setFieldValue("frontpageofferImage", e?.target?.files[0])}
+                                                onChange={(e) =>
+                                                    handleFileChange(e, setFieldValue, setOfferImgPreview)
+                                                }
+                                                style={{ display: "none" }}
                                             />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                                            {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
                                         </ChooseContainer>
                                         <RequiredWrapper>
                                             <ErrorMessage name="frontpageofferImage" />
@@ -145,13 +132,18 @@ const AddFrontPageOffer = () => {
                                     <Label>Frontpage Button Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
+                                            <UploadButton onClick={() => buttonImgInputRef.current.click()}>Upload</UploadButton>
                                             <input
+                                                ref={buttonImgInputRef}
                                                 name="frontpageofferButton"
                                                 type="file"
-                                                onChange={(e) => setFieldValue("frontpageofferButton", e?.target?.files[0])}
+                                                onChange={(e) =>
+                                                    handleFileChange(e, setFieldValue, setButtonImgPreview)
+                                                }
+                                                style={{ display: "none" }}
                                             />
-                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px <br />
-                                                Add button image if you want to replace default Image</UploadInstruction>
+                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                                            {buttonImgPreview && <Image src={buttonImgPreview} alt="Button Preview"/>}
                                         </ChooseContainer>
                                         <RequiredWrapper>
                                             <ErrorMessage name="frontpageofferButton" />
@@ -162,7 +154,7 @@ const AddFrontPageOffer = () => {
 
                             <Footer>
                                 <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
-                                <Button type="primary" danger onClick={resetForm}>Reset</Button>
+                                <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
                         </Form>
                     )}
@@ -294,4 +286,19 @@ const SubmitBtn = styled(Button)`
 color: ${({ theme }) => theme?.primaryColor};
 background: ${({ theme }) => theme?.secondaryColor};
 border: none;
+`
+
+const UploadButton = styled(Button)`
+color: black;
+background: white;
+width: 40%;
+height: 35px;
+border: 1px solid black;
+margin-bottom: 1rem;
+`
+
+const Image = styled.img`
+width: 120px;
+height: 120px;
+object-fit: contain;
 `

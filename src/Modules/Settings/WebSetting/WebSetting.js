@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Select } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
@@ -6,6 +6,8 @@ import * as yup from "yup";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Checkbox } from 'antd';
+import { toast } from "react-toastify";
+import { getAllGeoCodes } from '../../../Services/Collection';
 
 
 const WebSetting = () => {
@@ -36,6 +38,7 @@ const WebSetting = () => {
     ];
 
     const [value, setValue] = useState('');
+    const [geoCodes, setGeoCodes] = useState([]);
 
     const validationSchema = yup.object().shape({
         title: yup.string().required('Title is required'),
@@ -53,19 +56,36 @@ const WebSetting = () => {
         setValue('');
     };
 
-    const options = [];
-    for (let i = 10; i < 36; i++) {
-        options.push({
-            label: i.toString(36) + i,
-            value: i.toString(36) + i,
-        });
-    };
-
-    const onChange = (e) => {
-        console.log(`checked = ${e.target.checked}`);
-    };
-
     const [isEmpty, setIsEmpty] = useState(false);
+
+    const fetchGeoCordData = async () => {
+        try {
+            const res = await getAllGeoCodes();
+            if (res?.status === 200) {
+                setGeoCodes(res?.msg);
+            } else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
+    };
+
+    const options = geoCodes.map(jsonData => ({
+        label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+        value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+      }));
+
+      
+    useEffect(() => {
+        fetchGeoCordData();
+    }, [])
 
     return (
         <div>

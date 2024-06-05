@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Checkbox, Select } from "antd";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import styled from "styled-components";
@@ -35,6 +35,9 @@ const PromotionEmail = () => {
     StaticURL: false,
   };
   const [geoCodes, setGeoCodes] = useState([]);
+  const [offerImgPreview, setOfferImgPreview] = useState(null);
+  const offerImgInputRef = useRef(null);
+
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -163,6 +166,7 @@ const PromotionEmail = () => {
     resetForm();
     setH1TitleValue("");
     setLongDescriptionValue("");
+    setOfferImgPreview(null);
   };
 
   const options = geoCodes.map(jsonData => ({
@@ -173,6 +177,18 @@ const PromotionEmail = () => {
   useEffect(() => {
     fetchGeoCordData();
   }, [])
+
+  const handleFileChange = (e, setFieldValue, setPreview) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFieldValue(e.target.name, file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div>
@@ -232,12 +248,18 @@ const PromotionEmail = () => {
                   <Label>Offer Image</Label>
                   <FieldContainer>
                     <ChooseContainer>
+                      <UploadButton onClick={() => offerImgInputRef.current.click()}>Upload</UploadButton>
                       <input
+                        ref={offerImgInputRef}
                         name="offerImage"
                         type="file"
-                        onChange={(e) => setFieldValue("offerImage", e?.target?.files[0])}
+                        onChange={(e) =>
+                          handleFileChange(e, setFieldValue, setOfferImgPreview)
+                        }
+                        style={{ display: "none" }}
                       />
                       <UploadInstruction>Max size 2MB and resolution is 150x150 px</UploadInstruction>
+                      {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
                     </ChooseContainer>
                     <RequiredWrapper>
                       <ErrorMessage name="offerImage" />
@@ -920,4 +942,20 @@ flex-direction: column;
 align-items: flex-start;
 width: 100%;
 text-align: start;
+`
+
+const UploadButton = styled(Button)`
+color: black;
+background: white;
+width: 40%;
+height: 35px;
+border: 1px solid black;
+margin-bottom: 1rem;
+`
+
+
+const Image = styled.img`
+width: 120px;
+height: 120px;
+object-fit: contain;
 `
