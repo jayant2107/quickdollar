@@ -10,6 +10,8 @@ import { IoMail } from "react-icons/io5";
 import { AiFillDashboard } from "react-icons/ai";
 import DecryptUserInfo from "../../Modules/User/DecryptUser/DecryptUserInfo";
 import SettingsIcon from '@mui/icons-material/Settings';
+import Tooltip from '@mui/material/Tooltip';
+
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -26,6 +28,16 @@ export default function Sidebar() {
     setShowModal(true);
   };
 
+  const renderIntlMassage = (text) => {
+    return text.length > 8 ? (
+      <Tooltip title={text}>
+        <span>{text}...</span>
+      </Tooltip>
+    ) : (
+      <span>{text}</span>
+    );
+  };
+
   const ItemList = () => {
     return (
       <>
@@ -40,7 +52,7 @@ export default function Sidebar() {
           <NavIcon2 onClick={() => navigate("/quickdollar/dashboard")}>
             <AiFillDashboard />
             <p>
-              <IntlMassage id="Dashboard" />
+            <IntlMassage id="Dashboard" />
             </p>
           </NavIcon2>
         )}

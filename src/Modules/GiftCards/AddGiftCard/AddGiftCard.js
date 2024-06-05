@@ -1,38 +1,80 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
 import TextArea from 'antd/es/input/TextArea';
+import { addGiftCard } from '../../../Services/Collection';
+import { toast } from "react-toastify";
 
 const AddGiftCard = () => {
     const initialValues = {
         giftCardName: '',
-        giftImg: '',
-        giftCardPrice: '',
-        giftCardNote: '',
-        isAdmin: "",
+        giftCardImage: '',
+        giftCardPoints: '',
+        giftCardNotes: '',
+        isActive: "",
     };
+
+
+    const [gitftImgPreview, setGiftImgPreview] = useState(null);
+    const giftImgInputRef = useRef(null);
 
     const validationSchema = yup.object().shape({
         giftCardName: yup.string().required('Gift Card Name is required'),
-        giftImg: yup.string().required('Gift Card Image is required'),
-        giftCardPrice: yup.string().required('Gift card priceis required').test(
+        giftCardImage: yup.string().required('Gift Card Image is required'),
+        giftCardPoints: yup.string().required('Gift card priceis required').test(
             'is-number',
             'Enter number only',
             value => !isNaN(value) && Number.isInteger(parseFloat(value))
         ),
-        giftCardNote: yup.string().required('Gift Card Note is required'),
-        isAdmin: yup.string().required("Admin status is required"),
+        isActive: yup.string().required("Admin status is required"),
     });
 
-    const handleSubmit = (values, { resetForm, setFieldValue }) => {
-        console.log('Form values:', values);
-        resetForm();
-        setFieldValue('giftCardNote', '')
+    const handleSubmit = async (values, { resetForm, setFieldValue }) => {
+        const formData = new FormData();
+        formData.append('giftCardName', values.giftCardName);
+        formData.append('giftCardImage', values.giftCardImage);
+        formData.append('giftCardPoints', values.giftCardPoints);
+        formData.append('giftCardNotes', values.giftCardNotes);
+        formData.append('isActive', values.isActive);
+        try {
+            const res = await addGiftCard(formData);
+            if (res?.status === 200) {
+                toast.success("Add Offer successfully");
+                resetForm();
+                setFieldValue('giftCardNotes', '')
+                setGiftImgPreview(null);
+            } else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
     };
 
+    const handleFileChange = (e, setFieldValue, setPreview) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFieldValue(e.target.name, file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
+    const handleReset = (resetForm) => {
+        resetForm();
+        setGiftImgPreview(null);
+    };
 
     return (
         <div>
@@ -45,9 +87,8 @@ const AddGiftCard = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ resetForm, values, setFieldValue }) => (
+                    {({ resetForm, values, setFieldValue, setFieldTouched, touched, errors }) => (
                         <Form>
-
                             <InputWrapper>
 
                                 <FieldWrapper>
@@ -65,14 +106,21 @@ const AddGiftCard = () => {
                                     <Label>Gift Card Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
-                                            <ChooseFile
-                                                name="giftImg"
+                                            <UploadButton onClick={() => giftImgInputRef.current.click()}>Upload</UploadButton>
+                                            <input
+                                                ref={giftImgInputRef}
+                                                name="giftCardImage"
                                                 type="file"
+                                                onChange={(e) =>
+                                                    handleFileChange(e, setFieldValue, setGiftImgPreview)
+                                                }
+                                                style={{ display: "none" }}
                                             />
                                             <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                                            {gitftImgPreview && <Image src={gitftImgPreview} alt="Giftcard Preview" />}
                                         </ChooseContainer>
                                         <RequiredWrapper>
-                                            <ErrorMessage name="giftImg" />
+                                            <ErrorMessage name="giftCardImage" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -80,9 +128,9 @@ const AddGiftCard = () => {
                                 <FieldWrapper>
                                     <Label>Gift Card Price in $</Label>
                                     <FieldContainer>
-                                        <InputField name="giftCardPrice" placeholder="Gift Card Price in $" />
+                                        <InputField name="giftCardPoints" placeholder="Gift Card Price in $" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="giftCardPrice" />
+                                            <ErrorMessage name="giftCardPoints" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -91,14 +139,17 @@ const AddGiftCard = () => {
                                     <Label>Gift Card Notes</Label>
                                     <FieldContainer>
                                         <TextAreaField
-                                            name="giftCardNote"
+                                            name="giftCardNotes"
                                             placeholder="Gift Card Notes"
                                             rows={3}
-                                            onChange={(e) => setFieldValue('giftCardNote', e.target.value)}
-                                            value={values.giftCardNote}
+                                            onChange={(e) => setFieldValue('giftCardNotes', e.target.value)}
+                                            value={values.giftCardNotes}
+                                            onBlur={() => setFieldTouched("giftCardNotes", true)}
                                         />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="giftCardNote" />
+                                            {touched.giftCardNotes && errors.giftCardNotes && (
+                                                <ErrorMessage name="giftCardNotes" />
+                                            )}
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -110,35 +161,39 @@ const AddGiftCard = () => {
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="isAdmin"
-                                                    value="yes"
-                                                    id="isAdminYes"
+                                                    name="isActive"
+                                                    value="true"
+                                                    id="isActiveYes"
                                                 />
-                                                <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
+                                                <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
                                             </div>
                                             <div>
                                                 <Field
                                                     type="radio"
-                                                    name="isAdmin"
-                                                    value="no"
-                                                    id="isAdminNo"
+                                                    name="isActive"
+                                                    value="false"
+                                                    id="isActiveNo"
                                                 />
-                                                <RadioLabel htmlFor="isAdminNo">No</RadioLabel>
+                                                <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
                                             </div>
                                         </FieldWrapper>
                                         <RequiredWrapper>
-                                            <ErrorMessage name="isAdmin" />
+                                            <ErrorMessage name="isActive" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
 
 
                             </InputWrapper>
+                        
+                          
 
                             <Footer>
                                 <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
-                                <Button type="primary" danger onClick={resetForm}>Reset</Button>
+                                <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
+                           
+                        
                         </Form>
                     )}
                 </Formik>
@@ -281,3 +336,18 @@ const TextAreaField = styled(TextArea)`
 const RadioLabel = styled.label`
   margin: 0;
 `;
+
+const Image = styled.img`
+width: 120px;
+height: 120px;
+object-fit: contain;
+`
+
+const UploadButton = styled(Button)`
+color: black;
+background: white;
+width: 40%;
+height: 35px;
+border: 1px solid black;
+margin-bottom: 1rem;
+`
