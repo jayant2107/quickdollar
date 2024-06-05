@@ -20,7 +20,13 @@ const ADD_OFFER = "addOffer";
 const Active_User = "deactivateAndActivateUser";
 const ActiveDeactive_All_Offers = "activateAndDeactivateAllOffers";
 const Get_Dashboard = "dashboard";
-const Delete_Offer="deleteOffer"
+const Delete_Offer = "deleteOffer";
+const Announcement = "sendNotification";
+const Get_Delivered_Gift_Card = "getAllDeliveredGiftCards";
+const Get_ALL_Gift_Card = "getAllGiftCards";
+const WEB_SETTING = "webSettings";
+const ANDROID_SETTING = "androidSettings";
+const IOS_SETTING = "iOSSettings";
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -70,4 +76,18 @@ export const userActiveModal = async (payload) =>
 
 export const getDashboard = () => getApi(Get_Dashboard);
 
-export const deleteOffers=(id)=>deleteApi(Delete_Offer,id)
+export const deleteOffers = (id) => deleteApi(Delete_Offer, id);
+
+export const getDeliveredGiftCard = async (query) =>
+  await getApi(`${Get_Delivered_Gift_Card}?${query}`);
+
+export const getAllGiftCard = async (query) =>
+  await getApi(`${Get_ALL_Gift_Card}?${query}`);
+
+export const announcement = (payload) => announcement(Announcement, payload);
+
+export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);
+
+export const addAndroidSetting = (payload) => postApi(ANDROID_SETTING, payload);
+
+export const addIosSetting = (payload) => postApi(IOS_SETTING, payload);
