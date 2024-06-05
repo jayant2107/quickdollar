@@ -8,7 +8,7 @@ import { debounce } from "../../../Utils/CommonFunctions";
 import { getDeliveredGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
- 
+
 const DeliveredGift = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [loader, setLoader] = useState();
@@ -17,12 +17,12 @@ const DeliveredGift = () => {
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
- 
+
   const handleSearch = useCallback(
-    debounce((value) => setSearch(value)),
+    debounce((value) => setSearch(value), 300),
     []
   );
- 
+
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -32,15 +32,16 @@ const DeliveredGift = () => {
       params.append("limit", pageSize);
       const res = await getDeliveredGiftCard(params);
       if (res?.status === 200) {
-        console.log(res?.data?.findDeliveredGiftCards)
+        console.log(res?.data?.findDeliveredGiftCards);
         setUserData(res?.data?.findDeliveredGiftCards || []);
         setTotalUsers(res?.data?.totalDeliveredGiftCards || 0);
-      } else {
+      }else {
         let message =
           res?.response?.data?.message ||
           res?.message ||
           res?.error ||
           "Something went wrong";
+          setUserData([]);
         toast.error(message);
       }
     } catch (error) {
@@ -50,7 +51,7 @@ const DeliveredGift = () => {
       setLoader(false);
     }
   };
- 
+
   const columns = [
     {
       title: "Gift Card Name",
@@ -58,13 +59,13 @@ const DeliveredGift = () => {
       dataIndex: "giftCardName",
       key: "giftname",
       fixed: "left",
-      render:(text,record)=>record?.giftcard?.giftCardName || "NA"
+      render: (text, record) => record?.giftcard?.giftCardName || "NA",
     },
     {
       title: "Gift Card Price",
       dataIndex: "giftCardPoints",
       key: "price",
-      render:(text,record)=>record?.giftCardPoints || "NA"
+      render: (text, record) => record?.giftCardPoints || "NA",
     },
     {
       title: "User Name",
@@ -90,9 +91,7 @@ const DeliveredGift = () => {
       dataIndex: "status",
       key: "status",
       render: (text, record) => (
-        <StatusStyledText
-          status={record.Status ? "Completed" : "InCompleted"}
-        >
+        <StatusStyledText status={record.Status ? "Completed" : "InCompleted"}>
           {record.Status ? "Completed" : "InCompleted"}
           {record.Status ? (
             <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
@@ -101,7 +100,6 @@ const DeliveredGift = () => {
           )}
         </StatusStyledText>
       ),
- 
     },
     {
       title: "UserType",
@@ -128,12 +126,12 @@ const DeliveredGift = () => {
         return <StyledText>{userType}</StyledText>;
       },
     },
- 
+
     {
       title: "Gift Card Code",
       dataIndex: "giftCardCode",
       key: "cardcode",
-      render:(text,record)=>record?.giftCardCode
+      render: (text, record) => record?.giftCardCode,
     },
     {
       title: "Delivery Date",
@@ -145,7 +143,7 @@ const DeliveredGift = () => {
       },
     },
   ];
- 
+
   const paginationConfig = {
     current: currentPage,
     pageSize: pageSize,
@@ -161,22 +159,21 @@ const DeliveredGift = () => {
     showTotal: (total, range) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
- 
+
   const scrollConfig = {
     x: 1000,
   };
- 
- 
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search ]);
- 
+  }, [currentPage, pageSize, search]);
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">Delivered Gift Card</h1>
       </div>
- 
+
       <div className="tableDiv">
         <TableNew
           columns={columns}
@@ -190,15 +187,15 @@ const DeliveredGift = () => {
     </AllUserWrapper>
   );
 };
- 
+
 export default DeliveredGift;
- 
+
 const AllUserWrapper = styled.div`
   padding-bottom: 35px;
   @media (max-width: 550px) {
     padding-bottom: 25px;
   }
- 
+
   .allUsersHeading {
     display: flex;
     font-weight: 600;
@@ -213,13 +210,13 @@ const AllUserWrapper = styled.div`
       margin-bottom: 20px;
     }
   }
- 
+
   .allUsersHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 10px;
- 
+
     @media (max-width: 550px) {
       display: block;
     }
@@ -235,7 +232,7 @@ const AllUserWrapper = styled.div`
       font-family: ${({ theme }) => theme?.fontFamily};
     }
   }
- 
+
   .tableDiv {
     display: flex;
     flex-direction: column;

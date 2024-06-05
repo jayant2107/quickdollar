@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Table } from "antd";
 import { CgSearch } from "react-icons/cg";
@@ -65,6 +65,7 @@ const TableNew = ({
               pagination={pagination}
               scroll={scroll}
               onChange={onChange}
+              locale={{ emptyText: "No Data Found" }}
             />
           )}
         </div>
