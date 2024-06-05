@@ -25,13 +25,13 @@ const SendMessage = () => {
     ];
 
     const initialValues = {
-        senderId: '',
+        userType: '',
         msgtitle: '',
         msgcontent: ''
     };
 
     const validationSchema = yup.object().shape({
-        senderId: yup.string().required('User is required'),
+        userType: yup.string().required('User is required'),
         msgtitle: yup.string().required('Subject is required'),
         msgcontent: yup.string().required('Message is required')
     });
@@ -76,14 +76,14 @@ const SendMessage = () => {
                                     <Label>Select user to send notification</Label>
                                     <SelectField
                                         placeholder="Select user"
-                                        defaultValue={initialValues.senderId}
+                                        defaultValue={initialValues.userType}
                                         style={{
                                             width: "100%",
                                             marginBottom: "3px",
                                         }}
-                                        value={values.senderId || null}
-                                        onBlur={() => setFieldTouched('senderId', true)}
-                                        onChange={(value) => setFieldValue('senderId', value)}
+                                        value={values.userType || null}
+                                        onBlur={() => setFieldTouched('userType', true)}
+                                        onChange={(value) => setFieldValue('userType', value)}
                                         options={[
                                             {
                                                 value: '0',
@@ -100,7 +100,7 @@ const SendMessage = () => {
                                         ]}
                                     />
                                     <RequiredWrapper>
-                                        <ErrorMessage name="senderId" />
+                                        <ErrorMessage name="userType" />
                                     </RequiredWrapper>
                                 </div>
 
