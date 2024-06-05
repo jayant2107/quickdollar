@@ -84,7 +84,7 @@ export const getDeliveredGiftCard = async (query) =>
 export const getAllGiftCard = async (query) =>
   await getApi(`${Get_ALL_Gift_Card}?${query}`);
 
-export const announcement = (payload) => announcement(Announcement, payload);
+export const announcement = (payload) =>  postApi(Announcement, payload);
 
 export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);
 
