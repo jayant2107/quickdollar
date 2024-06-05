@@ -52,6 +52,7 @@ const AllUsers = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
+          setUserData([]);
         toast.error(message);
       }
     } catch (error) {

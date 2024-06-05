@@ -130,6 +130,7 @@ const AllOffers = () => {
         res?.message ||
         res?.error ||
         "Something went wrong";
+        setUserData([]);
       toast.error(message);
     }
 

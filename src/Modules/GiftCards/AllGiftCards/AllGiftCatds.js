@@ -11,7 +11,7 @@ import { debounce } from "../../../Utils/CommonFunctions";
 import { getAllGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
- 
+
 const AllGiftCards = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -23,12 +23,12 @@ const AllGiftCards = () => {
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
   const byTheme = useSelector((state) => state?.changeColors?.theme);
- 
+
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
     []
   );
- 
+
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -47,6 +47,7 @@ const AllGiftCards = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
+        setUserData([]);
         toast.error(message);
       }
     } catch (error) {
@@ -56,7 +57,7 @@ const AllGiftCards = () => {
       setLoader(false);
     }
   };
- 
+
   const columns = [
     {
       title: "Gift Card Name",
@@ -64,7 +65,7 @@ const AllGiftCards = () => {
       dataIndex: "name",
       key: "name",
       fixed: "left",
-      render:(text,record)=>record?.giftcard?.giftCardName || "NA"
+      render: (text, record) => record?.giftcard?.giftCardName || "NA",
     },
     {
       key: "country",
@@ -80,16 +81,14 @@ const AllGiftCards = () => {
       title: "Gift Card Price",
       dataIndex: "giftCardPoints",
       key: "price",
-      render:(text,record)=>record?.giftCardPoints || "NA"
+      render: (text, record) => record?.giftCardPoints || "NA",
     },
     {
       title: "Status",
       dataIndex: "isActive",
       key: "status",
       render: (text, record) => (
-        <StatusStyledText
-          status={record.isActive ? "Active" : "Inactive"}
-        >
+        <StatusStyledText status={record.isActive ? "Active" : "Inactive"}>
           {record.isActive ? "Active" : "Inactive"}
           {record.isActive ? (
             <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
@@ -100,7 +99,7 @@ const AllGiftCards = () => {
       ),
       // Test commit
     },
- 
+
     {
       title: "Created Date",
       dataIndex: "createdAt",
@@ -125,7 +124,7 @@ const AllGiftCards = () => {
       ),
     },
   ];
- 
+
   const scrollConfig = {
     x: 1000,
   };
@@ -133,12 +132,12 @@ const AllGiftCards = () => {
     setSelectedRecord(record);
     setEditModal(true);
   };
- 
+
   const showDeleteModal = (record) => {
     setSelectedRecord(record);
     setDeleteModal(true);
   };
- 
+
   const handleEditCancel = () => {
     setEditModal(false);
     setSelectedRecord(null);
@@ -147,13 +146,13 @@ const AllGiftCards = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
   };
- 
+
   const formActions = {
     apply: false,
     edit: true,
     delete: true,
   };
- 
+
   const paginationConfig = {
     current: currentPage,
     pageSize: pageSize,
@@ -169,11 +168,11 @@ const AllGiftCards = () => {
     showTotal: (total, range) =>
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
- 
+
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, search]);
- 
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
@@ -195,7 +194,7 @@ const AllGiftCards = () => {
         )}
         <h1 className="allUsersHeading">All Gift Card</h1>
       </div>
- 
+
       <div className="tableDiv">
         <TableNew
           columns={columns}
@@ -209,15 +208,15 @@ const AllGiftCards = () => {
     </AllUserWrapper>
   );
 };
- 
+
 export default AllGiftCards;
- 
+
 const AllUserWrapper = styled.div`
   padding-bottom: 35px;
   @media (max-width: 550px) {
     padding-bottom: 25px;
   }
- 
+
   .allUsersHeading {
     display: flex;
     font-weight: 600;
@@ -232,13 +231,13 @@ const AllUserWrapper = styled.div`
       margin-bottom: 20px;
     }
   }
- 
+
   .allUsersHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 10px;
- 
+
     @media (max-width: 550px) {
       display: block;
     }
@@ -254,7 +253,7 @@ const AllUserWrapper = styled.div`
       font-family: ${({ theme }) => theme?.fontFamily};
     }
   }
- 
+
   .tableDiv {
     display: flex;
     flex-direction: column;
@@ -266,14 +265,14 @@ const AllUserWrapper = styled.div`
     box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
   }
 `;
- 
+
 const TableImageWrapper = styled.div`
   img {
     width: 100px;
     object-fit: contain;
   }
 `;
- 
+
 const StatusStyledText = styled.span`
   color: #fff;
   background-color: ${({ status }) =>
@@ -286,4 +285,3 @@ const StatusStyledText = styled.span`
   cursor: pointer;
   text-transform: capitalize;
 `;
- 
