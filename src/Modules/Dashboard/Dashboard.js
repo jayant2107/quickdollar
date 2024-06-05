@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Menu } from "antd";
-import { getAllGeoCodes, getDashboard } from "../../Services/Collection";
+import { getAllGeoCodes, getDashboard, getChartData } from "../../Services/Collection";
 import {
   Chart as ChartJS,
   LineElement,
@@ -12,6 +13,7 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
+  Ticks,
 } from "chart.js";
 
 ChartJS.register(
@@ -25,8 +27,10 @@ ChartJS.register(
 const Dashboard = () => {
   const [geoCodes, setGeoCodes] = useState([]);
   const [cardInfo, setCardInfo] = useState([]);
+  const [chartInfo, setChartInfo] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Select Geo Code...");
 
+  
   // -------------API--------------
 
   const fetchData = async () => {
@@ -41,11 +45,11 @@ const Dashboard = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
-        // toast.error(message);
+        toast.error(message);
       }
     } catch (error) {
       console.log(error, "error");
-      // toast.error(error?.message || "Something went wrong");
+      toast.error(error?.message || "Something went wrong");
     } finally {
       // setLoader(false);
     }
@@ -63,11 +67,36 @@ const Dashboard = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
-        // toast.error(message);
+        toast.error(message);
       }
     } catch (error) {
       console.log(error, "error");
-      // toast.error(error?.message || "Something went wrong");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      // setLoader(false);
+    }
+  };
+
+
+  const fetchChartData = async () => {
+    try {
+      let params = new URLSearchParams();
+      params.append("country", selectedOption.split("- ")[1] || "US");
+      const res = await getChartData(selectedOption != "Select Geo Code..." && params);
+      if (res?.status === 200) {
+        console.log(res?.msg);
+        setChartInfo(res?.msg);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
     } finally {
       // setLoader(false);
     }
@@ -396,7 +425,7 @@ C491.375,120.986,496,130.003,496,140.117z"
 
   const menuItems = geoCodes?.map((jsonData) => ({
     key: jsonData.id,
-    label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    label: `${jsonData?.country}- ${jsonData?.iso_code_2}`,
   }));
 
   const handleOptionClick = (option) => {
@@ -411,40 +440,59 @@ C491.375,120.986,496,130.003,496,140.117z"
 
   // ------------MainChart--------------
 
+  // const chartData = {
+  //   labels: [
+  //     "May 2024",
+  //     "",
+  //     "March 2022",
+  //     "",
+  //     "January 2022",
+  //     "",
+  //     "November 2021",
+  //     "",
+  //     "September 2021",
+  //     "",
+  //     "July 2021",
+  //     "",
+  //     "April 2021",
+  //     "",
+  //     "January 2021",
+  //     "",
+  //     "November 2020",
+  //     "",
+  //     "July 2020",
+  //     "",
+  //     "May2020",
+  //     "",
+  //     "",
+  //     "December 2018",
+  //   ],
+  //   datasets: [
+  //     {
+  //       label: "offer sales",
+  //       data: [
+  //         4, 6, 2, 2, 1, 3, 6, 6, 10, 1, 7, 9, 7, 9, 5, 2, 7, 8, 7, 13, 54, 7,
+  //         7, 250,
+  //       ],
+  //       backgroundColor: "aqua",
+  //       borderColor: "brown",
+  //       pointBorderColor: "red",
+  //       fill: true,
+  //       tension: 0.4,
+  //     },
+  //   ],
+  // };
+
   const chartData = {
-    labels: [
-      "May 2024",
-      "",
-      "March 2022",
-      "",
-      "January 2022",
-      "",
-      "November 2021",
-      "",
-      "September 2021",
-      "",
-      "July 2021",
-      "",
-      "April 2021",
-      "",
-      "January 2021",
-      "",
-      "November 2020",
-      "",
-      "July 2020",
-      "",
-      "May2020",
-      "",
-      "",
-      "December 2018",
-    ],
-    datasets: [
-      {
+    labels:
+    chartInfo?.offerMonthYear 
+    ?.map((offer) =>
+        convertNumberToMonth(offer?.MONTHS) + " " + offer?.YEARS
+      ) || [],
+    datasets: [ 
+            {
         label: "offer sales",
-        data: [
-          4, 6, 2, 2, 1, 3, 6, 6, 10, 1, 7, 9, 7, 9, 5, 2, 7, 8, 7, 13, 54, 7,
-          7, 250,
-        ],
+        data: chartInfo?.offerMonthYear?.map((offer) => offer?.OFFERS) || [],
         backgroundColor: "aqua",
         borderColor: "brown",
         pointBorderColor: "red",
@@ -453,6 +501,7 @@ C491.375,120.986,496,130.003,496,140.117z"
       },
     ],
   };
+
   const options = {
     plugins: {
       legend: false,
@@ -462,6 +511,8 @@ C491.375,120.986,496,130.003,496,140.117z"
         grid: {
           display: false,
         },
+        min: 0,
+        max: 12,
       },
       x: {
         grid: {
@@ -475,6 +526,10 @@ C491.375,120.986,496,130.003,496,140.117z"
     fetchData();
     fetchDashboard();
   }, []);
+
+  useEffect(() => {
+    fetchChartData();
+  }, [selectedOption])
 
   return (
     <DriverWrapper>
@@ -687,6 +742,17 @@ const ChartWrapper = styled.div`
   background-color: #fff;
   border-radius: 16px;
   padding: 16px;
+
+  .ant-dropdown-trigger {
+    width: 20rem;
+    background-color: #fff;
+    box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
+   
+    border-radius: 10px;
+    border: none !important;
+    padding: 11px 30px;
+    cursor: pointer;
+  }
 `;
 
 const CampaignWrapper = styled.div`
