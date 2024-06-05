@@ -21,6 +21,8 @@ const CompletedOffers = () => {
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
 
   const handleSearch = useCallback(
@@ -30,7 +32,7 @@ const CompletedOffers = () => {
   const handleDelete=async(id)=>{
     let res = await deleteOffers(id);
     if (res?.status === 200) {
-       fetchData()
+      await  fetchData()
     }
     return res;
    
@@ -62,6 +64,9 @@ const CompletedOffers = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString()); 
       const res = await getCompletedoffers(params);
       if (res?.status === 200) {
         console.log(res?.data?.findCompletedOffers, "completdOffer");
@@ -104,7 +109,7 @@ const CompletedOffers = () => {
     {
       title: "User Name",
       key: "name",
-      dataIndex: "name",
+      dataIndex: "firstName",
       width: 150,
       fixed: "left",
       render: (text, record) => {
@@ -121,30 +126,45 @@ const CompletedOffers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
+      sorter: true,
+      sortOrder: fieldName === "firstName" ? orderMethod : false,
+    
     },
     {
       title: "User Email",
       key: "email",
       dataIndex: "email",
       render: (text, record) => record?.user?.email,
+      sorter: true,
+      sortOrder: fieldName === "email" ? orderMethod : false,
+    
     },
     {
       title: "Offer title",
       key: "title",
       dataIndex: "offerTitle",
       render: (text, record) => record?.offer?.offerTitle,
+      sorter: true,
+      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
+    
     },
     {
       title: "User Country",
       key: "country",
       dataIndex: "countryCode",
       render: (text, record) => record?.user?.countryCode,
+      sorter: true,
+      sortOrder: fieldName === "countryCode" ? orderMethod : false,
+    
     },
     {
       title: "Added Points",
       key: "points",
       dataIndex: "offerPoints",
       render: (text, record) => record?.offerPoints,
+      sorter: true,
+      sortOrder: fieldName === "offerPoints" ? orderMethod : false,
+    
     },
 
     {
@@ -155,6 +175,9 @@ const CompletedOffers = () => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
+    
     },
     {
       title: "Action",
@@ -183,9 +206,27 @@ const CompletedOffers = () => {
   const scrollConfig = {
     x: 2000, // Horizontal scrolling
   };
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+  
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize,search]);
+  }, [currentPage, pageSize,search,fieldName, orderMethod]);
   return (
     <AllUserWrapper byTheme={byTheme}>
        {deleteModal && (
@@ -220,6 +261,7 @@ const CompletedOffers = () => {
           pagination={paginationConfig}
           handleSearch={handleSearch}
           loader={loader}
+          onChange={handleTableChange}  
         />
       </div>
     </AllUserWrapper>

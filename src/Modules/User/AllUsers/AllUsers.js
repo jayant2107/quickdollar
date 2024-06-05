@@ -29,6 +29,8 @@ const AllUsers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [activeModal, setActiveModal] = useState(false);
   const [search, setSearch] = useState("");
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
@@ -42,6 +44,9 @@ const AllUsers = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
       const res = await getAllUser(params);
       if (res?.status === 200) {
         setUserData(res?.data?.findUsers);
@@ -52,7 +57,7 @@ const AllUsers = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
-          setUserData([]);
+        setUserData([]);
         toast.error(message);
       }
     } catch (error) {
@@ -83,7 +88,7 @@ const AllUsers = () => {
     {
       title: "Full Name",
       width: 150,
-      dataIndex: "name",
+      dataIndex: "firstName",
       key: "name",
       fixed: "left",
       render: (text, record) => {
@@ -100,18 +105,26 @@ const AllUsers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
+      sorter: true,
+      sortOrder: fieldName === "firstName" ? orderMethod : false,
     },
     {
       title: "Country",
       dataIndex: "countryCode",
       key: "country",
       render: (text, record) => record?.countryCode || "NA",
+      sorter: true,
+          sortOrder: fieldName === "countryCode" ? orderMethod : false,
+
     },
     {
       title: "Points",
       dataIndex: "Points",
       key: "points",
       render: (text, record) => record?.Points || "0",
+      sorter: true,
+          sortOrder: fieldName === "Points" ? orderMethod : false,
+
     },
     {
       title: "Role",
@@ -147,6 +160,9 @@ const AllUsers = () => {
           </RoleStyledText>
         );
       },
+      sorter: true,
+          sortOrder: fieldName === "userRoleID" ? orderMethod : false,
+
     },
     {
       title: "Status",
@@ -165,6 +181,9 @@ const AllUsers = () => {
           )}
         </StatusStyledText>
       ),
+      sorter: true,
+          sortOrder: fieldName === "isActive" ? orderMethod : false,
+
       // Test commit
     },
 
@@ -192,6 +211,9 @@ const AllUsers = () => {
         }
         return <StyledText>{userType}</StyledText>;
       },
+      sorter: true,
+          sortOrder: fieldName === "userApplicationtype" ? orderMethod : false,
+
     },
     {
       title: "Created Date",
@@ -201,6 +223,9 @@ const AllUsers = () => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+          sortOrder: fieldName === "createdAt" ? orderMethod : false,
+
     },
     {
       title: "Action",
@@ -269,19 +294,33 @@ const AllUsers = () => {
     setActiveModal(false);
     setSelectedRecord(null);
   };
-  const handleDelete=async(id)=>{
+  const handleDelete = async (id) => {
     let res = await deleteUser(id);
     if (res?.status === 200) {
-       fetchData()
+     await fetchData();
     }
     return res;
-   
+  };
 
-  }
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize, search,fieldName,orderMethod]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -334,6 +373,7 @@ const AllUsers = () => {
           pagination={paginationConfig}
           loader={loader}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
       </div>
     </AllUserWrapper>

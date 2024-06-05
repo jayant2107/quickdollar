@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { Dropdown, Menu } from "antd";
+import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { debounce } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
-import { activateDeactivateAllOffers, deleteOffers, getAllGeoCodes, getAllOffers } from "../../../Services/Collection";
+import {
+  activateDeactivateAllOffers,
+  deleteOffers,
+  getAllGeoCodes,
+  getAllOffers,
+} from "../../../Services/Collection";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
@@ -21,32 +26,26 @@ const AllOffers = () => {
   const [userData, setUserData] = useState([]);
   const [totalUsers, setTotalUsers] = useState(5);
   const [loader, setLoader] = useState(true);
-  // const [editModal, setEditModal] = useState(false);
-  // const [sendModal, setSendModal] = useState(false);
-  // const [deleteModal, setDeleteModal] = useState(false);
-  // const [selectedRecord, setSelectedRecord] = useState(null);
   const [search, setSearch] = useState("");
   const [geoCodes, setGeoCodes] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Select Geo Code");
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [sortField, setSortField] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
     []
   );
-  const handleDelete=async(id)=>{
+  const handleDelete = async (id) => {
     let res = await deleteOffers(id);
     if (res?.status === 200) {
-       fetchData()
+      await fetchData();
     }
     return res;
-   
-
-  }
+  };
   const handleDeleteCancel = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
@@ -65,7 +64,6 @@ const AllOffers = () => {
     setEditModal(false);
     setSelectedRecord(null);
   };
-
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -73,9 +71,15 @@ const AllOffers = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
-      params.append("sortColumn", sortField);
-      params.append("sortOrder", sortOrder);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      if (selectedOption !== "Select Geo Code") {
+        params.append("country", selectedOption);
+      }
+      console.log("Fetch Params:", params.toString()); // Log params sent to backend
+
       const res = await getAllOffers(params);
+      console.log("Response from Backend:", res); // Log response from backend
       if (res?.status === 200) {
         console.log(res.data.findOffers, "alloffer");
         setUserData(res?.data?.findOffers);
@@ -116,35 +120,32 @@ const AllOffers = () => {
       setLoader(false);
     }
   };
-  const ActiveAllUser=async()=>{
-    let res= await activateDeactivateAllOffers({isActive:"1"})
+  const ActiveAllUser = async () => {
+    let res = await activateDeactivateAllOffers({ isActive: "1" });
     if (res?.status === 200) {
-      console.log(res.status)
-      let fetch = fetchData()
-      console.log(fetch, "fetchhhh")
+      console.log(res.status);
+      let fetch = fetchData();
+      console.log(fetch, "fetchhhh");
       toast.success("All Offers Activate Successfully");
-    }
-    else {
+    } else {
       let message =
         res?.response?.data?.message ||
         res?.message ||
         res?.error ||
         "Something went wrong";
-        setUserData([]);
+      setUserData([]);
       toast.error(message);
     }
-
-  }
-  const DeactiveAllUser=async()=>{
-    let res= await activateDeactivateAllOffers({isActive:"0"})
-    console.log(res)
+  };
+  const DeactiveAllUser = async () => {
+    let res = await activateDeactivateAllOffers({ isActive: "0" });
+    console.log(res);
     if (res?.status === 200) {
-      console.log(res.status)
-      let fetch = fetchData()
-      console.log(fetch, "fetchhhh")
+      console.log(res.status);
+      let fetch = fetchData();
+      console.log(fetch, "fetchhhh");
       toast.success("All Offers Deactivate Successfully");
-    }
-    else {
+    } else {
       let message =
         res?.response?.data?.message ||
         res?.message ||
@@ -152,8 +153,7 @@ const AllOffers = () => {
         "Something went wrong";
       toast.error(message);
     }
-
-  }
+  };
 
   const paginationConfig = {
     current: currentPage,
@@ -179,18 +179,24 @@ const AllOffers = () => {
       fixed: "left",
       width: 150,
       render: (text, record) => record?.offerTitle || "NA",
-      sorter:true,
+      sorter: true,
+      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
     },
     {
       title: "Offer Link",
       key: "link",
       dataIndex: "offerLink",
       render: (text, record) => <a>{record?.offerLink}</a>,
+      sorter: true,
+      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
     },
     {
       title: "Offer Amount in $",
       key: "amount",
-      dataIndex: "amount",
+      dataIndex: "offerPoints",
+      render:(text,record)=>record?.offerPoints,
+      sorter: true,
+      sortOrder: fieldName === "offerPoints" ? orderMethod : false,
     },
     {
       title: "Offer Short Description",
@@ -203,6 +209,7 @@ const AllOffers = () => {
       key: "code",
       dataIndex: "offerCountry",
       render: (text, record) => record?.offerCountry || "NA",
+      // width:300,
     },
     {
       title: "Status",
@@ -274,13 +281,15 @@ const AllOffers = () => {
       render: (text, record) => <StyledText text={text}>{text}</StyledText>,
     },
     {
-      title: "Date",
+      title: "Created Date",
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -311,40 +320,61 @@ const AllOffers = () => {
     x: 2100, // Horizontal scrolling
   };
 
-  const menuItems = geoCodes?.map((jsonData) => ({
-    key: jsonData.id,
-    label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-  }));
+  const menuItems = [
+    { key: "all", label: "Select All" }, // Option for selecting all countries
+    ...geoCodes.map((jsonData) => ({
+      key: jsonData.id,
+      label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    })),
+  ];
 
   const handleOptionClick = (option) => {
-    setSelectedOption(option?.label);
+    if (option.key === "all") {
+      setSelectedOption("All"); // Set selectedOption to empty string to represent selecting all countries
+    } else {
+      // Extract iso_code_2 from the selected country's JSON data
+      const selectedIsoCode = geoCodes.find(
+        (item) => item.id === option.key
+      )?.iso_code_2;
+      setSelectedOption(selectedIsoCode || ""); // Set iso_code_2
+    }
   };
 
   const items = menuItems?.map((item) => ({
     key: item?.key,
     label: item?.label,
     onClick: () => handleOptionClick(item),
-  }));
+  }));
 
-const handleTableChange=(pagination, filters, sorter)=>{
-  setSortField(sorter.field)
-  setSortOrder(sorter.order)
-  setCurrentPage(pagination.current)
-}
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+
   useEffect(() => {
     fetchData();
     fetchGeoCordData(); // Fetch geo codes
-  }, [currentPage, pageSize, search,sortField,sortOrder]);
+  }, [currentPage, pageSize, search, fieldName, orderMethod, selectedOption]);
   return (
     <AllUserWrapper byTheme={byTheme}>
-       {deleteModal && (
+      {deleteModal && (
         <DeleteModal
           showModal={showDeleteModal}
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
           id={selectedRecord.idOffer}
-          handleDele
-          te={handleDelete}
+          handleDelete={handleDelete}
         />
       )}
       {editModal && (
@@ -360,34 +390,34 @@ const handleTableChange=(pagination, filters, sorter)=>{
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
         <Dropdown
-            menu={{
-              items,
-              style: {
-                maxHeight: "200px",
-                overflowY: "auto",
-              },
+          menu={{
+            items,
+            style: {
+              maxHeight: "200px",
+              overflowY: "auto",
+            },
+          }}
+          trigger={["click"]}
+          getPopupContainer={(trigger) => trigger.parentNode}
+        >
+          <div
+            style={{
+              border: "1px solid #000",
+              padding: "10px",
+              width: "20rem",
+              borderRadius: "5px",
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
-            trigger={["click"]}
-            getPopupContainer={(trigger) => trigger.parentNode}
           >
-            <div
-              style={{
-                border: "1px solid #000",
-                padding: "10px",
-                width: "20rem",
-                borderRadius: "5px",
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span>{selectedOption}</span>
-              <DownOutlined />
-            </div>
-          </Dropdown>
+            <span>{selectedOption}</span>
+            <DownOutlined />
+          </div>
+        </Dropdown>
         <div style={{ display: "flex", gap: "20px" }}>
-          <button  onClick={ActiveAllUser}>Active All Offers</button>
+          <button onClick={ActiveAllUser}>Active All Offers</button>
           <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }}>
             De-active All Offers
           </button>
@@ -410,7 +440,6 @@ const handleTableChange=(pagination, filters, sorter)=>{
 };
 
 export default AllOffers;
-
 
 const AllUserWrapper = styled.div`
   padding-bottom: 35px;
@@ -455,13 +484,13 @@ const AllUserWrapper = styled.div`
     }
   }
 
-  .dropdown {
+  .ant-dropdown-trigger {
     width: 20rem;
     background-color: #fff;
     box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
-    font-weight: 600;
+
     border-radius: 10px;
-    border: none;
+    border: none !important;
     padding: 11px 30px;
     cursor: pointer;
   }
