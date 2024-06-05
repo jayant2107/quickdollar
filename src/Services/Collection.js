@@ -27,6 +27,7 @@ const Get_ALL_Gift_Card = "getAllGiftCards";
 const WEB_SETTING = "webSettings";
 const ANDROID_SETTING = "androidSettings";
 const IOS_SETTING = "iOSSettings";
+const Chart_Data = "allOffersChart";
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -91,3 +92,6 @@ export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);
 export const addAndroidSetting = (payload) => postApi(ANDROID_SETTING, payload);
 
 export const addIosSetting = (payload) => postApi(IOS_SETTING, payload);
+
+export const getChartData = async (query) =>
+  await getApi(`${Chart_Data}?${query}`);
