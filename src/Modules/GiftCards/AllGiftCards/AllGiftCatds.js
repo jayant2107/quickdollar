@@ -8,7 +8,7 @@ import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
 import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce } from "../../../Utils/CommonFunctions";
-import { getAllGiftCard } from "../../../Services/Collection";
+import { deleteGiftCard,  getAllGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 
@@ -23,6 +23,8 @@ const AllGiftCards = () => {
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
   const byTheme = useSelector((state) => state?.changeColors?.theme);
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
@@ -36,6 +38,9 @@ const AllGiftCards = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
       const res = await getAllGiftCard(params);
       if (res?.status === 200) {
         console.log(res?.data?.findGiftCards);
@@ -62,26 +67,32 @@ const AllGiftCards = () => {
     {
       title: "Gift Card Name",
       width: 150,
-      dataIndex: "name",
+      dataIndex: "giftCardName",
       key: "name",
       fixed: "left",
-      render: (text, record) => record?.giftcard?.giftCardName || "NA",
+      render: (text, record) => record?.giftCardName || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardName" ? orderMethod : false,
     },
     {
       key: "country",
       title: "Gift Card Image",
-      dataIndex: "image",
+      dataIndex: "giftCardImage",
       render: (text, record) => (
         <TableImageWrapper>
           <img src={record?.giftCardImage} alt="" />
         </TableImageWrapper>
       ),
+      sorter: true,
+      sortOrder: fieldName === "giftCardImage" ? orderMethod : false,
     },
     {
       title: "Gift Card Price",
       dataIndex: "giftCardPoints",
       key: "price",
       render: (text, record) => record?.giftCardPoints || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardPoints" ? orderMethod : false,
     },
     {
       title: "Status",
@@ -97,6 +108,8 @@ const AllGiftCards = () => {
           )}
         </StatusStyledText>
       ),
+      sorter: true,
+      sortOrder: fieldName === "isActive" ? orderMethod : false,
       // Test commit
     },
 
@@ -108,6 +121,8 @@ const AllGiftCards = () => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -123,6 +138,7 @@ const AllGiftCards = () => {
         />
       ),
     },
+    
   ];
 
   const scrollConfig = {
@@ -169,9 +185,35 @@ const AllGiftCards = () => {
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
 
+  const handleDelete=async(id)=>{
+    let res = await deleteGiftCard(id);
+    if (res?.status === 200) {
+      await fetchData()
+    }
+    return res;
+   
+
+  }
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+  
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize,search,fieldName, orderMethod]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -181,7 +223,8 @@ const AllGiftCards = () => {
             showModal={showDeleteModal}
             handleCancel={handleDeleteCancel}
             deleteModal={deleteModal}
-            record={selectedRecord}
+            id={selectedRecord.idGiftCard}
+            handleDelete={handleDelete}
           />
         )}
         {editModal && (
@@ -190,6 +233,7 @@ const AllGiftCards = () => {
             handleEditCancel={handleEditCancel}
             editModal={editModal}
             record={selectedRecord}
+            fetchData={fetchData}
           />
         )}
         <h1 className="allUsersHeading">All Gift Card</h1>
@@ -203,6 +247,7 @@ const AllGiftCards = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
       </div>
     </AllUserWrapper>
@@ -212,7 +257,7 @@ const AllGiftCards = () => {
 export default AllGiftCards;
 
 const AllUserWrapper = styled.div`
-  padding-bottom: 35px;
+  padding-bottom: 35px; 
   @media (max-width: 550px) {
     padding-bottom: 25px;
   }

@@ -41,20 +41,20 @@ const EditUserModal = ({
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
-    paypalEmail: yup
-      .string()
-      .email("Invalid PayPal email")
-      .required("PayPal email is required"),
-    address1: yup.string().required("Address 1 is required"),
-    address2: yup.string(),
-    country: yup.string().required("Country is required"),
-    city: yup.string().required("City is required"),
-    state: yup.string().required("State is required"),
-    zip: yup.string().required("Zip/Postal code is required"),
-    telephone: yup.string().required("Telephone is required"),
-    userPoints: yup.number().required("User points are required"),
-    isAdmin: yup.string().required("Admin status is required"),
-    suspendAccount: yup.string().required("Suspend Account is required"),
+    // paypalEmail: yup
+    //   .string()
+    //   .email("Invalid PayPal email")
+    //   .required("PayPal email is required"),
+    // address1: yup.string().required("Address 1 is required"),
+    // address2: yup.string(),
+    // country: yup.string().required("Country is required"),
+    // city: yup.string().required("City is required"),
+    // state: yup.string().required("State is required"),
+    // zip: yup.string().required("Zip/Postal code is required"),
+    // telephone: yup.string().required("Telephone is required"),
+    // userPoints: yup.number().required("User points are required"),
+    // isAdmin: yup.string().required("Admin status is required"),
+    // suspendAccount: yup.string().required("Suspend Account is required"),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -142,21 +142,21 @@ const EditUserModal = ({
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>First Name</Label>
+                      <Label>First Name<Asterisk>*</Asterisk></Label>
                       <InputField name="firstName" placeholder="First Name" />
                       <RequiredWrapper>
                         <ErrorMessage name="firstName" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Last Name</Label>
+                      <Label>Last Name<Asterisk>*</Asterisk></Label>
                       <InputField name="lastName" placeholder="Last Name" />
                       <RequiredWrapper>
                         <ErrorMessage name="lastName" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Email Address</Label>
+                      <Label>Email Address<Asterisk>*</Asterisk></Label>
                       <InputField name="email" placeholder="Email Address" />
                       <RequiredWrapper>
                         <ErrorMessage name="email" />
@@ -415,3 +415,7 @@ const ResetBtn = styled(Button)`
     border: 1px solid black;
   }
 `;
+
+const Asterisk = styled.span`
+color: red
+`

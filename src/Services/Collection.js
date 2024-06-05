@@ -27,6 +27,13 @@ const Get_ALL_Gift_Card = "getAllGiftCards";
 const WEB_SETTING = "webSettings";
 const ANDROID_SETTING = "androidSettings";
 const IOS_SETTING = "iOSSettings";
+const Delete_AllGiftCard="deleteGiftCard";
+const Edit_Gift_Card="editGiftCards";
+const Delete_frontpage_Offer="deleteFrontpageOffer";
+const  Edit_Frontpage_Offer="editFrontPageOffer";
+const Change_Admin_Pass="changeAdminPassword";
+const ADD_GIFT_CARD = "addGiftCard";
+
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -91,3 +98,15 @@ export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);
 export const addAndroidSetting = (payload) => postApi(ANDROID_SETTING, payload);
 
 export const addIosSetting = (payload) => postApi(IOS_SETTING, payload);
+
+export const deleteGiftCard=(id) => deleteApi(Delete_AllGiftCard,id);
+
+export const editGiftCard=(payload) => patchApi(Edit_Gift_Card,payload);
+
+export const deleteFrontpageOffer=(id)=> deleteApi(Delete_frontpage_Offer,id);
+
+export const editFrontpageOffer=(payload) => patchApi(Edit_Frontpage_Offer,payload);
+
+export const changeAdminPass=(payload)=>  patchApi(Change_Admin_Pass,payload);
+
+export const addGiftCard = (payload) => postApi(ADD_GIFT_CARD, payload);

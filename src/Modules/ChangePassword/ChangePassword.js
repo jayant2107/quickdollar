@@ -4,6 +4,8 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
 import { useNavigate } from 'react-router-dom';
+import { changeAdminPass } from '../../Services/Collection';
+import { toast } from 'react-toastify';
 
 const ChangePassword = () => {
 const navigate = useNavigate();
@@ -22,15 +24,39 @@ const navigate = useNavigate();
         .matches(/^(?=.*[@$!%*?&])/, 'Password must contain at least one special character');
 
     const validationSchema = yup.object().shape({
-        oldPassword: passwordRules,
+        // oldPassword: passwordRules,
         newPassword: passwordRules,
         confirmPassword: yup.string()
             .required('Confirm Password is required')
             .oneOf([yup.ref('newPassword'), null], 'Passwords must match')
     });
 
-    const handleSubmit = (values, { resetForm }) => {
+    const handleSubmit = async(values, { resetForm }) => {
         console.log('Form values:', values);
+        const payload={
+            "oldpassword":values.oldPassword,
+            "password" : values.newPassword
+        }
+        console.log(payload)
+        try {
+            let res= await changeAdminPass(payload);
+            if (res?.status === 200) {
+                toast.success("Change Password successfully");
+                resetForm();
+            } else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            console.log(error, "error");
+            toast.error(error?.message || "Something went wrong");
+        }
+        
+
         resetForm();
     };
 
