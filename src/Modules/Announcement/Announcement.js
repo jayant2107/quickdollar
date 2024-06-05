@@ -4,6 +4,8 @@ import TextArea from 'antd/es/input/TextArea';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
+import { announcement } from '../../Services/Collection';
+import { toast } from 'react-toastify';
 
 const Announcement = () => {
 
@@ -19,8 +21,29 @@ const Announcement = () => {
         message: yup.string().required('Message is required')
     });
 
-    const handleSubmit = (values, { resetForm , setFieldValue}) => {
+    const handleSubmit =async (values, { resetForm, setFieldValue }) => {
         console.log('Form values:', values);
+        let payload ={
+            "application_type":values.user,
+            "title": values.title,
+            "message": values.message
+        }
+        console.log(payload)
+        let res= await announcement(payload)
+        if (res?.status === 200) {
+            console.log(res.status)
+            toast.success("Notification Sent Successfully");
+            resetForm();
+          }
+          else {
+            let message =
+              res?.response?.data?.message ||
+              res?.message ||
+              res?.error ||
+              "Something went wrong";
+            toast.error(message);
+          }
+
         resetForm();
         setFieldValue('message', '');
     };
@@ -42,13 +65,25 @@ const Announcement = () => {
                                     <SelectField
                                         style={{ width: '100%', marginBottom: "3px", }}
                                         placeholder="Please select"
-                                        value={values.user || undefined} 
+                                        value={values.user || undefined}
                                         onChange={(value) => setFieldValue('user', value)}
                                         options={[
-                                            { value: 'jack', label: 'Jack' },
-                                            { value: 'lucy', label: 'Lucy' },
-                                            { value: 'Yiminghe', label: 'Yiminghe' },
-                                            { value: 'disabled', label: 'Disabled', disabled: true },
+                                            {
+                                                value: '0',
+                                                label: 'IOS',
+                                            },
+                                            {
+                                                value: '1',
+                                                label: 'Android',
+                                            },
+                                            {
+                                                value: '2',
+                                                label: 'All Users',
+                                            },
+                                            {
+                                                value: '3',
+                                                label: 'Web',
+                                            },
                                         ]}
                                         onBlur={() => setFieldTouched('user', true)}
                                     />
@@ -56,7 +91,7 @@ const Announcement = () => {
                                         <ErrorMessage name="user" />
                                     </RequiredWrapper>
                                 </div>
-    
+
                                 <div>
                                     <Label>Title</Label>
                                     <InputField name="title" placeholder="Notification Title" />
@@ -64,7 +99,7 @@ const Announcement = () => {
                                         <ErrorMessage name="title" />
                                     </RequiredWrapper>
                                 </div>
-    
+
                                 <div>
                                     <Label>Message</Label>
                                     <TextAreaField
@@ -79,9 +114,9 @@ const Announcement = () => {
                                         <ErrorMessage name="message" />
                                     </RequiredWrapper>
                                 </div>
-    
+
                             </InputWrapper>
-    
+
                             <Footer>
                                 <SubmitBtn type="primary" htmlType="submit">Send</SubmitBtn>
                             </Footer>
