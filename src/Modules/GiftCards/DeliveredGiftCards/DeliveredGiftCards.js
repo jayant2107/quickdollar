@@ -17,6 +17,8 @@ const DeliveredGift = () => {
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value), 300),
@@ -30,6 +32,9 @@ const DeliveredGift = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
       const res = await getDeliveredGiftCard(params);
       if (res?.status === 200) {
         console.log(res?.data?.findDeliveredGiftCards);
@@ -60,16 +65,20 @@ const DeliveredGift = () => {
       key: "giftname",
       fixed: "left",
       render: (text, record) => record?.giftcard?.giftCardName || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardName" ? orderMethod : false,
     },
     {
       title: "Gift Card Price",
       dataIndex: "giftCardPoints",
       key: "price",
       render: (text, record) => record?.giftCardPoints || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardPoints" ? orderMethod : false,
     },
     {
       title: "User Name",
-      dataIndex: "name",
+      dataIndex: "firstName",
       key: "name",
       render: (text, record) => {
         const capitalizeFirstLetter = (str) => {
@@ -85,10 +94,12 @@ const DeliveredGift = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
+      sorter: true,
+      sortOrder: fieldName === "firstName" ? orderMethod : false,
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "Status",
       key: "status",
       render: (text, record) => (
         <StatusStyledText status={record.Status ? "Completed" : "InCompleted"}>
@@ -100,6 +111,8 @@ const DeliveredGift = () => {
           )}
         </StatusStyledText>
       ),
+      sorter: true,
+      sortOrder: fieldName === "Status" ? orderMethod : false,
     },
     {
       title: "UserType",
@@ -125,6 +138,8 @@ const DeliveredGift = () => {
         }
         return <StyledText>{userType}</StyledText>;
       },
+      sorter: true,
+      sortOrder: fieldName === "userApplicationtype" ? orderMethod : false,
     },
 
     {
@@ -132,6 +147,8 @@ const DeliveredGift = () => {
       dataIndex: "giftCardCode",
       key: "cardcode",
       render: (text, record) => record?.giftCardCode,
+      sorter: true,
+      sortOrder: fieldName === "giftCardCode" ? orderMethod : false,
     },
     {
       title: "Delivery Date",
@@ -141,6 +158,8 @@ const DeliveredGift = () => {
         const date = DateTime.fromISO(record?.giftcard?.updatedAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "updatedAt" ? orderMethod : false,
     },
   ];
 
@@ -164,9 +183,26 @@ const DeliveredGift = () => {
     x: 1000,
   };
 
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+  
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize,search,fieldName, orderMethod]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -182,6 +218,7 @@ const DeliveredGift = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
       </div>
     </AllUserWrapper>

@@ -24,16 +24,18 @@ const ViewCustomOffers = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [search, setSearch] = useState("");
-
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
     []
   );
+
   const handleDelete=async(id)=>{
     let res = await deleteOffers(id);
     if (res?.status === 200) {
-       fetchData()
+       await fetchData()
     }
     return res;
    
@@ -67,6 +69,9 @@ const ViewCustomOffers = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
       const res = await getViewCustomOffers(params);
       if (res?.status === 200) {
         console.log(res.data.findCustomOffers, "resview");
@@ -88,6 +93,7 @@ const ViewCustomOffers = () => {
       setLoader(false);
     }
   };
+
   const ActiveAllUser=async()=>{
     let res= await activateDeactivateAllOffers({isActive:"1"})
     if (res?.status === 200) {
@@ -106,6 +112,7 @@ const ViewCustomOffers = () => {
     }
 
   }
+
   const DeactiveAllUser=async()=>{
     let res= await activateDeactivateAllOffers({isActive:"0"})
     console.log(res)
@@ -135,20 +142,29 @@ const ViewCustomOffers = () => {
       width: 150,
       fixed: "left",
       render: (text, record) => record?.offerTitle || "NA",
+      sorter: true,
+      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
     },
     {
       title: "Offer Link",
       key: "link",
-      dataIndex: "link",
+      dataIndex: "offerLink",
       width: 400,
 
       render: (text, record) => <a>{record?.offerLink || "NA"}</a>,
+      sorter: true,
+      sortOrder: fieldName === "offerLink" ? orderMethod : false,
+   
     },
     {
       title: "Offer Amount in $",
       key: "amount",
       width: 300,
-      dataIndex: "amount",
+      dataIndex: "offerPoints",
+      render:(text,record)=>record?.offerPoints,
+      sorter: true,
+      sortOrder: fieldName === "offerLofferPointsink" ? orderMethod : false,
+      
     },
     {
       title: "Offer Short Description",
@@ -241,6 +257,8 @@ const ViewCustomOffers = () => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -286,9 +304,25 @@ const ViewCustomOffers = () => {
     x: 7000, // Horizontal scrolling
   };
 
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+
   useEffect(() => {
-    fetchData();
-  }, [currentPage, pageSize, search]);
+    fetchData();// Fetch geo codes
+  }, [currentPage, pageSize, search, fieldName, orderMethod]);
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (
@@ -326,6 +360,7 @@ const ViewCustomOffers = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
       </div>
     </AllUserWrapper>

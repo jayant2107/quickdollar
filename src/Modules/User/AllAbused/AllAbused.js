@@ -29,6 +29,8 @@ const AllAbusedUsers = () => {
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
@@ -42,6 +44,9 @@ const AllAbusedUsers = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
       const res = await getAllAbusedUser(params);
       if (res?.status === 200) {
         // console.log(res.data)
@@ -70,7 +75,7 @@ const AllAbusedUsers = () => {
     {
       title: "Full Name",
       width: 150,
-      dataIndex: "name",
+      dataIndex: "firstName",
       key: "name",
       fixed: "left",
       render: (text, record) => {
@@ -87,22 +92,28 @@ const AllAbusedUsers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
+      sorter: true,
+      sortOrder: fieldName === "firstName" ? orderMethod : false,
     },
     {
       title: "Country",
-      dataIndex: "country",
+      dataIndex: "countryCode",
       key: "country",
       render: (text, record) => record?.countryCode || "NA",
+      sorter: true,
+      sortOrder: fieldName === "countryCode" ? orderMethod : false,
     },
     {
       title: "Points",
-      dataIndex: "points",
+      dataIndex: "Points",
       key: "points",
       render: (text, record) => record?.Points || "0",
+      sorter: true,
+      sortOrder: fieldName === "Points" ? orderMethod : false,
     },
     {
       title: "Role",
-      dataIndex: "role",
+      dataIndex: "userRoleID",
       key: "role",
       render: (text, record) => {
         let roleName;
@@ -134,10 +145,12 @@ const AllAbusedUsers = () => {
           </RoleStyledText>
         );
       },
+      sorter: true,
+      sortOrder: fieldName === "userRoleID" ? orderMethod : false,
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "isActive",
       key: "status",
       render: (text, record) => (
         <StatusStyledText
@@ -152,6 +165,8 @@ const AllAbusedUsers = () => {
           )}
         </StatusStyledText>
       ),
+      sorter: true,
+      sortOrder: fieldName === "isActive" ? orderMethod : false,
     },
     {
       title: "UserType",
@@ -177,15 +192,19 @@ const AllAbusedUsers = () => {
         }
         return <StyledText>{userType}</StyledText>;
       },
+      sorter: true,
+      sortOrder: fieldName === "userApplicationtype" ? orderMethod : false,
     },
     {
       title: "Created Date",
-      dataIndex: "createdat",
+      dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -274,16 +293,31 @@ const AllAbusedUsers = () => {
     console.log(id,"abused userrr")
     let res = await deleteUser(id);
     if (res?.status === 200) {
-       fetchData()
+       await fetchData()
     }
     return res;
-   
-
   }
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize, search,fieldName,orderMethod]);
+
 
   return (
     <AllAbusedUserWrapper byTheme={byTheme}>
@@ -337,6 +371,7 @@ const AllAbusedUsers = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
         
       </div>
