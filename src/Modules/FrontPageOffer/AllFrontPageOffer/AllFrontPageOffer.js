@@ -9,6 +9,7 @@ import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditFrontpageModal from "../../../Components/EditFrontpageModal/EditFrontpageModal";
 import { debounce } from "../../../Utils/CommonFunctions";
+import { deleteFrontpageOffer } from "../../../Services/Collection";
 
 
 const AllFrontPageOffer = () => {
@@ -22,6 +23,8 @@ const AllFrontPageOffer = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [search, setSearch] = useState("");
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
 
   const handleSearch = useCallback(
     debounce((value) => setSearch(value)),
@@ -35,6 +38,9 @@ const AllFrontPageOffer = () => {
       search && params.append("search", search);
       params.append("page", currentPage);
       params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
       const res = await getAllFrontPage(params);
       if (res?.status === 200) {
         setUserData(res?.msg?.findUser || []);
@@ -56,6 +62,16 @@ const AllFrontPageOffer = () => {
     }
   };
 
+  const handleDelete=async(id)=>{
+    let res = await deleteFrontpageOffer (id);
+    if (res?.status === 200) {
+        await fetchData()
+    }
+    return res;
+   
+
+  }
+
 
   const columns = [
     { 
@@ -66,6 +82,8 @@ const AllFrontPageOffer = () => {
       fixed: "left",
       render: (text, record) =>
       record?.frontpageofferTitle || "NA",
+      sorter: true,
+      sortOrder: fieldName === "frontpageofferTitle" ? orderMethod : false,
       
     },
     {
@@ -77,6 +95,8 @@ const AllFrontPageOffer = () => {
           <a href={record?.frontpageofferLink}>{record?.frontpageofferLink || "NA" }</a>
         </TableImageWrapper>
       ),
+      sorter: true,
+      sortOrder: fieldName === "frontpageofferLink" ? orderMethod : false,
     },
     {
       title: "Offer Image",
@@ -87,6 +107,8 @@ const AllFrontPageOffer = () => {
           <img src={record?.frontpageofferImage} alt="NA" />
         </TableImageWrapper>
       ),
+      sorter: true,
+      sortOrder: fieldName === "frontpageofferImage" ? orderMethod : false,
     },
     {
       title: "Offer Button Image",
@@ -97,6 +119,8 @@ const AllFrontPageOffer = () => {
           <img src={record?.frontpageofferButton} alt="NA" />
         </TableImageWrapper>
       ),
+      sorter: true,
+      sortOrder: fieldName === "frontpageofferButton" ? orderMethod : false,
     },
     {
       title: "Created Date",
@@ -106,6 +130,8 @@ const AllFrontPageOffer = () => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -170,9 +196,26 @@ const AllFrontPageOffer = () => {
   };
 
 
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+  
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search]);
+  }, [currentPage, pageSize,search,fieldName, orderMethod]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -181,8 +224,8 @@ const AllFrontPageOffer = () => {
           showModal={showDeleteModal}
           handleCancel={handleDeleteCancel}
           deleteModal={deleteModal}
-          record={selectedRecord}
-          fetchData={fetchData}
+          id={selectedRecord.idfrontpageoffer}
+          handleDelete={handleDelete}
         />
       )}
       {EditFrontpageModal && (
@@ -209,6 +252,7 @@ const AllFrontPageOffer = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
+          onChange={handleTableChange}
         />
       </div>
     </AllUserWrapper>

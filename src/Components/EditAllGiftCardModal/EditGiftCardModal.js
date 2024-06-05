@@ -4,50 +4,94 @@ import { Modal, Button } from "antd";
 import { Field, ErrorMessage, Form, Formik } from "formik";
 import TextArea from 'antd/es/input/TextArea';
 import * as yup from "yup";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaGift } from "react-icons/fa";
+import { editGiftCard } from "../../Services/Collection";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 const EditGiftCardModal = ({
   handleEditCancel,
   showEditModal,
   editModal,
   viewLoader,
+  record,
+  fetchData,
 }) => {
-  const [image, setImage] = useState("https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png")
+  console.log(record, "recorddd")
+  const [offerImgPreview, setOfferImgPreview] = useState(record.giftCardImage);
+  const [flag,setFlag]=useState(false);
+  const navigate=useNavigate()
+
 
   const initialValues = {
-    giftCardName: '',
-    giftImg: '',
-    giftCardPrice: '',
-    giftCardNote: '',
-    isAdmin: "",
+    giftCardName: record.giftCardName || '',
+    frontpageofferImage:  '',
+    giftCardPoints: record.giftCardPoints || '',
+    giftCardNote: record.giftCardNote || '',
+    isActive: record.isActive ? "true" : "false",
   };
+  const offerImgInputRef = useRef(null);
 
   const validationSchema = yup.object().shape({
     giftCardName: yup.string().required('Gift Card Name is required'),
-    giftImg: yup.string().required('Gift Card Image is required'),
-    giftCardPrice: yup.string().required('Gift card priceis required').test(
+    giftCardPoints: yup.string().required('Gift card priceis required').test(
       'is-number',
       'Enter number only',
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
     ),
-    giftCardNote: yup.string().required('Gift Card Note is required'),
-    isAdmin: yup.string().required("Admin status is required"),
+    isActive: yup.string().required("Admin status is required"),
   });
 
-  const handleSubmit = (values, { resetForm, setFieldValue }) => {
-    console.log('Form values:', values);
-    resetForm();
-    setFieldValue('giftCardNote', '')
-  };
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      console.log(img.src)
-      setImage(img.src);
+  const handleSubmit = async (values, { resetForm }) => {
+    const formData = new FormData();
+    formData.append('giftCardName', values.giftCardName);
+    formData.append('id', record.idGiftCard);
+    formData.append('giftCardPoints', values.giftCardPoints);
+    formData.append('giftCardNote', values.giftCardNote);
+    formData.append('isActive', values.isActive);
+    if(flag){
+      formData.append('frontpageofferImage', values.frontpageofferImage);
     }
-  }
+    
+    for (const pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+    try {
+        const res = await editGiftCard(formData);
+        if (res?.status === 200) {
+          await fetchData()
+            toast.success("Edit Gift Card successfully");
+            resetForm();
+            setOfferImgPreview(null);
+            handleEditCancel();
+        } else {
+            let message =
+                res?.response?.data?.message ||
+                res?.message ||
+                res?.error ||
+                "Something went wrong";
+            toast.error(message);
+        }
+    } catch (error) {
+        console.log(error, "error");
+        toast.error(error?.message || "Something went wrong");
+    }
+  };
+  
+  const handleFileChange = (e, setFieldValue, setPreview) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFieldValue(e.target.name, file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        setFlag(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   return (
     <>
@@ -79,16 +123,16 @@ const EditGiftCardModal = ({
                   <Form>
 
                     <InputWrapper>
-                    <FieldWrapper>
-                      
-                        <Button className="offerBtn">
-                          <FaGift/>
+                      <FieldWrapper>
+
+                        <Button className="offerBtn" onClick={()=>navigate("/quickdollar/giftcard/requestedgiftcard")}>
+                          <FaGift />
                           Requested Gift Card
                         </Button>
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Gift Card Name</Label>
+                        <Label>Gift Card Name<Asterisk>*</Asterisk></Label>
                         <FieldContainer>
                           <InputField name="giftCardName" placeholder="Gift Card Name" />
                           <RequiredWrapper>
@@ -102,29 +146,31 @@ const EditGiftCardModal = ({
                         <Label>Gift Card Image</Label>
                         <FieldContainer>
                           <ChooseContainer>
-                            <ChooseFile
-                              name="giftImg"
+                            <UploadButton onClick={() => offerImgInputRef.current.click()}>Upload</UploadButton>
+                            <input
+                              ref={offerImgInputRef}
+                              name="frontpageofferImage"
                               type="file"
-                              onChange={handleFileChange}
+                              onChange={(e) =>
+                                handleFileChange(e, setFieldValue, setOfferImgPreview)
+                              }
+                              style={{ display: "none" }}
                             />
                             <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                            {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
                           </ChooseContainer>
-                          <TableImageWrapper>
-                            <img src={image} alt="" />
-                          </TableImageWrapper>
-
-                          {/* <RequiredWrapper>
-                            <ErrorMessage name="giftImg" />
-                          </RequiredWrapper> */}
+                          <RequiredWrapper>
+                            <ErrorMessage name="frontpageofferImage" />
+                          </RequiredWrapper>
                         </FieldContainer>
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Gift Card Price in $</Label>
+                        <Label>Gift Card Price in $<Asterisk>*</Asterisk></Label>
                         <FieldContainer>
-                          <InputField name="giftCardPrice" placeholder="Gift Card Price in $" />
+                          <InputField name="giftCardPoints" placeholder="Gift Card Price in $" />
                           <RequiredWrapper>
-                            <ErrorMessage name="giftCardPrice" />
+                            <ErrorMessage name="giftCardPoints" />
                           </RequiredWrapper>
                         </FieldContainer>
                       </FieldWrapper>
@@ -146,7 +192,7 @@ const EditGiftCardModal = ({
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Is Active</Label>
+                        <Label>Is Active<Asterisk>*</Asterisk></Label>
                         <FieldContainer>
                           <FieldWrapper>
                             <Radio>
@@ -154,8 +200,8 @@ const EditGiftCardModal = ({
                               <div>
                                 <Field
                                   type="radio"
-                                  name="isAdmin"
-                                  value="yes"
+                                  name="isActive"
+                                  value="true"
                                   id="isAdminYes"
                                 />
                                 <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
@@ -163,8 +209,8 @@ const EditGiftCardModal = ({
                               <div>
                                 <Field
                                   type="radio"
-                                  name="isAdmin"
-                                  value="no"
+                                  name="isActive"
+                                  value="false"
                                   id="isAdminNo"
                                 />
                                 <RadioLabel htmlFor="isAdminNo">No</RadioLabel>
@@ -172,7 +218,7 @@ const EditGiftCardModal = ({
                             </Radio>
                           </FieldWrapper>
                           <RequiredWrapper>
-                            <ErrorMessage name="isAdmin" />
+                            <ErrorMessage name="isActive" />
                           </RequiredWrapper>
                         </FieldContainer>
                       </FieldWrapper>
@@ -181,8 +227,8 @@ const EditGiftCardModal = ({
                     </InputWrapper>
 
                     <Footer>
-                      <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                       <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
+                      <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                     </Footer>
                   </Form>
                 )}
@@ -252,14 +298,7 @@ outline: none;
 margin-bottom: 3px;
 `;
 
-const ChooseFile = styled(Field)`
-width: -webkit-fill-available;
-padding: 15px 0px 5px 0px;
-font-size: 14px;
-color: #666;
-border-radius: 5px;
-outline: none;
-`;
+
 
 const InputWrapper = styled.div`
 `
@@ -365,11 +404,21 @@ const TextAreaField = styled(TextArea)`
 const RadioLabel = styled.label`
   margin: 0;
 `;
-const TableImageWrapper = styled.div`
 
-img {
-  width:100px;
-  object-fit:contain;
-}
+const UploadButton = styled(Button)`
+color: black;
+background: white;
+width: 40%;
+height: 35px;
+border: 1px solid black;
+margin-bottom: 1rem;
+`
+const Image = styled.img`
+width: 120px;
+height: 120px;
+object-fit: contain;
+`
 
-`;
+const Asterisk = styled.span`
+color: red
+`

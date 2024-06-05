@@ -4,44 +4,69 @@ import "../../Style/global.css";
 import { Modal, Button } from "antd";
 import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
+import { editFrontpageOffer } from "../../Services/Collection";
+import { toast } from "react-toastify";
 
 const EditFrontpageModal = ({
   handleEditCancel,
   editModal,
   record,
+  fetchData,
 }) => {
-  const [offerImgPreview, setOfferImgPreview] = useState(null);
-  const [buttonImgPreview, setButtonImgPreview] = useState(null);
+  console.log(record)
+  const [offerImgPreview, setOfferImgPreview] = useState(record?.frontpageofferImage);
+  const [buttonImgPreview, setButtonImgPreview] = useState(record?.frontpageofferButton);
+  const [flag, setFlag] = useState(false)
   const offerImgInputRef = useRef(null);
   const buttonImgInputRef = useRef(null);
 
   const initialValues = {
     title: record?.frontpageofferTitle || "",
     link: record?.frontpageofferLink || "",
-    offerImg: "",
+    offerImg: record?.frontpageofferImage || "",
     buttonImg: ""
   };
 
   const validationSchema = yup.object().shape({
     title: yup.string().required("Title is required"),
     link: yup.string().required('Link is required'),
-    offerImg: yup.string().required('Offer image is required'),
-    buttonImg: yup.string().required('Button image is required'),
   });
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
-    formData.append('title', values.title);
-    formData.append('link', values.link);
-    formData.append('offerImg', values.offerImg);
-    formData.append('buttonImg', values.buttonImg);
+    formData.append('frontpageofferTitle', values.title);
+    formData.append('id', record.idfrontpageoffer);
+    formData.append('frontpageofferLink', values.link);
+    if (flag) {
+      formData.append('frontpageofferImage', values.offerImg);
+      formData.append('frontpageofferButton', values.buttonImg);
+    }
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
-    resetForm();
-    handleEditCancel();
-    setOfferImgPreview(null);
-    setButtonImgPreview(null);
+    try {
+      const res = await editFrontpageOffer(formData);
+      if (res?.status === 200) {
+        await fetchData()
+        toast.success("Edit Frontpage Offer successfully");
+        resetForm();
+        setOfferImgPreview(null);
+        setButtonImgPreview(null);
+        handleEditCancel();
+        setOfferImgPreview(null);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
+
   };
 
   const handleFileChange = (e, setFieldValue, setPreview) => {
@@ -51,19 +76,18 @@ const EditFrontpageModal = ({
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
+        setFlag(true)
       };
       reader.readAsDataURL(file);
     }
   };
 
   useEffect(() => {
-    if (!editModal) {
-      setOfferImgPreview(null);
-      setButtonImgPreview(null);
-      offerImgInputRef.current && (offerImgInputRef.current.value = "");
-      buttonImgInputRef.current && (buttonImgInputRef.current.value = "");
+    if (editModal) {
+      setOfferImgPreview(record?.frontpageofferImage);
+      setButtonImgPreview(record?.frontpageofferButton);
     }
-  }, [editModal]);
+  }, [editModal, record]);
 
   return (
     <>
@@ -95,14 +119,14 @@ const EditFrontpageModal = ({
                 <Form>
                   <InputWrapper>
                     <div>
-                      <Label>Front Pageoffer Title</Label>
+                      <Label>Front Pageoffer Title<Asterisk>*</Asterisk></Label>
                       <InputField name="title" placeholder="title" />
                       <RequiredWrapper>
                         <ErrorMessage name="title" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Front Pageoffer Link</Label>
+                      <Label>Front Pageoffer Link<Asterisk>*</Asterisk></Label>
                       <InputField name="link" placeholder="link" />
                       <RequiredWrapper>
                         <ErrorMessage name="link" />
@@ -123,11 +147,9 @@ const EditFrontpageModal = ({
                             style={{ display: "none" }}
                           />
                           <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
-                          {offerImgPreview && <img src={offerImgPreview} alt="Offer Preview" width="100" height="100" />}
+                          {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
                         </ChooseContainer>
-                        <RequiredWrapper>
-                          <ErrorMessage name="offerImg" />
-                        </RequiredWrapper>
+
                       </FieldContainer>
                     </div>
 
@@ -146,11 +168,9 @@ const EditFrontpageModal = ({
                             style={{ display: "none" }}
                           />
                           <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
-                          {buttonImgPreview && <img src={buttonImgPreview} alt="Button Preview" width="100" height="100" />}
+                          {buttonImgPreview && <Image src={buttonImgPreview} alt="Button Preview" />}
                         </ChooseContainer>
-                        <RequiredWrapper>
-                          <ErrorMessage name="buttonImg" />
-                        </RequiredWrapper>
+
                       </FieldContainer>
                     </div>
                   </InputWrapper>
@@ -283,4 +303,12 @@ width: 40%;
 height: 35px;
 border: 1px solid black;
 margin-bottom: 1rem;
+`
+const Image = styled.img`
+width: 120px;
+height: 120px;
+object-fit: contain;
+`
+const Asterisk = styled.span`
+color: red
 `

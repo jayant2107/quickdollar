@@ -28,6 +28,12 @@ const WEB_SETTING = "webSettings";
 const ANDROID_SETTING = "androidSettings";
 const IOS_SETTING = "iOSSettings";
 const Chart_Data = "allOffersChart";
+const Delete_AllGiftCard = "deleteGiftCard";
+const Edit_Gift_Card = "editGiftCards";
+const Delete_frontpage_Offer = "deleteFrontpageOffer";
+const Edit_Frontpage_Offer = "editFrontPageOffer";
+const Change_Admin_Pass = "changeAdminPassword";
+const ADD_GIFT_CARD = "addGiftCard";
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -85,7 +91,7 @@ export const getDeliveredGiftCard = async (query) =>
 export const getAllGiftCard = async (query) =>
   await getApi(`${Get_ALL_Gift_Card}?${query}`);
 
-export const announcement = (payload) =>  postApi(Announcement, payload);
+export const announcement = (payload) => postApi(Announcement, payload);
 
 export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);
 
@@ -95,3 +101,17 @@ export const addIosSetting = (payload) => postApi(IOS_SETTING, payload);
 
 export const getChartData = async (query) =>
   await getApi(`${Chart_Data}?${query}`);
+export const deleteGiftCard = (id) => deleteApi(Delete_AllGiftCard, id);
+
+export const editGiftCard = (payload) => patchApi(Edit_Gift_Card, payload);
+
+export const deleteFrontpageOffer = (id) =>
+  deleteApi(Delete_frontpage_Offer, id);
+
+export const editFrontpageOffer = (payload) =>
+  patchApi(Edit_Frontpage_Offer, payload);
+
+export const changeAdminPass = (payload) =>
+  patchApi(Change_Admin_Pass, payload);
+
+export const addGiftCard = (payload) => postApi(ADD_GIFT_CARD, payload);
