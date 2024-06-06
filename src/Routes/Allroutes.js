@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { publicRoutes } from "./PublicRoutes";
 import { privateRoutes } from "./PrivateRoutes";
+import PageNotFound from "../Modules/PageNotFound/PageNotFound";
 
 function PublicRoute({ isAuthenticated }) {
   if (isAuthenticated) return <Navigate to="/quickdollar/dashboard" replace />;
@@ -39,6 +40,8 @@ export default function GaspilRoutes() {
         <Route element={<PrivateRoute isAuthenticated={token} />}>
           {renderRoutes(privateRoutes)}
         </Route>
+
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );

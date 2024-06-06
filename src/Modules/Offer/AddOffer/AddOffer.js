@@ -6,7 +6,7 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { addOffer, getAllGeoCodes } from '../../../Services/Collection';
+import { addOffer, getAllGeoCodes, getAllUser } from '../../../Services/Collection';
 import { toast } from "react-toastify";
 import Loader from '../../../Components/Loader/Loader'
 const AddOffer = () => {
@@ -22,7 +22,7 @@ const AddOffer = () => {
     offerLongDescription: '',
     offerPlatform: '',
     offerCountry: [],
-    fraudUser: "",
+    fraudUser: [],
     dailyCAPLimit: "",
     customPostbaclParams: '',
     isActive: "false",
@@ -34,10 +34,12 @@ const AddOffer = () => {
     relistOffer: false,
     StaticURL: false,
   };
+
   const [geoCodes, setGeoCodes] = useState([]);
   const [offerImgPreview, setOfferImgPreview] = useState(null);
   const offerImgInputRef = useRef(null);
-
+  const [userData, setUserData] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -87,14 +89,12 @@ const AddOffer = () => {
     offerPlatform: yup.string().required('Offer Created is required'),
     customPostbaclParams: yup.string(),
     offerCountry: yup.array().min(1, 'Countries are required').required('Countries are required'),
-    fraudUser: yup.string().required('Fraud User is required'),
     dailyCAPLimit: yup.string().required('Cap Limit  is required').test(
       'is-number',
       'Enter number only',
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
     ),
   });
-  const [loader, setLoader] = useState(false);
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     const formData = new FormData();
@@ -109,7 +109,7 @@ const AddOffer = () => {
     formData.append("offerPlatform", values.offerPlatform);
     formData.append("offerCountry", JSON.stringify(values.offerCountry));
     // formData.append("offerCountry", values.offerCountry);
-    formData.append("fraudUser", values.fraudUser);
+    formData.append("fraudUser", JSON.stringify(values.fraudUser));
     formData.append("dailyCAPLimit", values.dailyCAPLimit);
     formData.append("customPostbaclParams", values.customPostbaclParams);
     formData.append("isActive", values.isActive);
@@ -165,6 +165,31 @@ const AddOffer = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    console.log("start");
+    // setLoader(true);
+    try {
+      const res = await getAllUser();
+      if (res?.status === 200) {
+        setUserData(res?.data?.findUsers);
+        console.log(res?.data?.findUsers, "users");
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        setUserData([]);
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      // setLoader(false);
+    }
+  };
+
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [h1TitleValue, setH1TitleValue] = useState("");
@@ -182,8 +207,14 @@ const AddOffer = () => {
     value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
   }));
 
+  const userOptions = userData.map((data) => ({
+    label: `${data?.firstName} ${data?.lastName}`,
+    value: `${data?.firstName} ${data?.lastName}`,
+  }))
+
   useEffect(() => {
     fetchGeoCordData();
+    fetchUsers();
   }, [])
 
   const handleFileChange = (e, setFieldValue, setPreview) => {
@@ -680,35 +711,21 @@ const AddOffer = () => {
 
                 <FieldWrapper>
                   <Label>Slect fraud user to unlisted from offer</Label>
-                  <SelectFieldWrapper>
-                    <SelectField
-                      placeholder="Select user"
-                      defaultValue={initialValues.fraudUser}
-                      style={{
-                        width: "100%",
-                        marginBottom: "3px",
-                      }}
-                      value={values.fraudUser || null}
-                      onChange={(value) => setFieldValue('fraudUser', value)}
-                      options={[
-                        {
-                          value: '0',
-                          label: 'IOS',
-                        },
-                        {
-                          value: '1',
-                          label: 'Android',
-                        },
-                        {
-                          value: '2',
-                          label: 'All Users',
-                        },
-                      ]}
-                    />
-                    <RequiredWrapper>
-                      <ErrorMessage name="fraudUser" />
-                    </RequiredWrapper>
-                  </SelectFieldWrapper>
+                  <FieldContainer>
+                    <ChooseCountry>
+                      <SelectField
+                        mode="multiple"
+                        allowClear
+                        style={{ width: "100%" }}
+                        placeholder="Search for a user"
+                        value={values.fraudUser}
+                        onChange={(value) =>
+                          setFieldValue("fraudUser", value)
+                        }
+                        options={userOptions}
+                      />
+                    </ChooseCountry>
+                  </FieldContainer>
                 </FieldWrapper>
 
               </InputWrapper>
