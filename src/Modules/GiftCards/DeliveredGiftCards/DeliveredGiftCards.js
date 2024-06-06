@@ -20,11 +20,13 @@ const DeliveredGift = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-  const handleSearch = useCallback(
-    debounce((value) => setSearch(value), 300),
+   const handleSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+      setCurrentPage(1);
+    }),
     []
   );
-
   const fetchData = async () => {
     setLoader(true);
     try {

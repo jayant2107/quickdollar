@@ -14,7 +14,7 @@ import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
 import { deleteUser, getAllAbusedUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
-import { debounce } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 
 const AllAbusedUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -32,11 +32,13 @@ const AllAbusedUsers = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-  const handleSearch = useCallback(
-    debounce((value) => setSearch(value)),
+   const handleSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+      setCurrentPage(1);
+    }),
     []
   );
-
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -73,7 +75,11 @@ const AllAbusedUsers = () => {
 
   const columns = [
     {
-      title: "Full Name",
+      title: (
+        <div>
+          Full Name <img src={srcSortImage("firstName", { sortBasis: fieldName, sortType: orderMethod })} alt="sort icon"  style={{width:"12px",height:"12px"}}/>
+        </div>
+      ),
       width: 150,
       dataIndex: "firstName",
       key: "name",
@@ -92,8 +98,8 @@ const AllAbusedUsers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
-      sorter: true,
-      sortOrder: fieldName === "firstName" ? orderMethod : false,
+      // sorter: true,
+      // sortOrder: fieldName === "firstName" ? orderMethod : false,
     },
     {
       title: "Country",
@@ -298,20 +304,31 @@ const AllAbusedUsers = () => {
     return res;
   }
 
+  // const handleTableChange = (pagination, filters, sorter) => {
+  //   let order;
+  //   if (fieldName === sorter.field) {
+  //     // If the same column is clicked again, toggle the sorting order
+  //     order = orderMethod === "asc" ? "desc" : "asc";
+  //   } else {
+  //     // If a new column is clicked, set the sorting order to ascending by default
+  //     order = "asc";
+  //   }
+  //   console.log("Sorter Field:", sorter.field);
+  //   console.log("Sort Order:", order);
+  //   setFieldName(sorter.field);
+  //   setorderMethod(order);
+  //   setCurrentPage(pagination.current);
+  // };
+
+
+
   const handleTableChange = (pagination, filters, sorter) => {
-    let order;
-    if (fieldName === sorter.field) {
-      // If the same column is clicked again, toggle the sorting order
-      order = orderMethod === "asc" ? "desc" : "asc";
-    } else {
-      // If a new column is clicked, set the sorting order to ascending by default
-      order = "asc";
+    if (sorter.field) {
+      setFieldName(sorter.field);
+      setorderMethod(sorter.order === "ascend" ? "asc" : "desc");
     }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
-    setFieldName(sorter.field);
-    setorderMethod(order);
     setCurrentPage(pagination.current);
+    setPageSize(pagination.pageSize);
   };
 
   useEffect(() => {

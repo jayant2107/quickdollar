@@ -34,6 +34,9 @@ const Delete_frontpage_Offer = "deleteFrontpageOffer";
 const Edit_Frontpage_Offer = "editFrontPageOffer";
 const Change_Admin_Pass = "changeAdminPassword";
 const ADD_GIFT_CARD = "addGiftCard";
+const REQUESTED_ALL_GIFT_CARD = "getAllRequestedGiftCards";
+
+
 
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
 
@@ -115,3 +118,6 @@ export const changeAdminPass = (payload) =>
   patchApi(Change_Admin_Pass, payload);
 
 export const addGiftCard = (payload) => postApi(ADD_GIFT_CARD, payload);
+
+export const getRequestedGiftCard = async (query) =>
+  await getApi(`${REQUESTED_ALL_GIFT_CARD}?${query}`);

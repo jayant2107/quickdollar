@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
@@ -6,53 +6,129 @@ import { RxCross2 } from "react-icons/rx";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import TableAction from "../../../Components/TableNew/TableActions";
-import EditRequestGiftCard from "../../../Components/EditRequestedGiftCard/EditRequestesGiftCard";
+import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
+import { toast } from "react-toastify";
+import { deleteGiftCard, getRequestedGiftCard } from "../../../Services/Collection";
+import { debounce } from "../../../Utils/CommonFunctions";
+import { DateTime } from "luxon";
 
 const RequestGiftCard = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [editModal, setEditModal] = useState(false);
+  const [loader, setLoader] = useState();
+  const [userData, setUserData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalUsers, setTotalUsers] = useState(5);
+  const [search, setSearch] = useState("");
+  const [fieldName, setFieldName] = useState("createdAt");
+  const [orderMethod, setorderMethod] = useState("asc");
+
+   const handleSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+      setCurrentPage(1);
+    }),
+    []
+  );  const fetchData = async () => {
+    setLoader(true);
+    try {
+      let params = new URLSearchParams();
+      search && params.append("search", search);
+      params.append("page", currentPage);
+      params.append("limit", pageSize);
+      params.append("fieldName", fieldName);
+      params.append("orderMethod", orderMethod);
+      console.log("Fetch Params:", params.toString());
+      const res = await getRequestedGiftCard(params);
+      if (res?.status === 200) {
+        console.log(res?.data?.findRequestedGiftCards, "dfghjk ");
+        setUserData(res?.data?.findRequestedGiftCards || []);
+        setTotalUsers(res?.data?.totalRequestedGiftCards || 0);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        setUserData([]);
+        toast.error(message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  };
 
   const columns = [
     {
       title: "Gift Card Name",
       width: 150,
-      dataIndex: "giftname",
+      dataIndex: "giftCardName",
       key: "giftname",
       fixed: "left",
+      render: (text, record) => record?.giftcard?.giftCardName || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardName" ? orderMethod : false,
     },
     {
       title: "Gift Card Price",
-      dataIndex: "price",
+      dataIndex: "giftCardPoints",
       key: "price",
-
+      render: (text, record) => record?.giftcard?.giftCardPoints || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardPoints" ? orderMethod : false,
     },
     {
       title: "User Name",
-      dataIndex: "name",
+      dataIndex: "firstName",
       key: "name",
-
+      render: (text, record) => {
+        const capitalizeFirstLetter = (str) => {
+          return str.charAt(0).toUpperCase() + str.slice(1);
+        };
+        const capitalizedFirstName = capitalizeFirstLetter(
+          record?.user?.firstName || ""
+        );
+        const capitalizedLastName = capitalizeFirstLetter(
+          record?.user?.lastName || ""
+        );
+        const fullName =
+          `${capitalizedFirstName} ${capitalizedLastName}`.trim();
+        return fullName ? fullName : "NA";
+      },
+      sorter: true,
+      sortOrder: fieldName === "firstName" ? orderMethod : false,
     },
     {
       title: "User Total Amount",
-      dataIndex: "price",
+      dataIndex: "giftCardPoints",
       key: "price",
+      render: (text, record) => record?.giftCardPoints || "NA",
+      sorter: true,
+      sortOrder: fieldName === "giftCardPoints" ? orderMethod : false,
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "Status",
       key: "status",
+      width: 150,
       render: (text, record) => (
-        <StatusStyledText status={record.status}>
-          {record.status}
-          {record.status === "active" ? (
-            <IoCheckmarkOutline style={{ color: "white",fontSize:'20px' }} />
+        <StatusStyledText status={record?.Status ? "Completed" : "InCompleted"}>
+          {record.Status ? "Completed" : "InCompleted"}
+          {record.Status ? (
+            <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
           ) : (
-            <RxCross2 style={{ color: "white",fontSize:'20px' }} />
+            <RxCross2 style={{ color: "white", fontSize: "20px" }} />
           )}
         </StatusStyledText>
       ),
+      sorter: true,
+      sortOrder: fieldName === "Status" ? orderMethod : false,
     },
 
     {
@@ -60,10 +136,17 @@ const RequestGiftCard = () => {
       dataIndex: "reward",
       key: "reward",
     },
+    
     {
       title: "Requested Date",
-      dataIndex: "requesteddate",
+      dataIndex: "createdAt",
       key: "requesteddate",
+      render: (text, record) => {
+        const date = DateTime.fromISO(record?.giftcard?.updatedAt);
+        return date.toFormat("MMM dd yyyy, HH : mm : ss");
+      },
+      sorter: true,
+      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -82,18 +165,21 @@ const RequestGiftCard = () => {
     },
   ];
 
-  const userData = [
-    {
-      key: "1",
-      giftname: "Gift Card Name",
-      name: "name",
-      status: "active",
-      price: "50$",
-      reward: "reward",
-      requesteddate: "Nov 06, 2019 18:37:31",
-
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
     },
-  ];
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
 
   const scrollConfig = {
     x: 1000,
@@ -103,6 +189,15 @@ const RequestGiftCard = () => {
     setSelectedRecord(record);
     setEditModal(true);
   };
+  const handleDelete=async(id)=>{
+    let res = await deleteGiftCard(id);
+    if (res?.status === 200) {
+      await fetchData()
+    }
+    return res;
+   
+
+  }
 
   const showDeleteModal = (record) => {
     setSelectedRecord(record);
@@ -123,30 +218,59 @@ const RequestGiftCard = () => {
     edit: true,
     delete: true,
   };
+  const handleTableChange = (pagination, filters, sorter) => {
+    let order;
+    if (fieldName === sorter.field) {
+      // If the same column is clicked again, toggle the sorting order
+      order = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      order = "asc";
+    }
+    console.log("Sorter Field:", sorter.field);
+    console.log("Sort Order:", order);
+    setFieldName(sorter.field);
+    setorderMethod(order);
+    setCurrentPage(pagination.current);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, pageSize, search, fieldName, orderMethod]);
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
-      {deleteModal && (
-        <DeleteModal
-          showModal={showDeleteModal}
-          handleCancel={handleDeleteCancel}
-          deleteModal={deleteModal}
-          record={selectedRecord}
-        />
-      )}
-      {editModal && (
-        <EditRequestGiftCard
-          showEditModal={showEditModal}
-          handleEditCancel={handleEditCancel}
-          editModal={editModal}
-          record={selectedRecord}
-        />
-      )}
+        {deleteModal && (
+          <DeleteModal
+            showModal={showDeleteModal}
+            handleCancel={handleDeleteCancel}
+            handleDelete={handleDelete}
+            deleteModal={deleteModal}
+            id={selectedRecord.idRequestedGiftCard}
+          />
+        )}
+        {editModal && (
+          <EditGiftCardModal
+            showEditModal={showEditModal}
+            handleEditCancel={handleEditCancel}
+            editModal={editModal}
+            record={selectedRecord}
+            fetchData={fetchData}
+          />
+        )}
         <h1 className="allUsersHeading">Requested Gift Cards</h1>
       </div>
 
       <div className="tableDiv">
-        <TableNew columns={columns} data={userData} scroll={scrollConfig}  />
+        <TableNew
+          columns={columns}
+          data={userData}
+          scroll={scrollConfig}
+          loader={loader}
+          pagination={paginationConfig}
+          handleSearch={handleSearch}
+          onChange={handleTableChange}
+        />
       </div>
     </AllUserWrapper>
   );
@@ -211,12 +335,13 @@ const AllUserWrapper = styled.div`
 
 const StatusStyledText = styled.span`
   color: #fff;
-  background-color: ${({ status }) => (status === "active" ? "#00e633" : "red")};
+  background-color: ${({ status }) =>
+    status === "Completed" ? "#00e633" : "red"};
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  cursor:pointer;
-  text-transform:capitalize;
+  cursor: pointer;
+  text-transform: capitalize;
 `;
