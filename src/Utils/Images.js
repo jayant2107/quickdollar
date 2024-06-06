@@ -13,8 +13,8 @@ import Addams from "../Assets/Addams.jpeg";
 import View from "../Assets/View.jpg";
 import Applogo from "../Assets/logo (2).png";
 import Sort from "../Assets/swap.png"
-import SortDesc from "../Assets/sort.png"
-import SortAsc from "../Assets/sort-az.png"
+import SortDesc from "../Assets/sort-az.png"
+import SortAsc from "../Assets/sort.png"
 
 export {
   Vector,

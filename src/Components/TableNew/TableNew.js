@@ -64,7 +64,7 @@ const TableNew = ({
               dataSource={data}
               pagination={pagination}
               scroll={scroll}
-              onChange={onChange}
+              // onChange={onChange}
               locale={{ emptyText: "No Data Found" }}
             />
           )}

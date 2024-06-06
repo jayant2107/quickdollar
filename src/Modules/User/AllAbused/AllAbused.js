@@ -32,7 +32,7 @@ const AllAbusedUsers = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-   const handleSearch = useCallback(
+  const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
       setCurrentPage(1);
@@ -60,7 +60,7 @@ const AllAbusedUsers = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
-          setUserData([]);
+        setUserData([]);
         toast.error(message);
       }
     } catch (error) {
@@ -73,11 +73,44 @@ const AllAbusedUsers = () => {
 
   console.log(userData, "daataaaaaaaaa");
 
+  const handleSort = (columnKey) => {
+    let newOrder;
+    // If the clicked column is the same as the currently sorted column, toggle the sorting order
+    if (columnKey === fieldName) {
+      newOrder = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      newOrder = "asc";
+      // Reset sorting order for other columns
+      setorderMethod("asc");
+    }
+    console.log("Sort Field:", columnKey);
+    console.log("Sort Order:", newOrder);
+    setFieldName(columnKey);
+    setorderMethod(newOrder);
+    setCurrentPage(1);
+  };
+
   const columns = [
     {
       title: (
-        <div>
-          Full Name <img src={srcSortImage("firstName", { sortBasis: fieldName, sortType: orderMethod })} alt="sort icon"  style={{width:"12px",height:"12px"}}/>
+        <div
+          onClick={() => handleSort("firstName")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Full Name{" "}
+          <img
+            src={srcSortImage("firstName", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
         </div>
       ),
       width: 150,
@@ -98,29 +131,84 @@ const AllAbusedUsers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
-      // sorter: true,
-      // sortOrder: fieldName === "firstName" ? orderMethod : false,
     },
     {
-      title: "Country",
+      title: (
+        <div
+          onClick={() => handleSort("countryCode")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Country{" "}
+          <img
+            src={srcSortImage("countryCode", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
       dataIndex: "countryCode",
       key: "country",
+      width:150,  
       render: (text, record) => record?.countryCode || "NA",
-      sorter: true,
-      sortOrder: fieldName === "countryCode" ? orderMethod : false,
     },
     {
-      title: "Points",
+      title: (
+        <div
+          onClick={() => handleSort("Points")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Points{" "}
+          <img
+            src={srcSortImage("Points", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "Points",
       key: "points",
+      width:150,  
       render: (text, record) => record?.Points || "0",
-      sorter: true,
-      sortOrder: fieldName === "Points" ? orderMethod : false,
     },
     {
-      title: "Role",
+      title: (
+        <div
+          onClick={() => handleSort("userRoleID")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Role{" "}
+          <img
+            src={srcSortImage("userRoleID", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "userRoleID",
       key: "role",
+      width:150,  
       render: (text, record) => {
         let roleName;
         let roleIcon;
@@ -151,13 +239,32 @@ const AllAbusedUsers = () => {
           </RoleStyledText>
         );
       },
-      sorter: true,
-      sortOrder: fieldName === "userRoleID" ? orderMethod : false,
     },
     {
-      title: "Status",
+      title: (
+        <div
+          onClick={() => handleSort("isActive")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Status{" "}
+          <img
+            src={srcSortImage("isActive", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
       dataIndex: "isActive",
       key: "status",
+      width:150,  
       render: (text, record) => (
         <StatusStyledText
           status={record.isActive ? "Active" : "Inactive"}
@@ -171,13 +278,31 @@ const AllAbusedUsers = () => {
           )}
         </StatusStyledText>
       ),
-      sorter: true,
-      sortOrder: fieldName === "isActive" ? orderMethod : false,
     },
     {
-      title: "UserType",
+      title: (
+        <div
+          onClick={() => handleSort("userApplicationtype")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          User Type{" "}
+          <img
+            src={srcSortImage("userApplicationtype", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "userApplicationtype",
       key: "usertype",
+      width:150,  
       render: (text, record) => {
         let userType;
         switch (record?.userApplicationtype) {
@@ -198,19 +323,35 @@ const AllAbusedUsers = () => {
         }
         return <StyledText>{userType}</StyledText>;
       },
-      sorter: true,
-      sortOrder: fieldName === "userApplicationtype" ? orderMethod : false,
     },
     {
-      title: "Created Date",
+      title: (
+        <div
+          onClick={() => handleSort("createdAt")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Created Date{" "}
+          <img
+            src={srcSortImage("createdAt", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "createdAt",
       key: "createdat",
+      width:200,  
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -295,14 +436,14 @@ const AllAbusedUsers = () => {
     setActiveModal(false);
     setSelectedRecord(null);
   };
-  const handleDelete=async(id)=>{
-    console.log(id,"abused userrr")
+  const handleDelete = async (id) => {
+    console.log(id, "abused userrr");
     let res = await deleteUser(id);
     if (res?.status === 200) {
-       await fetchData()
+      await fetchData();
     }
     return res;
-  }
+  };
 
   // const handleTableChange = (pagination, filters, sorter) => {
   //   let order;
@@ -320,21 +461,9 @@ const AllAbusedUsers = () => {
   //   setCurrentPage(pagination.current);
   // };
 
-
-
-  const handleTableChange = (pagination, filters, sorter) => {
-    if (sorter.field) {
-      setFieldName(sorter.field);
-      setorderMethod(sorter.order === "ascend" ? "asc" : "desc");
-    }
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
-
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search,fieldName,orderMethod]);
-
+  }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
   return (
     <AllAbusedUserWrapper byTheme={byTheme}>
@@ -380,7 +509,6 @@ const AllAbusedUsers = () => {
       </div>
 
       <div className="tableDiv">
-      
         <TableNew
           columns={columns}
           data={userData}
@@ -388,9 +516,8 @@ const AllAbusedUsers = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
-          onChange={handleTableChange}
+          onChange={handleSort}
         />
-        
       </div>
     </AllAbusedUserWrapper>
   );

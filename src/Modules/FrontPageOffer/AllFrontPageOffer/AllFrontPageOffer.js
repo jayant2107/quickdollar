@@ -2,15 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { getAllFrontPage} from "../../../Services/Collection";
+import { getAllFrontPage } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditFrontpageModal from "../../../Components/EditFrontpageModal/EditFrontpageModal";
-import { debounce } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { deleteFrontpageOffer } from "../../../Services/Collection";
-
 
 const AllFrontPageOffer = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -26,7 +25,7 @@ const AllFrontPageOffer = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-   const handleSearch = useCallback(
+  const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
       setCurrentPage(1);
@@ -53,7 +52,7 @@ const AllFrontPageOffer = () => {
           res?.message ||
           res?.error ||
           "Something went wrong";
-          setUserData([]);
+        setUserData([]);
         toast.error(message);
       }
     } catch (error) {
@@ -64,44 +63,114 @@ const AllFrontPageOffer = () => {
     }
   };
 
-  const handleDelete=async(id)=>{
-    let res = await deleteFrontpageOffer (id);
+  const handleDelete = async (id) => {
+    let res = await deleteFrontpageOffer(id);
     if (res?.status === 200) {
-        await fetchData()
+      await fetchData();
     }
     return res;
-   
-
-  }
-
+  };
+  const handleSort = (columnKey) => {
+    let newOrder;
+    // If the clicked column is the same as the currently sorted column, toggle the sorting order
+    if (columnKey === fieldName) {
+      newOrder = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      newOrder = "asc";
+      // Reset sorting order for other columns
+      setorderMethod("asc");
+    }
+    console.log("Sort Field:", columnKey);
+    console.log("Sort Order:", newOrder);
+    setFieldName(columnKey);
+    setorderMethod(newOrder);
+    setCurrentPage(1);
+  };
 
   const columns = [
-    { 
-      title: "Offer Text",
+    {
+      title: (
+        <div
+          onClick={() => handleSort("frontpageofferTitle")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Text{" "}
+          <img
+            src={srcSortImage("frontpageofferTitle", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
       width: 200,
       dataIndex: "frontpageofferTitle",
       key: "offertext",
       fixed: "left",
-      render: (text, record) =>
-      record?.frontpageofferTitle || "NA",
-      sorter: true,
-      sortOrder: fieldName === "frontpageofferTitle" ? orderMethod : false,
-      
+      render: (text, record) => record?.frontpageofferTitle || "NA",
     },
     {
-      title: "Offer Link",
+      title: (
+        <div
+          onClick={() => handleSort("frontpageofferLink")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Link{" "}
+          <img
+            src={srcSortImage("frontpageofferLink", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
       dataIndex: "frontpageofferLink",
       key: "offerlink",
       render: (text, record) => (
         <TableImageWrapper>
-          <a href={record?.frontpageofferLink}>{record?.frontpageofferLink || "NA" }</a>
+          <a href={record?.frontpageofferLink}>
+            {record?.frontpageofferLink || "NA"}
+          </a>
         </TableImageWrapper>
       ),
-      sorter: true,
-      sortOrder: fieldName === "frontpageofferLink" ? orderMethod : false,
     },
     {
-      title: "Offer Image",
+      title: (
+        <div
+          onClick={() => handleSort("frontpageofferImage")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Image{" "}
+          <img
+            src={srcSortImage("frontpageofferImage", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+     
       dataIndex: "frontpageofferImage",
       key: "offerimage",
       render: (text, record) => (
@@ -109,11 +178,28 @@ const AllFrontPageOffer = () => {
           <img src={record?.frontpageofferImage} alt="NA" />
         </TableImageWrapper>
       ),
-      sorter: true,
-      sortOrder: fieldName === "frontpageofferImage" ? orderMethod : false,
-    },
+       },
     {
-      title: "Offer Button Image",
+      title: (
+        <div
+          onClick={() => handleSort("frontpageofferButton")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Button Image{" "}
+          <img
+            src={srcSortImage("frontpageofferButton", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "frontpageofferButton",
       key: "offerbuttonimage",
       render: (text, record) => (
@@ -121,20 +207,37 @@ const AllFrontPageOffer = () => {
           <img src={record?.frontpageofferButton} alt="NA" />
         </TableImageWrapper>
       ),
-      sorter: true,
-      sortOrder: fieldName === "frontpageofferButton" ? orderMethod : false,
-    },
+       },
     {
-      title: "Created Date",
+      title: (
+        <div
+          onClick={() => handleSort("createdAt")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Created Date{" "}
+          <img
+            src={srcSortImage("createdAt", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
+     
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
-    },
+      },
     {
       title: "Action",
       key: "operation",
@@ -191,33 +294,16 @@ const AllFrontPageOffer = () => {
     setSelectedRecord(null);
   };
 
-
   const handleDeleteCancel = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
   };
 
-
-  const handleTableChange = (pagination, filters, sorter) => {
-    let order;
-    if (fieldName === sorter.field) {
-      // If the same column is clicked again, toggle the sorting order
-      order = orderMethod === "asc" ? "desc" : "asc";
-    } else {
-      // If a new column is clicked, set the sorting order to ascending by default
-      order = "asc";
-    }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
-    setFieldName(sorter.field);
-    setorderMethod(order);
-    setCurrentPage(pagination.current);
-  };
-  
+ 
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize,search,fieldName, orderMethod]);
+  }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -240,7 +326,7 @@ const AllFrontPageOffer = () => {
           fetchData={fetchData}
         />
       )}
-      
+
       <div className="allabusedUserHeader">
         <h1 className="allabusedUserHeading">All Front Page Offers</h1>
         {/* <button>Export User Details</button> */}
@@ -254,7 +340,7 @@ const AllFrontPageOffer = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
-          onChange={handleTableChange}
+          onChange={handleSort}
         />
       </div>
     </AllUserWrapper>

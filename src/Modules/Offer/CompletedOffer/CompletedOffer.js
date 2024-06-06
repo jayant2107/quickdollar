@@ -6,7 +6,7 @@ import { deleteOffers, getCompletedoffers } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { debounce } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 
@@ -106,10 +106,46 @@ const CompletedOffers = () => {
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
 
+  const handleSort = (columnKey) => {
+    let newOrder;
+    // If the clicked column is the same as the currently sorted column, toggle the sorting order
+    if (columnKey === fieldName) {
+      newOrder = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      newOrder = "asc";
+      // Reset sorting order for other columns
+      setorderMethod("asc");
+    }
+    console.log("Sort Field:", columnKey);
+    console.log("Sort Order:", newOrder);
+    setFieldName(columnKey);
+    setorderMethod(newOrder);
+    setCurrentPage(1);
+  };
 
   const columns = [
     {
-      title: "User Name",
+      title: (
+        <div
+          onClick={() => handleSort("firstName")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          User Name{" "}
+          <img
+            src={srcSortImage("firstName", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       key: "name",
       dataIndex: "firstName",
       width: 150,
@@ -128,21 +164,56 @@ const CompletedOffers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
-      sorter: true,
-      sortOrder: fieldName === "firstName" ? orderMethod : false,
-    
+      
     },
     {
-      title: "User Email",
+      title: (
+        <div
+          onClick={() => handleSort("email")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          User Email{" "}
+          <img
+            src={srcSortImage("email", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+      
       key: "email",
       dataIndex: "email",
       render: (text, record) => record?.user?.email,
-      sorter: true,
-      sortOrder: fieldName === "email" ? orderMethod : false,
-    
+      
     },
     {
-      title: "Offer title",
+      title: (
+        <div
+          onClick={() => handleSort("offerTitle")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer title{" "}
+          <img
+            src={srcSortImage("offerTitle", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       key: "title",
       dataIndex: "offerTitle",
       render: (text, record) => record?.offer?.offerTitle,
@@ -151,26 +222,80 @@ const CompletedOffers = () => {
     
     },
     {
-      title: "User Country",
+      title: (
+        <div
+          onClick={() => handleSort("countryCode")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          User Country{" "}
+          <img
+            src={srcSortImage("countryCode", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       key: "country",
       dataIndex: "countryCode",
       render: (text, record) => record?.user?.countryCode,
-      sorter: true,
-      sortOrder: fieldName === "countryCode" ? orderMethod : false,
-    
+     
     },
     {
-      title: "Added Points",
+      title: (
+        <div
+          onClick={() => handleSort("offerPoints")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Added Points{" "}
+          <img
+            src={srcSortImage("offerPoints", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+     
       key: "points",
       dataIndex: "offerPoints",
       render: (text, record) => record?.offerPoints,
-      sorter: true,
-      sortOrder: fieldName === "offerPoints" ? orderMethod : false,
-    
+      
     },
 
     {
-      title: "Date",
+      title: (
+        <div
+          onClick={() => handleSort("createdAt")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+         Date{" "}
+          <img
+            src={srcSortImage("createdAt", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "createdAt",
       key: "date",
       render: (text, record) => {
@@ -209,21 +334,7 @@ const CompletedOffers = () => {
     x: 2000, // Horizontal scrolling
   };
 
-  const handleTableChange = (pagination, filters, sorter) => {
-    let order;
-    if (fieldName === sorter.field) {
-      // If the same column is clicked again, toggle the sorting order
-      order = orderMethod === "asc" ? "desc" : "asc";
-    } else {
-      // If a new column is clicked, set the sorting order to ascending by default
-      order = "asc";
-    }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
-    setFieldName(sorter.field);
-    setorderMethod(order);
-    setCurrentPage(pagination.current);
-  };
+
   
 
   useEffect(() => {
@@ -263,7 +374,7 @@ const CompletedOffers = () => {
           pagination={paginationConfig}
           handleSearch={handleSearch}
           loader={loader}
-          onChange={handleTableChange}  
+          onChange={handleSort}  
         />
       </div>
     </AllUserWrapper>
