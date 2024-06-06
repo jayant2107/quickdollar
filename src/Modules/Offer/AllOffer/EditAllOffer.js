@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Checkbox, Select } from "antd";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import styled from "styled-components";
@@ -6,14 +6,14 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { addOffer, getAllGeoCodes } from "../../../Services/Collection";
+import { addOffer, getAllGeoCodes, getAllUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 
 const EditAllOffer = () => {
   const initialValues = {
     offerTitle: "",
     h1Title: "",
-    offerImage: null,
+    offerImage: "",
     offerLink: "",
     offerPoints: "",
     offerText: "",
@@ -21,7 +21,7 @@ const EditAllOffer = () => {
     offerLongDescription: "",
     offerCreatedFor: "",
     offerCountry: [],
-    fraudUser: "",
+    fraudUser: [],
     dailyCAPLimit: "",
     customPostbaclParams: "",
     isActive: "false",
@@ -32,11 +32,27 @@ const EditAllOffer = () => {
     isDailyOffer: "false",
     relistOffer: false,
     StaticURL: false,
-  };
+    shopOffer: false  ,
+    quickThoughts: false,
+    preHomeScreen: false,
+    offerWall: false,
+    homeScreen: false,
+    monthlySubscription: false,
+    dailySurvey: false,
+    download: false,
+    coupons: false,
+    shops: false,  
+    androidApplicationGroup: false,
+    iosApplicationGroup: false,
+    user:"",
+    userOfferUrl: "",
+    };
+
   const [geoCodes, setGeoCodes] = useState([]);
-  const [image, setImage] = useState(
-    "https://quickdollarapp.com/kinso2015/assets/images/giftcardimages/paypal_1588529561.png"
-  );
+  const [userData, setUserData] = useState([]);
+  const [offerImgPreview, setOfferImgPreview] = useState(null);
+  const offerImgInputRef = useRef(null);
+
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -108,7 +124,6 @@ const EditAllOffer = () => {
     formData.append("offerLongDescription", values.offerLongDescription);
     formData.append("offerCreatedFor", values.offerCreatedFor);
     formData.append("offerCountry", JSON.stringify(values.offerCountry));
-    // formData.append("offerCountry", values.offerCountry);
     formData.append("fraudUser", values.fraudUser);
     formData.append("dailyCAPLimit", values.dailyCAPLimit);
     formData.append("customPostbaclParams", values.customPostbaclParams);
@@ -161,6 +176,31 @@ const EditAllOffer = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    console.log("start");
+    // setLoader(true);
+    try {
+      const res = await getAllUser();
+      if (res?.status === 200) {
+        setUserData(res?.data?.findUsers);
+        console.log(res?.data?.findUsers, "users");
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        setUserData([]);
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      // setLoader(false);
+    }
+  };
+
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [h1TitleValue, setH1TitleValue] = useState("");
@@ -170,15 +210,18 @@ const EditAllOffer = () => {
     resetForm();
     setH1TitleValue("");
     setLongDescriptionValue("");
+    setOfferImgPreview(null);
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (e, setFieldValue, setPreview) => {
+    const file = e.target.files[0];
     if (file) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      console.log(img.src);
-      setImage(img.src);
+      setFieldValue(e.target.name, file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -187,8 +230,14 @@ const EditAllOffer = () => {
     value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
   }));
 
+  const userOptions = userData.map((data) => ({
+    label: `${data?.firstName} ${data?.lastName}`,
+    value: `${data?.firstName} ${data?.lastName}`,
+  }))
+
   useEffect(() => {
     fetchGeoCordData();
+    fetchUsers();
   }, []);
 
   return (
@@ -223,7 +272,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer H1 Title</Label>
                   <QuillFieldContainer>
@@ -251,25 +299,30 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </QuillFieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer Image</Label>
                   <FieldContainer>
                     <ChooseContainer>
+                      <UploadButton
+                        onClick={() => offerImgInputRef.current.click()}
+                      >
+                        Upload
+                      </UploadButton>
                       <input
+                        ref={offerImgInputRef}
                         name="offerImage"
                         type="file"
-                        onChange={(e) => {
-                          setFieldValue("offerImage", e?.target?.files[0]);
-                          handleFileChange(e);
-                        }}
+                        onChange={(e) =>
+                          handleFileChange(e, setFieldValue, setOfferImgPreview)
+                        }
+                        style={{ display: "none" }}
                       />
                       <UploadInstruction>
                         Max size 2MB and resolution is 150x150 px
                       </UploadInstruction>
-                      <TableImageWrapper>
-                        <img src={image} alt="" />
-                      </TableImageWrapper>
+                      {offerImgPreview && (
+                        <Image src={offerImgPreview} alt="Offer Preview" />
+                      )}
                     </ChooseContainer>
                     <RequiredWrapper>
                       <ErrorMessage name="offerImage" />
@@ -286,7 +339,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer Amount in $</Label>
                   <FieldContainer>
@@ -296,7 +348,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer Text</Label>
                   <FieldContainer>
@@ -306,7 +357,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer Short Description</Label>
                   <FieldContainer>
@@ -330,7 +380,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer Long Description</Label>
                   <QuillFieldContainer>
@@ -359,7 +408,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </QuillFieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Is Active</Label>
                   <FieldContainer>
@@ -396,7 +444,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Is Hot Offer</Label>
                   <FieldContainer>
@@ -433,7 +480,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Hot Offer For</Label>
                   <FieldContainer>
@@ -483,7 +529,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>App Installation</Label>
                   <FieldContainer>
@@ -520,7 +565,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Conversion Callback Type</Label>
                   <FieldContainer>
@@ -561,7 +605,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Daily repeated offer</Label>
                   <FieldWrapper>
@@ -587,7 +630,6 @@ const EditAllOffer = () => {
                     </RdioWrapper>
                   </FieldWrapper>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Relist Offer</Label>
                   <FieldContainer
@@ -611,7 +653,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer created for</Label>
                   <SelectFieldWrapper>
@@ -646,7 +687,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer Platform</Label>
                   <FieldContainer
@@ -657,6 +697,7 @@ const EditAllOffer = () => {
                     }}
                   >
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="shopOffer"
                       checked={values.shopOffer}
                       onChange={(e) =>
@@ -667,6 +708,7 @@ const EditAllOffer = () => {
                     </Checkbox>
 
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="quickThoughts"
                       checked={values.quickThoughts}
                       onChange={(e) =>
@@ -680,7 +722,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Offer location to display</Label>
                   <FieldContainer
@@ -691,6 +732,7 @@ const EditAllOffer = () => {
                     }}
                   >
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="preHomeScreen"
                       checked={values.preHomeScreen}
                       onChange={(e) =>
@@ -700,6 +742,7 @@ const EditAllOffer = () => {
                       Pre home screen
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="offerWall"
                       checked={values.offerWall}
                       onChange={(e) =>
@@ -709,6 +752,7 @@ const EditAllOffer = () => {
                       Offer wall
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="homeScreen"
                       checked={values.homeScreen}
                       onChange={(e) =>
@@ -718,6 +762,7 @@ const EditAllOffer = () => {
                       Home screen
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="monthlySubscription"
                       checked={values.monthlySubscription}
                       onChange={(e) =>
@@ -727,6 +772,7 @@ const EditAllOffer = () => {
                       $ 450 a month
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="dailySurvey"
                       checked={values.dailySurvey}
                       onChange={(e) =>
@@ -736,6 +782,7 @@ const EditAllOffer = () => {
                       Daily Survey
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="download"
                       checked={values.download}
                       onChange={(e) =>
@@ -745,6 +792,7 @@ const EditAllOffer = () => {
                       Download
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="coupons"
                       checked={values.coupons}
                       onChange={(e) =>
@@ -754,6 +802,7 @@ const EditAllOffer = () => {
                       Coupons
                     </Checkbox>
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="shop"
                       checked={values.shop}
                       onChange={(e) => setFieldValue("shop", e.target.checked)}
@@ -765,7 +814,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Select platform for offer</Label>
                   <FieldContainer
@@ -789,6 +837,7 @@ const EditAllOffer = () => {
                     </Checkbox>
 
                     <Checkbox
+                      style={{ width: "100%", marginLeft: "0px" }}
                       name="iosApplicationGroup"
                       checked={values.iosApplicationGroup}
                       onChange={(e) =>
@@ -802,7 +851,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Select offer url type</Label>
                   <FieldContainer
@@ -826,7 +874,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 {!values.StaticURL && (
                   <FieldWrapper>
                     <Label>Custom Postback Params</Label>
@@ -842,7 +889,6 @@ const EditAllOffer = () => {
                     </FieldContainer>
                   </FieldWrapper>
                 )}
-
                 <FieldWrapper>
                   <Label>Offer Country Code</Label>
                   <FieldContainer>
@@ -880,7 +926,6 @@ const EditAllOffer = () => {
                     </ChooseCountry>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Daily CAP limit for offer</Label>
                   <FieldContainer>
@@ -894,7 +939,6 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>Users</Label>
                   <SelectFieldWrapper>
@@ -914,18 +958,16 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
-
                 <FieldWrapper>
                   <Label>User Offer URL</Label>
                   <SelectFieldWrapper>
-                      NA
+                    NA
                     <RequiredWrapper>
                       <ErrorMessage name="userOfferURL" />
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
-
-                <FieldWrapper>
+                {/* <FieldWrapper>
                   <Label>Slect fraud user to unlisted from offer</Label>
                   <SelectFieldWrapper>
                     <SelectField
@@ -939,23 +981,37 @@ const EditAllOffer = () => {
                       onChange={(value) => setFieldValue("fraudUser", value)}
                       options={[
                         {
-                          value: "0",
-                          label: "IOS",
-                        },
-                        {
-                          value: "1",
-                          label: "Android",
-                        },
-                        {
-                          value: "2",
-                          label: "All Users",
-                        },
+                          value: "fraudUser",
+                          label: "fraudUser",
+                        }
                       ]}
                     />
                     <RequiredWrapper>
                       <ErrorMessage name="fraudUser" />
                     </RequiredWrapper>
                   </SelectFieldWrapper>
+                </FieldWrapper> */}
+
+                <FieldWrapper>
+                  <Label>Select fraud user to unlisted from offer</Label>
+                  <FieldContainer>
+                    <ChooseCountry>
+                      <SelectField
+                        mode="multiple"
+                        allowClear
+                        style={{ width: "100%" }}
+                        placeholder="Search for a user"
+                        value={values.fraudUser}
+                        onChange={(value) =>
+                          setFieldValue("fraudUser", value)
+                        }
+                        options={userOptions}
+                      />
+                      <RequiredWrapper>
+                        <ErrorMessage name="offerCountry" />
+                      </RequiredWrapper>
+                    </ChooseCountry>
+                  </FieldContainer>
                 </FieldWrapper>
               </InputWrapper>
               <Footer>
@@ -1166,6 +1222,12 @@ const RequiredWrapper = styled.div`
 const FieldContainer = styled.div`
   width: 100%;
 `;
+
+// Checkbox = styled.div`
+//   width: 100%;
+//   margin-left: 0px;
+// `;
+
 const StyledReactQuill = styled(ReactQuill)`
   .ql-container {
     height: 180px;
@@ -1209,4 +1271,19 @@ const SelectFieldWrapper = styled.div`
   align-items: flex-start;
   width: 100%;
   text-align: start;
+`;
+
+const UploadButton = styled(Button)`
+  color: black;
+  background: white;
+  width: 40%;
+  height: 35px;
+  border: 1px solid black;
+  margin-bottom: 1rem;
+`;
+
+const Image = styled.img`
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
 `;
