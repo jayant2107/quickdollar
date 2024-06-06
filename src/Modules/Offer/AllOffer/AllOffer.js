@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { debounce } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
 import {
   activateDeactivateAllOffers,
@@ -35,13 +35,14 @@ const AllOffers = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-   const handleSearch = useCallback(
+  const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
       setCurrentPage(1);
     }),
     []
-  );  const handleDelete = async (id) => {
+  );
+  const handleDelete = async (id) => {
     let res = await deleteOffers(id);
     if (res?.status === 200) {
       await fetchData();
@@ -173,32 +174,104 @@ const AllOffers = () => {
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
 
+  const handleSort = (columnKey) => {
+    let newOrder;
+    // If the clicked column is the same as the currently sorted column, toggle the sorting order
+    if (columnKey === fieldName) {
+      newOrder = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      newOrder = "asc";
+      // Reset sorting order for other columns
+      setorderMethod("asc");
+    }
+    console.log("Sort Field:", columnKey);
+    console.log("Sort Order:", newOrder);
+    setFieldName(columnKey);
+    setorderMethod(newOrder);
+    setCurrentPage(1);
+  };
+
   const columns = [
     {
-      title: "Offer Title",
+      title: (
+        <div
+          onClick={() => handleSort("offerTitle")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Title{" "}
+          <img
+            src={srcSortImage("offerTitle", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
       key: "title",
       dataIndex: "offerTitle",
       fixed: "left",
       width: 150,
       render: (text, record) => record?.offerTitle || "NA",
-      sorter: true,
-      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
     },
     {
-      title: "Offer Link",
+      title: (
+        <div
+          onClick={() => handleSort("offerLink")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Link{" "}
+          <img
+            src={srcSortImage("offerLink", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       key: "link",
+      width: 200,
       dataIndex: "offerLink",
       render: (text, record) => <a>{record?.offerLink}</a>,
-      sorter: true,
-      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
     },
     {
-      title: "Offer Amount in $",
+      title: (
+        <div
+          onClick={() => handleSort("offerPoints")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Amount in ${" "}
+          <img
+            src={srcSortImage("offerPoints", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+
       key: "amount",
       dataIndex: "offerPoints",
-      render:(text,record)=>record?.offerPoints,
-      sorter: true,
-      sortOrder: fieldName === "offerPoints" ? orderMethod : false,
+      render: (text, record) => record?.offerPoints,
     },
     {
       title: "Offer Short Description",
@@ -262,36 +335,69 @@ const AllOffers = () => {
       title: "APPLICATION GROUP ONE-ANDROID",
       key: "oneAndroid",
       dataIndex: "oneAndroid",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => (
+        <StyledTextApplication text={text}>
+          {text || "NA"}{" "}
+        </StyledTextApplication>
+      ),
     },
     {
       title: "APPLICATION GROUP TWO-ANDROID",
       key: "twoAndroid",
       dataIndex: "twoAndroid",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => (
+        <StyledTextApplication text={text}>
+          {text || "NA"}
+        </StyledTextApplication>
+      ),
     },
     {
       title: "APPLICATION GROUP ONE-IOS",
       key: "oneIos",
       dataIndex: "oneIos",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => (
+        <StyledTextApplication text={text}>
+          {text || "NA"}
+        </StyledTextApplication>
+      ),
     },
     {
       title: "APPLICATION GROUP TWO-IOS",
       key: "twoIos",
       dataIndex: "twoIos",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => (
+        <StyledTextApplication text={text}>
+          {text || "NA"}
+        </StyledTextApplication>
+      ),
     },
     {
-      title: "Created Date",
+      title: (
+        <div
+          onClick={() => handleSort("createdAt")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Created Date{" "}
+          <img
+            src={srcSortImage("createdAt", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
     },
     {
       title: "Action",
@@ -347,22 +453,6 @@ const AllOffers = () => {
     label: item?.label,
     onClick: () => handleOptionClick(item),
   }));
-
-  const handleTableChange = (pagination, filters, sorter) => {
-    let order;
-    if (fieldName === sorter.field) {
-      // If the same column is clicked again, toggle the sorting order
-      order = orderMethod === "asc" ? "desc" : "asc";
-    } else {
-      // If a new column is clicked, set the sorting order to ascending by default
-      order = "asc";
-    }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
-    setFieldName(sorter.field);
-    setorderMethod(order);
-    setCurrentPage(pagination.current);
-  };
 
   useEffect(() => {
     fetchData();
@@ -434,7 +524,7 @@ const AllOffers = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
-          onChange={handleTableChange}
+          onChange={handleSort}
         />
       </div>
     </AllUserWrapper>
@@ -514,6 +604,13 @@ const StyledText = styled.span`
 
   background-color: ${({ text }) => (text == "Yes" ? "#00e633" : "red")};
 
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+`;
+const StyledTextApplication = styled.span`
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;

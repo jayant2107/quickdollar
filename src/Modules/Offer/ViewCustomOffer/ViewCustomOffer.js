@@ -8,7 +8,7 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { debounce } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
 
@@ -135,38 +135,108 @@ const ViewCustomOffers = () => {
 
   }
 
+  const handleSort = (columnKey) => {
+    let newOrder;
+    // If the clicked column is the same as the currently sorted column, toggle the sorting order
+    if (columnKey === fieldName) {
+      newOrder = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      newOrder = "asc";
+      // Reset sorting order for other columns
+      setorderMethod("asc");
+    }
+    console.log("Sort Field:", columnKey);
+    console.log("Sort Order:", newOrder);
+    setFieldName(columnKey);
+    setorderMethod(newOrder);
+    setCurrentPage(1);
+  };
 
   const columns = [
     {
-      title: "Offer Title",
+      title: (
+        <div
+          onClick={() => handleSort("offerTitle")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          User Name{" "}
+          <img
+            src={srcSortImage("offerTitle", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+     
       key: "title",
       dataIndex: "offerTitle",
       width: 150,
       fixed: "left",
       render: (text, record) => record?.offerTitle || "NA",
-      sorter: true,
-      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
-    },
+         },
     {
-      title: "Offer Link",
+      title: (
+        <div
+          onClick={() => handleSort("offerLink")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Link{" "}
+          <img
+            src={srcSortImage("offerLink", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       key: "link",
       dataIndex: "offerLink",
       width: 400,
 
       render: (text, record) => <a>{record?.offerLink || "NA"}</a>,
-      sorter: true,
-      sortOrder: fieldName === "offerLink" ? orderMethod : false,
-   
+      
     },
     {
-      title: "Offer Amount in $",
+      title: (
+        <div
+          onClick={() => handleSort("offerPoints")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Offer Amount in ${" "}
+          <img
+            src={srcSortImage("offerPoints", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+     
       key: "amount",
       width: 300,
       dataIndex: "offerPoints",
       render:(text,record)=>record?.offerPoints,
-      sorter: true,
-      sortOrder: fieldName === "offerLofferPointsink" ? orderMethod : false,
-      
+        
     },
     {
       title: "Offer Short Description",
@@ -252,16 +322,34 @@ const ViewCustomOffers = () => {
     },
 
     {
-      title: "Date",
+      title: (
+        <div
+          onClick={() => handleSort("createdAt")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+         Date{" "}
+          <img
+            src={srcSortImage("createdAt", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+     
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
-    },
+      },
     {
       title: "Action",
       key: "operation",
@@ -306,21 +394,7 @@ const ViewCustomOffers = () => {
     x: 7000, // Horizontal scrolling
   };
 
-  const handleTableChange = (pagination, filters, sorter) => {
-    let order;
-    if (fieldName === sorter.field) {
-      // If the same column is clicked again, toggle the sorting order
-      order = orderMethod === "asc" ? "desc" : "asc";
-    } else {
-      // If a new column is clicked, set the sorting order to ascending by default
-      order = "asc";
-    }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
-    setFieldName(sorter.field);
-    setorderMethod(order);
-    setCurrentPage(pagination.current);
-  };
+  
 
   useEffect(() => {
     fetchData();// Fetch geo codes
@@ -362,7 +436,7 @@ const ViewCustomOffers = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
-          onChange={handleTableChange}
+          onChange={handleSort}
         />
       </div>
     </AllUserWrapper>
