@@ -232,14 +232,14 @@ export default function Sidebar() {
           <NavIcon onClick={() => navigate("/quickdollar/announcement")}>
             <FaBell />
             <p>
-              <IntlMassage id="Annoouncement" />
+              <IntlMassage id="Announcement" />
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => navigate("/quickdollar/announcement")}>
             <FaBell />
             <p>
-              <IntlMassage id="Annoouncement" />
+              <IntlMassage id="Announcement" />
             </p>
           </NavIcon2>
         )}
