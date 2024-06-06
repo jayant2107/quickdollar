@@ -133,11 +133,11 @@ export default function Sidebar() {
                 Add Offer
               </p>
             </NavIcon2>
-            <NavIcon2 isActive={location.pathname === "/quickdollar/offer/addcustomoffers"} onClick={() => navigate("/quickdollar/offer/addcustomoffers")}>
+            {/* <NavIcon2 isActive={location.pathname === "/quickdollar/offer/addcustomoffers"} onClick={() => navigate("/quickdollar/offer/addcustomoffers")}>
               <p>
                 Add Custom Offers
               </p>
-            </NavIcon2>
+            </NavIcon2> */}
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/viewcustomoffers"} onClick={() => navigate("/quickdollar/offer/viewcustomoffers")}>
               <p>
                 View Custom Offers
@@ -523,6 +523,7 @@ const NavIcon2 = styled.div`
   padding-left: 20px;
   cursor: pointer;
   padding-right: 20px;
+  font-size: 20px;
   font-size: 20px;
   line-height: 17px;
   color: ${({ isSubActive }) => isSubActive && "#3892EE"};
