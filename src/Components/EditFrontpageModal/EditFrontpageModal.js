@@ -6,6 +6,7 @@ import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
 import { editFrontpageOffer } from "../../Services/Collection";
 import { toast } from "react-toastify";
+import Loader from '../Loader/Loader';
 
 const EditFrontpageModal = ({
   handleEditCancel,
@@ -13,6 +14,7 @@ const EditFrontpageModal = ({
   record,
   fetchData,
 }) => {
+  const [loader,setLoader]=useState(false);
   console.log(record)
   const [offerImgPreview, setOfferImgPreview] = useState(record?.frontpageofferImage);
   const [buttonImgPreview, setButtonImgPreview] = useState(record?.frontpageofferButton);
@@ -45,7 +47,9 @@ const EditFrontpageModal = ({
       console.log(`${key}:`, value);
     }
     try {
+      setLoader(true)
       const res = await editFrontpageOffer(formData);
+      setLoader(false)
       if (res?.status === 200) {
         await fetchData()
         toast.success("Edit Frontpage Offer successfully");
@@ -180,7 +184,7 @@ const EditFrontpageModal = ({
                       Cancel
                     </ResetBtn>
                     <SubmitBtn type="primary" htmlType="submit">
-                      Save
+                      Save{loader?<Loader/>:""}
                     </SubmitBtn>
                   </Footer>
                 </Form>

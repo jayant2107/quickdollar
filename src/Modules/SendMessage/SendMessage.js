@@ -8,8 +8,10 @@ import 'react-quill/dist/quill.snow.css';
 import { useSelector } from 'react-redux';
 import { sendMessage } from '../../Services/Collection';
 import { toast } from "react-toastify";
+import Loader from '../../Components/Loader/Loader';
 
 const SendMessage = () => {
+    const [loader,setLoader]=useState(false);
     const [isEmpty, setIsEmpty] = useState(false);
     const [value, setValue] = useState('');
     const userId = useSelector((state) => state?.Authlogin?.data?.idUser);
@@ -38,7 +40,9 @@ const SendMessage = () => {
 
     const handleSubmit = async (values, { resetForm }) => {
         try {
+            setLoader(true)
             let res = await sendMessage({ ...values, idUser: userId });
+            setLoader(false)
             if (res?.status === 200) {
                 toast.success("Message send Successfully");
                 resetForm()
@@ -143,7 +147,7 @@ const SendMessage = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
                             </Footer>
                         </Form>
                     )}

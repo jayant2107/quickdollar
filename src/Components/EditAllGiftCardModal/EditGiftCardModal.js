@@ -9,6 +9,7 @@ import { FaGift } from "react-icons/fa";
 import { editGiftCard } from "../../Services/Collection";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Loader from '../Loader/Loader';
 
 const EditGiftCardModal = ({
   handleEditCancel,
@@ -18,6 +19,7 @@ const EditGiftCardModal = ({
   record,
   fetchData,
 }) => {
+  const [loader,setLoader]=useState(false);
   console.log(record, "recorddd")
   const [offerImgPreview, setOfferImgPreview] = useState(record.giftCardImage);
   const [flag,setFlag]=useState(false);
@@ -58,7 +60,9 @@ const EditGiftCardModal = ({
       console.log(`${pair[0]}: ${pair[1]}`);
     }
     try {
+      setLoader(true)
         const res = await editGiftCard(formData);
+        setLoader(false)
         if (res?.status === 200) {
           await fetchData()
             toast.success("Edit Gift Card successfully");
@@ -228,7 +232,7 @@ const EditGiftCardModal = ({
 
                     <Footer>
                       <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
-                      <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                      <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
                     </Footer>
                   </Form>
                 )}

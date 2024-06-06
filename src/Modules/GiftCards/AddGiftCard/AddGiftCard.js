@@ -6,8 +6,10 @@ import * as yup from "yup";
 import TextArea from 'antd/es/input/TextArea';
 import { addGiftCard } from '../../../Services/Collection';
 import { toast } from "react-toastify";
+import Loader from '../../../Components/Loader/Loader';
 
 const AddGiftCard = () => {
+    const [loader,setLoader]=useState(false);
     const initialValues = {
         giftCardName: '',
         giftCardImage: '',
@@ -39,7 +41,9 @@ const AddGiftCard = () => {
         formData.append('giftCardNotes', values.giftCardNotes);
         formData.append('isActive', values.isActive);
         try {
+            setLoader(true);
             const res = await addGiftCard(formData);
+            setLoader(false);
             if (res?.status === 200) {
                 toast.success("Add Offer successfully");
                 resetForm();
@@ -189,7 +193,7 @@ const AddGiftCard = () => {
                           
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
                                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
                            

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Checkbox } from 'antd';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import styled from "styled-components";
 import * as yup from "yup";
 import { addAdminUser } from '../../../Services/Collection';
 import { toast } from "react-toastify";
+import Loader from '../../../Components/Loader/Loader';
 
 const AddAdminUser = () => {
+  const [loader,setLoader]=useState(false);
 
   const initialValues = {
     firstName: '',
@@ -37,7 +39,9 @@ const AddAdminUser = () => {
     try {
       const { firstName, lastName, userName, emailAddress, password } = values;
       const payload = { firstName, lastName, userName, emailAddress, password };
+      setLoader(true);
       let res = await addAdminUser(payload);
+      setLoader(false);
       console.log(res, "res");
       if (res?.status === 200) {
         toast.success("User Added Successfully");
@@ -134,7 +138,7 @@ const AddAdminUser = () => {
                   <Label>Is Admin</Label>
                   <FieldContainer>
                     <CheckboxWrapper>
-                      <Checkbox onChange={onChange} name="isAdmin" checked>Checkbox</Checkbox>
+                      <Checkbox onChange={onChange} name="isAdmin" checked>Yes</Checkbox>
                     </CheckboxWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -142,7 +146,7 @@ const AddAdminUser = () => {
               </InputWrapper>
 
               <Footer>
-                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
                 <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
               </Footer>
             </Form>
