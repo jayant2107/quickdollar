@@ -27,11 +27,13 @@ const ViewCustomOffers = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-  const handleSearch = useCallback(
-    debounce((value) => setSearch(value)),
+   const handleSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+      setCurrentPage(1);
+    }),
     []
   );
-
   const handleDelete=async(id)=>{
     let res = await deleteOffers(id);
     if (res?.status === 200) {
