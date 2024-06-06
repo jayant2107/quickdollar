@@ -20,7 +20,7 @@ const PromotionEmail = () => {
     offerText: "",
     offerShortDescription: '',
     offerLongDescription: '',
-    offerCreatedFor: '',
+    offerPlatform: '',
     offerCountry: [],
     fraudUser: "",
     dailyCAPLimit: "",
@@ -84,14 +84,14 @@ const PromotionEmail = () => {
     offerText: yup.string().required('Offer Text is required'),
     offerShortDescription: yup.string().required('Offer Short Description is required'),
     offerLongDescription: yup.string().required('Offer Long Description is required'),
-    offerCreatedFor: yup.string().required('Offer Created is required'),
+    offerPlatform: yup.string().required('Offer Created is required'),
     customPostbaclParams: yup.string(),
     offerCountry: yup.array().min(1, 'Countries are required').required('Countries are required'),
     fraudUser: yup.string().required('Fraud User is required'),
     dailyCAPLimit: yup.string().required('Cap Limit is required'),
   });
 
-  const handleSubmit = async (values, { resetForm, setFieldValue, setH1TitleValue, setLongDescriptionValue }) => {
+  const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     const formData = new FormData();
     formData.append("offerTitle", values.offerTitle);
     formData.append("h1Title", values.h1Title);
@@ -101,7 +101,7 @@ const PromotionEmail = () => {
     formData.append("offerText", values.offerText);
     formData.append("offerShortDescription", values.offerShortDescription);
     formData.append("offerLongDescription", values.offerLongDescription);
-    formData.append("offerCreatedFor", values.offerCreatedFor);
+    formData.append("offerPlatform", values.offerPlatform);
     formData.append("offerCountry", JSON.stringify(values.offerCountry));
     // formData.append("offerCountry", values.offerCountry);
     formData.append("fraudUser", values.fraudUser);
@@ -121,8 +121,9 @@ const PromotionEmail = () => {
         toast.success("Add Offer successfully");
         setFieldValue("additionalText", "");
         resetForm();
-        setH1TitleValue("");
-        setLongDescriptionValue('');
+        setOfferImgPreview(null);
+        setH1TitleValue(""); 
+        setLongDescriptionValue("")
       } else {
         let message =
           res?.response?.data?.message ||
@@ -563,13 +564,13 @@ const PromotionEmail = () => {
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select user"
-                      defaultValue={initialValues.offerCreatedFor}
+                      defaultValue={initialValues.offerPlatform}
                       style={{
                         width: "100%",
                         marginBottom: "3px",
                       }}
-                      value={values.offerCreatedFor || null}
-                      onChange={(value) => setFieldValue('offerCreatedFor', value)}
+                      value={values.offerPlatform || null}
+                      onChange={(value) => setFieldValue('offerPlatform', value)}
                       options={[
                         {
                           value: '0',
@@ -586,7 +587,7 @@ const PromotionEmail = () => {
                       ]}
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="offerCreatedFor" />
+                      <ErrorMessage name="offerPlatform" />
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
