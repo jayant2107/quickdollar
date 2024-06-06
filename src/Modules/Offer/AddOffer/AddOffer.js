@@ -8,7 +8,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { addOffer, getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
-
+import Loader from '../../../Components/Loader/Loader'
 const PromotionEmail = () => {
 
   const initialValues = {
@@ -88,8 +88,13 @@ const PromotionEmail = () => {
     customPostbaclParams: yup.string(),
     offerCountry: yup.array().min(1, 'Countries are required').required('Countries are required'),
     fraudUser: yup.string().required('Fraud User is required'),
-    dailyCAPLimit: yup.string().required('Cap Limit is required'),
+    dailyCAPLimit: yup.string().required('Cap Limit  is required').test(
+      'is-number',
+      'Enter number only',
+      value => !isNaN(value) && Number.isInteger(parseFloat(value))
+    ),
   });
+  const [loader, setLoader] = useState(false);
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     const formData = new FormData();
@@ -116,13 +121,15 @@ const PromotionEmail = () => {
     formData.append("relistOffer", values.relistOffer ? "true" : "false");
     formData.append("StaticURL", values.StaticURL ? "true" : "false");
     try {
+      setLoader(true)
       const res = await addOffer(formData);
+      setLoader(false)
       if (res?.status === 200) {
         toast.success("Add Offer successfully");
         setFieldValue("additionalText", "");
         resetForm();
         setOfferImgPreview(null);
-        setH1TitleValue(""); 
+        setH1TitleValue("");
         setLongDescriptionValue("")
       } else {
         let message =
@@ -708,7 +715,7 @@ const PromotionEmail = () => {
               <Footer>
                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                 <SubmitBtn type="primary" htmlType="submit">
-                  Submit
+                  Submit{loader ? <Loader/> : ""}
                 </SubmitBtn>
               </Footer>
             </Form>
