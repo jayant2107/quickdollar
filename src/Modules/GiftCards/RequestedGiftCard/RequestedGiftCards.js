@@ -8,9 +8,10 @@ import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import TableAction from "../../../Components/TableNew/TableActions";
 import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
 import { toast } from "react-toastify";
-import { deleteGiftCard, getRequestedGiftCard } from "../../../Services/Collection";
+import {  deleteRequestedGiftCard, getRequestedGiftCard } from "../../../Services/Collection";
 import { debounce } from "../../../Utils/CommonFunctions";
 import { DateTime } from "luxon";
+import EditRequestGiftCard from "../../../Components/EditRequestedGiftCard/EditRequestesGiftCard";
 
 const RequestGiftCard = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -189,8 +190,9 @@ const RequestGiftCard = () => {
     setSelectedRecord(record);
     setEditModal(true);
   };
+
   const handleDelete=async(id)=>{
-    let res = await deleteGiftCard(id);
+    let res = await deleteRequestedGiftCard(id);
     if (res?.status === 200) {
       await fetchData()
     }
@@ -208,6 +210,7 @@ const RequestGiftCard = () => {
     setEditModal(false);
     setSelectedRecord(null);
   };
+
   const handleDeleteCancel = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
@@ -250,7 +253,7 @@ const RequestGiftCard = () => {
           />
         )}
         {editModal && (
-          <EditGiftCardModal
+          <EditRequestGiftCard
             showEditModal={showEditModal}
             handleEditCancel={handleEditCancel}
             editModal={editModal}

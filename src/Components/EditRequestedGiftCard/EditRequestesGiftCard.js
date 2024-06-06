@@ -3,44 +3,73 @@ import "../../Style/global.css";
 import { Modal, Button } from "antd";
 import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
+import { editRequestedGiftCard } from "../../Services/Collection";
+import { toast } from "react-toastify";
+
 const EditRequestGiftCard = ({
   handleEditCancel,
   showEditModal,
   editModal,
   viewLoader,
+  record,
+  fetchData,
 }) => {
+  console.log(record)
 
   const initialValues = {
-    giftCardName: '',
-    giftCardPrice: '',
-    amount: "",
-    userName: "",
-    isAdmin: "",
-    reward: "",
+    giftCardName: record.giftcard.giftCardName || '',
+    giftCardPoints: record.giftcard.giftCardPoints||"",
+    isActive: record.giftcard.isActive ? "true" : "false",
+    sendRewards: ""
   };
+ 
 
   const validationSchema = yup.object().shape({
     giftCardName: yup.string().required('Gift Card Name is required'),
-    userName: yup.string().required('User Name is required'),
-    giftCardPrice: yup.string().required('Gift card priceis required').test(
+    giftCardPoints
+: yup.string().required('Gift card priceis required').test(
       'is-number',
       'Enter number only',
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
     ),
-
-    amount: yup.string().required('Amount required').test(
-      'is-number',
-      'Enter number only',
-      value => !isNaN(value) && Number.isInteger(parseFloat(value))
-    ),
-
-    reward: yup.string().required('Reward required'),
-    isAdmin: yup.string().required("Admin status is required"),
+    isActive: yup.string().required("Admin status is required"),
   });
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit =async (values, { resetForm }) => {
     console.log('Form values:', values);
-    resetForm();
+   
+
+    const {  isActive , giftCardName,giftCardPoints, sendRewards} = values;
+    const payload = {
+      id: record.idRequestedGiftCard,
+      giftCardName:giftCardName,
+      giftCardPoints:giftCardPoints,
+      isActive:isActive,
+    sendRewards:sendRewards
+
+
+    }
+    console.log("Form values:", payload);
+    // setLoader(true)
+    let res = await editRequestedGiftCard(payload)
+    // setLoader(false)
+    if (res?.status === 200) {
+      console.log(res.status)
+      let fetch = fetchData()
+      console.log(fetch, "fetchhhh")
+      toast.success("Edit Successfully");
+      resetForm();
+      handleEditCancel();
+    }
+    else {
+      let message =
+        res?.response?.data?.message ||
+        res?.message ||
+        res?.error ||
+        "Something went wrong";
+      toast.error(message);
+    }
+
   };
 
 
@@ -88,29 +117,9 @@ const EditRequestGiftCard = ({
                       <FieldWrapper>
                         <Label>Gift Card Price in $</Label>
                         <FieldContainer>
-                          <InputField name="giftCardPrice" placeholder="Gift Card Price in $" />
+                          <InputField name="giftCardPoints" placeholder="Gift Card Price in $" />
                           <RequiredWrapper>
-                            <ErrorMessage name="giftCardPrice" />
-                          </RequiredWrapper>
-                        </FieldContainer>
-                      </FieldWrapper>
-
-                      <FieldWrapper>
-                        <Label>User Name</Label>
-                        <FieldContainer>
-                          <InputField name="userName" placeholder="User Name" />
-                          <RequiredWrapper>
-                            <ErrorMessage name="userName" />
-                          </RequiredWrapper>
-                        </FieldContainer>
-                      </FieldWrapper>
-
-                      <FieldWrapper>
-                        <Label>User Total Amount</Label>
-                        <FieldContainer>
-                          <InputField name="amount" placeholder="User Total Amount" />
-                          <RequiredWrapper>
-                            <ErrorMessage name="amount" />
+                            <ErrorMessage name="giftCardPoints" />
                           </RequiredWrapper>
                         </FieldContainer>
                       </FieldWrapper>
@@ -124,25 +133,25 @@ const EditRequestGiftCard = ({
                               <div>
                                 <Field
                                   type="radio"
-                                  name="isAdmin"
-                                  value="yes"
-                                  id="isAdminYes"
+                                  name="isActive"
+                                  value="true"
+                                  id="isActiveYes"
                                 />
-                                <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
+                                <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
                               </div>
                               <div>
                                 <Field
                                   type="radio"
-                                  name="isAdmin"
-                                  value="no"
-                                  id="isAdminNo"
+                                  name="isActive"
+                                  value="false"
+                                  id="isActiveNo"
                                 />
-                                <RadioLabel htmlFor="isAdminNo">No</RadioLabel>
+                                <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
                               </div>
                             </Radio>
                           </FieldWrapper>
                           <RequiredWrapper>
-                            <ErrorMessage name="isAdmin" />
+                            <ErrorMessage name="isActive" />
                           </RequiredWrapper>
                         </FieldContainer>
                       </FieldWrapper>
@@ -150,18 +159,16 @@ const EditRequestGiftCard = ({
                       <FieldWrapper>
                         <Label>Send Reward</Label>
                         <FieldContainer>
-                          <InputField name="reward" placeholder="Reward" />
-                          <RequiredWrapper>
-                            <ErrorMessage name="reward" />
-                          </RequiredWrapper>
+                          <InputField name="sendRewards" placeholder="Reward"  />
+                         
                         </FieldContainer>
                       </FieldWrapper>
 
                     </InputWrapper>
 
                     <Footer>
-                      <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                       <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
+                      <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
                     </Footer>
                   </Form>
                 )}
