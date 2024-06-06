@@ -8,6 +8,9 @@ import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { EditAllUser } from "../../Services/Collection";
 import { toast } from "react-toastify";
+import Loader from '../Loader/Loader';
+import { useState } from "react";
+
 
 
 const EditUserModal = ({
@@ -18,6 +21,7 @@ const EditUserModal = ({
   viewLoader,
   fetchData,
 }) => {
+  const [loader,setLoader]=useState(false);
   console.log(record, "Recordddd")
   const initialValues = {
     firstName: record.firstName||"",
@@ -78,7 +82,9 @@ const EditUserModal = ({
 
     }
     console.log("Form values:", payload);
+    setLoader(true)
     let res = await EditAllUser(payload)
+    setLoader(false)
     if (res?.status === 200) {
       console.log(res.status)
       let fetch = fetchData()
@@ -291,7 +297,7 @@ const EditUserModal = ({
                       Cancel
                     </ResetBtn>
                     <SubmitBtn type="primary" htmlType="submit">
-                      Save
+                      Save{loader?<Loader/>:""}
                     </SubmitBtn>
                   </Footer>
                 </Form>
@@ -360,7 +366,7 @@ const FieldWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 15px 0px 15px 15px;
+  padding: 15px 0px 15px 0px;
   .offerBtn {
     text-align:center;
     width:100%;

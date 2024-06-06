@@ -5,8 +5,10 @@ import styled from "styled-components";
 import * as yup from "yup";
 import { addFrontPage } from '../../../Services/Collection';
 import { toast } from "react-toastify";
+import Loader from '../../../Components/Loader/Loader';
 
 const AddFrontPageOffer = () => {
+    const [loader,setLoader]=useState(false);
 
     const initialValues = {
         frontpageofferTitle: '',
@@ -34,7 +36,9 @@ const AddFrontPageOffer = () => {
         formData.append('frontpageofferButton', values.frontpageofferButton);
 
         try {
+            setLoader(true);
             const res = await addFrontPage(formData);
+            setLoader(false);
             if (res?.status === 200) {
                 toast.success("Add Frontpage Offer successfully");
                 resetForm();
@@ -153,7 +157,7 @@ const AddFrontPageOffer = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
                                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
                         </Form>
@@ -227,17 +231,7 @@ outline: none;
 margin-bottom: 3px;
 `;
 
-const ChooseFile = styled(Field)`
-width: -webkit-fill-available;
-padding: 15px 0px 5px 0px;
-font-size: 14px;
-color: #666;
-border-radius: 5px;
-outline: none;
-@media only screen and (min-width: 320px) and (max-width: 480px) {
-    padding: 0px 0px 5px 0px;
-}
-`;
+
 
 const InputWrapper = styled.div`
 padding: 1.25rem;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
@@ -6,8 +6,10 @@ import styled from "styled-components";
 import * as yup from "yup";
 import { announcement } from '../../Services/Collection';
 import { toast } from 'react-toastify';
+import Loader from '../../Components/Loader/Loader';
 
 const Announcement = () => {
+    const [loader,setLoader]=useState(false);
 
     const initialValues = {
         application_type: '',
@@ -23,7 +25,9 @@ const Announcement = () => {
 
     const handleSubmit =async (values, { resetForm, setFieldValue }) => {
         try {
+            setLoader(true);
             let res= await announcement(values)
+            setLoader(false)
             console.log('Form values:', values);
     
             if (res?.status === 200) {
@@ -116,7 +120,7 @@ const Announcement = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Send</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Send{loader?<Loader/>:""}</SubmitBtn>
                             </Footer>
                         </Form>
                     )}

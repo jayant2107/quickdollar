@@ -9,8 +9,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getAllGeoCodes } from '../../Services/Collection';
 import { toast } from "react-toastify";
+import Loader from '../../Components/Loader/Loader';
 
 const PromotionEmail = () => {
+    const [loader,setLoader]=useState(false);
     const [triggerModal, setTriggerModal] = useState(false);
     const [previewData, setPreviewData] = useState({});
 
@@ -267,7 +269,7 @@ const PromotionEmail = () => {
                             </InputWrapper>
                             <Footer>
                                 <ResetButton type="button" onClick={() => handlePreview(values)}>Preview</ResetButton>
-                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
