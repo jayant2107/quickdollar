@@ -30,7 +30,7 @@ export default function Sidebar() {
   };
 
   const renderIntlMassage = (text) => {
-    const maxLength = 14;
+    const maxLength = 8;
     if (text.length > maxLength) {
       const truncatedText = `${text.slice(0, maxLength)}...`;
       return (

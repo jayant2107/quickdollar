@@ -9,7 +9,7 @@ import "react-quill/dist/quill.snow.css";
 import { addOffer, getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
 import Loader from '../../../Components/Loader/Loader'
-const PromotionEmail = () => {
+const AddOffer = () => {
 
   const initialValues = {
     offerTitle: "",
@@ -715,7 +715,7 @@ const PromotionEmail = () => {
               <Footer>
                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                 <SubmitBtn type="primary" htmlType="submit">
-                  Submit{loader ? <Loader/> : ""}
+                  Submit{loader ? <Loader /> : ""}
                 </SubmitBtn>
               </Footer>
             </Form>
@@ -726,7 +726,7 @@ const PromotionEmail = () => {
   );
 };
 
-export default PromotionEmail;
+export default AddOffer;
 
 const AnnouncementWrapper = styled.div`
   box-sizing: border-box;

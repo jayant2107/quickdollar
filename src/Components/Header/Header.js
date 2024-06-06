@@ -14,7 +14,7 @@ import { FaUsers, FaGift, FaBell } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { AiFillDashboard } from "react-icons/ai";
 import SettingsIcon from '@mui/icons-material/Settings';
-
+import { Switch } from 'antd';
 
 const Header = () => {
   const [type, setTtype] = useState(false);
@@ -35,6 +35,10 @@ const Header = () => {
 
   const handleModalOpen = () => {
     setShowModal(true);
+  };
+
+  const onToggleChange = (checked) => {
+    console.log(`switch to ${checked}`);
   };
 
   const ItemList2 = () => {
@@ -293,6 +297,13 @@ const Header = () => {
             </NavIcon2>
           </>
         )}
+        <NavIcon2>
+          <p>
+          Pause API Survey
+
+          </p>
+          <Switch onChange={onToggleChange} />
+        </NavIcon2>
       </>
     )
   }
@@ -613,7 +624,7 @@ cursor: pointer;
 padding-right: 20px;
 font-size: 20px;
 line-height: 17px;
-color: ${({ isSubActive }) => isSubActive && "red"};
+color: ${({ isSubActive }) => isSubActive && "#3892EE"};
 display: flex;
 gap: 10px;
 align-items: center;
@@ -629,7 +640,7 @@ p {
   margin: 0px;
   font-family: ${({ theme }) => theme?.fontFamily};
   ${({ isActive }) => isActive && `
-  color: red;
+  color: #3892EE;
 `}
 `;
 
