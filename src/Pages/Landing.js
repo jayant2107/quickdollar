@@ -65,7 +65,7 @@ const LandingWrapper = styled.div`
     @media (max-width: 603px) {
       width: 15%;
     }
-    @media (max-width: 550px) {
+    @media (max-width: 982px) {
       display: none;
     }
   }
@@ -79,22 +79,22 @@ const LandingWrapper = styled.div`
       background: transparent;
     }
     @media (max-width: 982px) {
-      width: 87%;
+      width: 100%;
     }
     @media (max-width: 910px) {
-      width: 86.8%;
+      width: 100%;
     }
     @media (max-width: 905px) {
       padding-bottom: 25px;
     }
     @media (max-width: 860px) {
-      width: 86.4%;
+      width: 100%;
     }
     @media (max-width: 705px) {
-      width: 85.4%;
+      width: 100%;
     }
     @media (max-width: 603px) {
-      width: 85%;
+      width: 100%;
     }
     @media (max-width: 550px) {
       width: 100%;
@@ -104,8 +104,8 @@ const LandingWrapper = styled.div`
 
     .headerOutletInner {
       padding-top: 36px;
-      padding-right: 40px;
-      padding-left: 40px;
+      padding-right: 15px;
+      padding-left: 15px;
 
       @media (max-width: 550px) {
         padding: 10px 15px;
