@@ -367,6 +367,13 @@ const FieldWrapper = styled.div`
   align-items: center;
   gap: 1rem;
   padding: 15px 0px 15px 0px;
+@media only screen and (min-width: 320px) and (max-width: 480px){
+  flex-direction: column;
+  align-items: start;
+  }
+    
+    
+
   .offerBtn {
     text-align:center;
     width:100%;
@@ -407,6 +414,9 @@ const SubmitBtn = styled(Button)`
   border: none;
   width: 100%;
   height: 48px;
+   @media only screen and (min-width: 320px) and (max-width: 480px){
+ height:40px;
+  }
 `;
 
 const ResetBtn = styled(Button)`
@@ -419,9 +429,14 @@ const ResetBtn = styled(Button)`
     color: black !important;
     background: white !important;
     border: 1px solid black;
+    }
+    @media only screen and (min-width: 320px) and (max-width: 480px){
+ height:40px;
   }
-`;
-
-const Asterisk = styled.span`
-color: red
-`
+    `;
+    
+    const Asterisk = styled.span`
+    color: red
+  `
+  
+  

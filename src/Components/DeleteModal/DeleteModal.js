@@ -63,7 +63,6 @@ export default DeleteModal;
 const ServiceModalWrapper = styled.div`
 font-family: ${({ theme }) => theme?.fontFamily};
   .serviceModalUpperDiv {
-    height:142px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -126,7 +125,6 @@ font-family: ${({ theme }) => theme?.fontFamily};
       line-height: 29px;
       color: #242424;
       margin: 0px;
-      line-height: 2;
       color:black;
 
     }
@@ -136,4 +134,79 @@ font-family: ${({ theme }) => theme?.fontFamily};
       margin: 0px;
     }
   }
+    @media only screen and (  max-width:426px){
+     .serviceModalUpperDiv {
+    height:100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap:32px;
+    .deleteMain {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .upperDivHead1{
+        font-size:18px;
+        font-weight:600;
+      }
+      
+        
+    }
+    .buttons {
+      display: flex;
+      justify-content:center;
+    }
+    button {
+      width: 208px;
+      color: black;
+      height:48px !important;
+      display:flex;
+      align-items:center !important;
+      justify-content:center !important;
+      border: 1px solid var(--Greyscale/1000);
+      border-radius: 10px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 17px;
+      // padding:  21px 24px;
+      margin: 5px 10px;
+      cursor: pointer;
+      background:transparent;
+    }
+    .delete-button{
+      width: 208px;
+      color: white;
+      // box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
+      border-radius: 10px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 17px;
+      display:flex;
+      align-items:center !important;
+      justify-content:center !important;
+      margin: 5px 10px;
+      cursor: pointer;
+      border: none;
+    background: var(--Alerts-Error-Base, #E03137);
+
+    }
+    .upperDivHead1 {
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 29px;
+      color: #242424;
+      margin: 0px;
+      color:black;
+
+    }
+    .upperDivPara1 {
+      font-size: 16px;
+      color: #7b7f91;
+      margin: 0px;
+    }
+  }
+    }
 `;
