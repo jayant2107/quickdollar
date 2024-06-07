@@ -86,6 +86,7 @@ const RequestGiftCard = () => {
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setOrderType(type)
+    setCurrentPage(1);
   };
 
   const columns = [

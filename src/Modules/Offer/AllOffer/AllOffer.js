@@ -2,10 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { Dropdown } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
+import { Select } from "antd";
 import {
   activateDeactivateAllOffers,
   deleteAllOffers,
@@ -18,7 +17,6 @@ import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const AllOffers = () => {
@@ -39,6 +37,7 @@ const AllOffers = () => {
 
   const navigate = useNavigate();
 
+  const { Option } = Select;
   const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
@@ -193,6 +192,7 @@ const AllOffers = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
+    setCurrentPage(1);
   };
 
   const columns = [
@@ -248,7 +248,7 @@ const AllOffers = () => {
       key: "link",
       width: 200,
       dataIndex: "offerLink",
-      render: (text, record) => <Link>{record?.offerLink}</Link>,
+      render: (text, record) => <a>{record?.offerLink}</a>,
     },
     {
       title: (
@@ -491,7 +491,7 @@ const AllOffers = () => {
       )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
-        <Dropdown
+        {/* <Dropdown
           menu={{
             items,
             style: {
@@ -517,7 +517,27 @@ const AllOffers = () => {
             <span>{selectedOption}</span>
             <DownOutlined />
           </div>
-        </Dropdown>
+        </Dropdown> */}
+        <SelectField
+          showSearch // Enable searching
+          placeholder={selectedOption}
+          onChange={(value) => setSelectedOption(value)}
+          style={{ width: 300 }}
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            typeof option.children === "string" &&
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          <Option key="Select Geo Code" value="Select Geo Code">
+            Select Geo Code
+          </Option>
+          {geoCodes?.map((item, index) => (
+            <Option key={item?.country} value={item?.iso_code_2}>
+              {item?.country + " (" + item?.iso_code_2 + ")"}
+            </Option>
+          ))}
+        </SelectField>
         <div style={{ display: "flex", gap: "20px" }}>
           <button onClick={ActiveAllUser}>Active All Offers</button>
           <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }}>
@@ -637,4 +657,45 @@ const StatusStyledText = styled.span`
   align-items: center;
   gap: 8px;
   cursor: pointer;
+`;
+
+const SelectField = styled(Select)`
+  .ant-select-selector {
+    min-height: 43px !important;
+    display: flex;
+    align-items: center;
+    border-color: #e5e5e5 !important;
+    box-shadow: none !important;
+    .ant-select-selection-search {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-select-selection-placeholder {
+      color: rgb(102, 102, 102) !important;
+      text-align: start;
+    }
+
+    &:hover,
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border-color: #e5e5e5 !important;
+    }
+  }
+  .ant-select-selection-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .ant-select-arrow {
+    color: #666 !important;
+  }
+  &.ant-select-focused .ant-select-selector,
+  &.ant-select-open .ant-select-selector,
+  &.ant-select:hover .ant-select-selector {
+    outline: none;
+    box-shadow: none;
+    border-color: #e5e5e5 !important;
+  }
 `;

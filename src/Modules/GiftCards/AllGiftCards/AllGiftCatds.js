@@ -80,6 +80,7 @@ const AllGiftCards = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
+    setCurrentPage(1);
   };
 
 

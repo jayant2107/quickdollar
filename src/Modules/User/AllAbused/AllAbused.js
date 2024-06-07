@@ -88,6 +88,7 @@ const AllAbusedUsers = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
+    setCurrentPage(1);
   };
 
   const columns = [
@@ -130,33 +131,6 @@ const AllAbusedUsers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
-    },
-    {
-      title: (
-        <div
-          onClick={() => handleSort("countryCode")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          Country{" "}
-          <img
-            src={srcSortImage("countryCode", {
-              sortBasis: fieldName,
-              sortType: orderMethod,
-            })}
-            alt="sort icon"
-            style={{ width: "12px", height: "12px" }}
-          />
-        </div>
-      ),
-
-      dataIndex: "countryCode",
-      key: "country",
-      width:150,  
-      render: (text, record) => record?.countryCode || "NA",
     },
     {
       title: (
