@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { toast } from "react-toastify";
-import { activateDeactivateAllOffers, deleteOffers, getViewCustomOffers } from "../../../Services/Collection";
+import { activateDeactivateAllOffers, deleteAllOffers,  getViewCustomOffers } from "../../../Services/Collection";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
@@ -35,7 +35,7 @@ const ViewCustomOffers = () => {
     []
   );
   const handleDelete=async(id)=>{
-    let res = await deleteOffers(id);
+    let res = await deleteAllOffers(id);
     if (res?.status === 200) {
        await fetchData()
     }
@@ -164,7 +164,7 @@ const ViewCustomOffers = () => {
             justifyContent: "space-between",
           }}
         >
-          User Name{" "}
+          Offer Title{" "}
           <img
             src={srcSortImage("offerTitle", {
               sortBasis: fieldName,

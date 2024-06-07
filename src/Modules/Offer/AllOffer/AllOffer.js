@@ -8,7 +8,7 @@ import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
 import {
   activateDeactivateAllOffers,
-  deleteOffers,
+  deleteAllOffers,
   getAllGeoCodes,
   getAllOffers,
 } from "../../../Services/Collection";
@@ -43,7 +43,7 @@ const AllOffers = () => {
     []
   );
   const handleDelete = async (id) => {
-    let res = await deleteOffers(id);
+    let res = await deleteAllOffers(id);
     if (res?.status === 200) {
       await fetchData();
     }
