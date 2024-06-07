@@ -19,6 +19,8 @@ const DeliveredGift = () => {
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
+  const [orderType, setOrderType] = useState("3");
+
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -37,6 +39,7 @@ const DeliveredGift = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
+      params.append("orderType", orderType);
       console.log("Fetch Params:", params.toString());
       const res = await getDeliveredGiftCard(params);
       if (res?.status === 200) {
@@ -60,7 +63,7 @@ const DeliveredGift = () => {
     }
   };
 
-  const handleSort = (columnKey) => {
+  const handleSort = (columnKey,type) => {
     let newOrder;
     // If the clicked column is the same as the currently sorted column, toggle the sorting order
     if (columnKey === fieldName) {
@@ -73,8 +76,10 @@ const DeliveredGift = () => {
     }
     console.log("Sort Field:", columnKey);
     console.log("Sort Order:", newOrder);
+    console.log(type)
     setFieldName(columnKey);
     setorderMethod(newOrder);
+    setOrderType(type)
     setCurrentPage(1);
   };
 
@@ -82,7 +87,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardName")}
+          onClick={() => handleSort("giftCardName","2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -109,7 +114,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints")}
+          onClick={() => handleSort("giftCardPoints","2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -129,12 +134,12 @@ const DeliveredGift = () => {
       ),
       dataIndex: "giftCardPoints",
       key: "price",
-      render: (text, record) => record?.giftCardPoints || "NA",
+      render: (text, record) => record?.giftcard?.giftCardPoints || "NA",
     },
     {
       title: (
         <div
-          onClick={() => handleSort("firstName")}
+          onClick={() => handleSort("firstName","1")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -173,7 +178,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("Status")}
+          onClick={() => handleSort("Status","3")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -208,7 +213,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("userApplicationtype")}
+          onClick={() => handleSort("userApplicationtype","1")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -255,7 +260,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardCode")}
+          onClick={() => handleSort("giftCardCode","3")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -280,7 +285,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("updatedAt")}
+          onClick={() => handleSort("updatedAt","2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -302,6 +307,7 @@ const DeliveredGift = () => {
       dataIndex: "updatedAt",
       key: "deliveryDate",
       render: (text, record) => {
+        if(!record?.giftcard?.updatedAt) return "NA";
         const date = DateTime.fromISO(record?.giftcard?.updatedAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },

@@ -6,7 +6,6 @@ import { RxCross2 } from "react-icons/rx";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import TableAction from "../../../Components/TableNew/TableActions";
-import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
 import { toast } from "react-toastify";
 import {
   deleteRequestedGiftCard,
@@ -29,6 +28,7 @@ const RequestGiftCard = () => {
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
+  const [orderType, setOrderType] = useState("3");
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -46,6 +46,7 @@ const RequestGiftCard = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
+      params.append("orderType", orderType);
       console.log("Fetch Params:", params.toString());
       const res = await getRequestedGiftCard(params);
       if (res?.status === 200) {
@@ -69,7 +70,7 @@ const RequestGiftCard = () => {
     }
   };
 
-  const handleSort = (columnKey) => {
+  const handleSort = (columnKey,type) => {
     let newOrder;
     // If the clicked column is the same as the currently sorted column, toggle the sorting order
     if (columnKey === fieldName) {
@@ -84,6 +85,7 @@ const RequestGiftCard = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
+    setOrderType(type)
     setCurrentPage(1);
   };
 
@@ -91,7 +93,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardName")}
+          onClick={() => handleSort("giftCardName","2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -118,7 +120,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints")}
+          onClick={() => handleSort("giftCardPoints","2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -143,7 +145,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("firstName")}
+          onClick={() => handleSort("firstName","1")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -182,7 +184,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints")}
+          onClick={() => handleSort("giftCardPoints","3")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -210,7 +212,7 @@ const RequestGiftCard = () => {
       
       title: (
         <div
-          onClick={() => handleSort("Status")}
+          onClick={() => handleSort("Status","3")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -252,7 +254,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("createdAt")}
+          onClick={() => handleSort("createdAt","2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -274,6 +276,9 @@ const RequestGiftCard = () => {
       dataIndex: "createdAt",
       key: "requesteddate",
       render: (text, record) => {
+        if(record?.giftcard?.updatedAt === null){
+          return "NA"
+        }
         const date = DateTime.fromISO(record?.giftcard?.updatedAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },

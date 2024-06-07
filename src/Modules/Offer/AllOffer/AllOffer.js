@@ -18,6 +18,7 @@ import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
+import { Link } from "react-router-dom";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -245,7 +246,7 @@ const AllOffers = () => {
       key: "link",
       width: 200,
       dataIndex: "offerLink",
-      render: (text, record) => <a>{record?.offerLink}</a>,
+      render: (text, record) => <Link>{record?.offerLink}</Link>,
     },
     {
       title: (
@@ -395,6 +396,9 @@ const AllOffers = () => {
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
+        if(record?.createdAt === null){
+          return "NA"
+        }
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },

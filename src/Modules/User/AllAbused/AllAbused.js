@@ -349,6 +349,9 @@ const AllAbusedUsers = () => {
       key: "createdat",
       width:200,  
       render: (text, record) => {
+        if(record?.createdAt === null){
+          return "NA"
+        }
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },

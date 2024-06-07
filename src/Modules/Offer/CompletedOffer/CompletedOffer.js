@@ -299,11 +299,11 @@ const CompletedOffers = () => {
       dataIndex: "createdAt",
       key: "date",
       render: (text, record) => {
+        if(!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
+     
     
     },
     {
