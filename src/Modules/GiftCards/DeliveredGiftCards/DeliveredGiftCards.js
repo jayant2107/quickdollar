@@ -80,7 +80,6 @@ const DeliveredGift = () => {
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setOrderType(type)
-    setCurrentPage(1);
   };
 
   const columns = [

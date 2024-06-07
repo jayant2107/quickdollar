@@ -121,7 +121,6 @@ const CompletedOffers = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
-    setCurrentPage(1);
   };
 
   const columns = [
