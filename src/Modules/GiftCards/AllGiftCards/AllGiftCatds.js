@@ -7,7 +7,7 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { debounce } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { deleteGiftCard,  getAllGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
@@ -65,39 +65,132 @@ const AllGiftCards = () => {
     }
   };
 
+  const handleSort = (columnKey) => {
+    let newOrder;
+    // If the clicked column is the same as the currently sorted column, toggle the sorting order
+    if (columnKey === fieldName) {
+      newOrder = orderMethod === "asc" ? "desc" : "asc";
+    } else {
+      // If a new column is clicked, set the sorting order to ascending by default
+      newOrder = "asc";
+      // Reset sorting order for other columns
+      setorderMethod("asc");
+    }
+    console.log("Sort Field:", columnKey);
+    console.log("Sort Order:", newOrder);
+    setFieldName(columnKey);
+    setorderMethod(newOrder);
+    setCurrentPage(1);
+  };
+
+
   const columns = [
     {
-      title: "Gift Card Name",
+      title: (
+        <div
+          onClick={() => handleSort("giftCardName")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Gift Card Name{" "}
+          <img
+            src={srcSortImage("giftCardName", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+      
       width: 150,
       dataIndex: "giftCardName",
       key: "name",
       fixed: "left",
       render: (text, record) => record?.giftCardName || "NA",
-      sorter: true,
-      sortOrder: fieldName === "giftCardName" ? orderMethod : false,
-    },
+      },
     {
-      key: "country",
-      title: "Gift Card Image",
+      title: (
+        <div
+          onClick={() => handleSort("giftCardImage")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Gift Card Image{" "}
+          <img
+            src={srcSortImage("giftCardImage", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+      key: "giftCardImage",
       dataIndex: "giftCardImage",
       render: (text, record) => (
         <TableImageWrapper>
           <img src={record?.giftCardImage} alt="" />
         </TableImageWrapper>
       ),
-      sorter: true,
-      sortOrder: fieldName === "giftCardImage" ? orderMethod : false,
+     
     },
     {
-      title: "Gift Card Price",
+      title: (
+        <div
+          onClick={() => handleSort("giftCardPoints")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Gift Card Price{" "}
+          <img
+            src={srcSortImage("giftCardPoints", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
+     
       dataIndex: "giftCardPoints",
       key: "price",
       render: (text, record) => record?.giftCardPoints || "NA",
-      sorter: true,
-      sortOrder: fieldName === "giftCardPoints" ? orderMethod : false,
+     
     },
     {
-      title: "Status",
+      title: (
+        <div
+          onClick={() => handleSort("isActive")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Status{" "}
+          <img
+            src={srcSortImage("isActive", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "isActive",
       key: "status",
       render: (text, record) => (
@@ -110,22 +203,37 @@ const AllGiftCards = () => {
           )}
         </StatusStyledText>
       ),
-      sorter: true,
-      sortOrder: fieldName === "isActive" ? orderMethod : false,
-      // Test commit
+      
     },
 
     {
-      title: "Created Date",
+      title: (
+        <div
+          onClick={() => handleSort("createdAt")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Created Date{" "}
+          <img
+            src={srcSortImage("createdAt", {
+              sortBasis: fieldName,
+              sortType: orderMethod,
+            })}
+            alt="sort icon"
+            style={{ width: "12px", height: "12px" }}
+          />
+        </div>
+      ),
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
-    },
+       },
     {
       title: "Action",
       key: "operation",
@@ -196,23 +304,7 @@ const AllGiftCards = () => {
    
 
   }
-  const handleTableChange = (pagination, filters, sorter) => {
-    let order;
-    if (fieldName === sorter.field) {
-      // If the same column is clicked again, toggle the sorting order
-      order = orderMethod === "asc" ? "desc" : "asc";
-    } else {
-      // If a new column is clicked, set the sorting order to ascending by default
-      order = "asc";
-    }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
-    setFieldName(sorter.field);
-    setorderMethod(order);
-    setCurrentPage(pagination.current);
-  };
   
-
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize,search,fieldName, orderMethod]);
@@ -249,7 +341,7 @@ const AllGiftCards = () => {
           loader={loader}
           pagination={paginationConfig}
           handleSearch={handleSearch}
-          onChange={handleTableChange}
+          onChange={handleSort}
         />
       </div>
     </AllUserWrapper>
