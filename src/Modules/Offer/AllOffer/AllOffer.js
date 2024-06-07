@@ -19,6 +19,7 @@ import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -35,6 +36,8 @@ const AllOffers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
+
+  const navigate = useNavigate();
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -395,8 +398,8 @@ const AllOffers = () => {
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
-        if(record?.createdAt === null){
-          return "NA"
+        if (record?.createdAt === null) {
+          return "NA";
         }
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
@@ -413,7 +416,11 @@ const AllOffers = () => {
           edit={formActions.edit}
           deleteAction={formActions.delete}
           // onSend={() => showSendModal(record)}
-          onEdit={() => showEditModal(record)}
+          onEdit={() =>
+            navigate("/quickdollar/offer/editOffer", {
+              state: { id: selectedRecord?.idOffer },
+            })
+          }
           onDelete={() => showDeleteModal(record)}
         />
       ),

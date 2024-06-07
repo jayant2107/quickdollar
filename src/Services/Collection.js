@@ -36,8 +36,9 @@ const Change_Admin_Pass = "changeAdminPassword";
 const ADD_GIFT_CARD = "addGiftCard";
 const REQUESTED_ALL_GIFT_CARD = "getAllRequestedGiftCards";
 const Edit_Requested_Gift_Card = "editRequestedGiftCards";
-const Delete_Reques_GiftCard="deleteRequestedGiftCard"
-const Delete_All_Offers="deleteALLOffer"
+const Delete_Reques_GiftCard="deleteRequestedGiftCard";
+const Delete_All_Offers="deleteALLOffer";
+const Edit_Offers= "editOffers";
 
 
 
@@ -127,7 +128,10 @@ export const getRequestedGiftCard = async (query) =>
 
   export const editRequestedGiftCard = (payload) =>  patchApi(Edit_Requested_Gift_Card, payload);
 
-
+  
+  
   export const deleteRequestedGiftCard=(id)=> deleteApi(Delete_Reques_GiftCard,id);
-
+  
   export const deleteAllOffers=(id)=> deleteApi(Delete_All_Offers,id)
+  
+export const editOffers = (payload) => patchApi(Edit_Offers, payload);
