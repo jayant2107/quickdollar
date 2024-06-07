@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import Loader from '../../../Components/Loader/Loader';
 
 const AddAdminUser = () => {
-  const [loader,setLoader]=useState(false);
+  const [loader, setLoader] = useState(false);
 
   const initialValues = {
     firstName: '',
@@ -146,7 +146,7 @@ const AddAdminUser = () => {
               </InputWrapper>
 
               <Footer>
-                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
+                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
                 <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
               </Footer>
             </Form>
@@ -206,6 +206,11 @@ font-size: 17px;
 text-align: start;
 width: 210px;
 padding:15px 0px 15px 15px;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  margin-bottom: 0px;
+  width: 100%;
+  padding: 15px 0px 15px 0px;
+  }
 `
 
 const InputField = styled(Field)`
@@ -226,6 +231,10 @@ padding: 1.25rem;
 const FieldWrapper = styled.div`
 display:flex;
 gap: 20px;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  flex-direction:column;
+  gap:0px
+  }
 `
 const RequiredWrapper = styled.div`
 color: red;

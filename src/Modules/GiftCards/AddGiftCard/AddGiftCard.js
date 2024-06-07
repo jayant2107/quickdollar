@@ -256,6 +256,11 @@ font-size: 17px;
 text-align: start;
 width: 210px;
 padding: 15px 0px 15px 15px;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    margin-bottom: 0px;
+    width: 100%;
+    padding: 15px 0px 15px 0px;
+    }
 `
 const InputField = styled(Field)`
 width: -webkit-fill-available;
@@ -284,6 +289,10 @@ padding: 1.25rem;
 const FieldWrapper = styled.div`
 display:flex;
 gap: 20px;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    flex-direction:column;
+    gap:0px
+    }
 `
 const ChooseContainer = styled.div`
 display:flex;

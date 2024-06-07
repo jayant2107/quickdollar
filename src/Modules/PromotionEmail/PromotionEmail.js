@@ -332,6 +332,8 @@ const Label = styled.p`
     font-family: Poppins;
     @media only screen and (min-width: 320px) and (max-width: 480px) {
         margin-bottom: 0px;
+        width: 100%;
+        padding: 15px 0px 15px 0px;
         }
 `;
 
