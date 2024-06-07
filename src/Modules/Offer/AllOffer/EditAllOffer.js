@@ -51,7 +51,19 @@ const EditOffer = () => {
     iosApplicationGroup: false,
     user: "",
     userOfferUrl: "",
+    offerLocation: [],
   };
+
+  const FormState = Object.freeze({
+    PRE_HOME_SCREEN: 0,
+    OFFER_WALL: 1,
+    HOME_SCREEN: 2,
+    MONTHLY_SUBSCRIPTION: 3,
+    DAILY_SURVEY: 4,
+    DOWNLOAD: 5,
+    COUPONS: 6,
+    SHOPS: 7,
+  });
 
   const [geoCodes, setGeoCodes] = useState([]);
   const [userData, setUserData] = useState([]);
@@ -59,7 +71,7 @@ const EditOffer = () => {
   const [offerImgPreview, setOfferImgPreview] = useState(null);
   const offerImgInputRef = useRef(null);
   const location = useLocation();
-  const { id } = location.state || {};
+  const { id, text } = location.state || {};
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -180,36 +192,35 @@ const EditOffer = () => {
       .array()
       .of(yup.string())
       .min(1, "Select at least one country"),
-    dailyCAPLimit: yup.number()
+    dailyCAPLimit: yup
+      .number()
       .typeError("Daily CAP limit must be a number")
       .positive("Daily CAP limit must be a positive number")
       .required("Daily CAP limit is required"),
     // user: yup.string().required("User is required"),
   });
 
-  const handleSubmit = async (
-    values,
-    { resetForm, setFieldValue, setH1TitleValue, setLongDescriptionValue }
-  ) => {
+  const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     console.log("submit");
     const formData = new FormData();
     formData.append("idOffer", id);
+    formData.append("text", text);
     formData.append("offerTitle", values.offerTitle);
-    formData.append("h1Title", values.h1Title);
+    // formData.append("h1Title", values.h1Title);
     formData.append("offerImage", values.offerImage);
     formData.append("offerLink", values.offerLink);
     formData.append("offerPoints", values.offerPoints);
-    formData.append("offerText", values.offerText);
+    // formData.append("offerText", values.offerText);
     formData.append("offerShortDescription", values.offerShortDescription);
-    formData.append("offerLongDescription", values.offerLongDescription);
-    formData.append("offerCreatedFor", values.offerCreatedFor);
-    formData.append("offerCountry", JSON.stringify(values.offerCountry));
-    formData.append("fraudUser", values.fraudUser);
+    // formData.append("offerLongDescription", values.offerLongDescription);
+    // formData.append("offerCreatedFor", values.offerCreatedFor);
+    formData.append("offerCountry", values.offerCountry);
+    // formData.append("fraudUser", values.fraudUser);
     formData.append("dailyCAPLimit", values.dailyCAPLimit);
-    formData.append("customPostbaclParams", values.customPostbaclParams);
+    // formData.append("customPostbaclParams", values.customPostbaclParams);
     formData.append("isActive", values.isActive);
-    formData.append("isHotOffer", values.isHotOffer);
-    formData.append("hotOfferFor", values.hotOfferFor);
+    // formData.append("isHotOffer", values.isHotOffer);
+    // formData.append("hotOfferFor", values.hotOfferFor);
     formData.append("app_install", values.app_install);
     formData.append("conversionCallback", values.conversionCallback);
     formData.append("isDailyOffer", values.isDailyOffer);
@@ -217,20 +228,30 @@ const EditOffer = () => {
     formData.append("StaticURL", values.StaticURL ? "true" : "false");
     formData.append("shopOffer", values.shopOffer);
     formData.append("quickThoughts", values.quickThoughts);
-    formData.append("preHomeScreen", values.preHomeScreen);
-    formData.append("offerWall", values.offerWall);
-    formData.append("homeScreen", values.homeScreen);
-    formData.append("monthlySubscription", values.monthlySubscription);
-    formData.append("dailySurvey", values.dailySurvey);
-    formData.append("download", values.download);
-    formData.append("coupons", values.coupons);
-    formData.append("shops", values.shops);
-    formData.append("androidApplicationGroup", values.androidApplicationGroup);
-    formData.append("iosApplicationGroup", values.iosApplicationGroup);
-    formData.append("user", values.user);
-    formData.append("userOfferUrl", values.userOfferUrl);
-    formData.append("fraudUser", JSON.stringify(values.fraudUser));
+    formData.append(
+      "offerLocation",
+      Object.keys(initialValues)
+        .map((key, index) =>
+          initialValues[key] ? FormState[key.toUpperCase()] : -1
+        )
+        .filter((index) => index !== -1)
+    );
+    // formData.append("offerWall", values.offerWall);
+    // formData.append("homeScreen", values.homeScreen);
+    // formData.append("monthlySubscription", values.monthlySubscription);
+    // formData.append("dailySurvey", values.dailySurvey);
+    // formData.append("download", values.download);
+    // formData.append("coupons", values.coupons);
+    // formData.append("shops", values.shops);
+    // formData.append("androidApplicationGroup", values.androidApplicationGroup);
+    // formData.append("iosApplicationGroup", values.iosApplicationGroup);
+    // formData.append("user", values.user);
+    // formData.append("userOfferUrl", values.userOfferUrl);
+    // formData.append("fraudUser", JSON.stringify(values.fraudUser));
     try {
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
       const res = await editOffers(formData);
       if (res?.status === 200) {
         toast.success("Add Offer successfully");
@@ -238,6 +259,7 @@ const EditOffer = () => {
         resetForm();
         setH1TitleValue("");
         setLongDescriptionValue("");
+        console.log(formData, "formData");
       } else {
         let message =
           res?.response?.data?.message ||
@@ -838,6 +860,22 @@ const EditOffer = () => {
                       alignItems: "start",
                     }}
                   >
+                    {/* {
+                      offerLocationBox.map((item, index) => {
+                        return (
+                          <Checkbox
+                            style={{ width: "100%", marginLeft: "0px" }}
+                            name={item}
+                            checked={values[item]}
+                            onChange={(e) =>
+                              setFieldValue(item, e.target.checked)
+                            }
+                          >
+                            {item}
+                          </Checkbox>
+                        )
+                      })
+                    } */}
                     <Checkbox
                       style={{ width: "100%", marginLeft: "0px" }}
                       name="preHomeScreen"

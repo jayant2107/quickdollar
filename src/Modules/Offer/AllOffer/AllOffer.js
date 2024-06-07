@@ -18,6 +18,8 @@ import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -55,20 +57,12 @@ const AllOffers = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
   };
-  const showEditModal = (record) => {
-    setSelectedRecord(record);
-    setEditModal(true);
-  };
 
   const showDeleteModal = (record) => {
     setSelectedRecord(record);
     setDeleteModal(true);
   };
 
-  const handleEditCancel = () => {
-    setEditModal(false);
-    setSelectedRecord(null);
-  };
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -396,8 +390,8 @@ const AllOffers = () => {
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
-        if(record?.createdAt === null){
-          return "NA"
+        if (record?.createdAt === null) {
+          return "NA";
         }
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
@@ -414,11 +408,12 @@ const AllOffers = () => {
           edit={formActions.edit}
           deleteAction={formActions.delete}
           // onSend={() => showSendModal(record)}
-          onEdit={() =>
+          onEdit={() => {
+            console.log("selectedRecord:", record);
             navigate("/quickdollar/offer/editOffer", {
-              state: { id: selectedRecord?.idOffer },
-            })
-          }
+              state: { id: record?.idOffer, text: "location" },
+            });
+          }}
           onDelete={() => showDeleteModal(record)}
         />
       ),
@@ -477,16 +472,7 @@ const AllOffers = () => {
           handleDelete={handleDelete}
         />
       )}
-      {editModal && (
-        <EditUserModal
-          showEditModal={showEditModal}
-          handleEditCancel={handleEditCancel}
-          editModal={editModal}
-          record={selectedRecord}
-          viewLoader={loader}
-          fetchData={fetchData}
-        />
-      )}
+
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
         <Dropdown
