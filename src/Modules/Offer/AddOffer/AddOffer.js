@@ -107,9 +107,9 @@ const AddOffer = () => {
     formData.append("offerShortDescription", values.offerShortDescription);
     formData.append("offerLongDescription", values.offerLongDescription);
     formData.append("offerPlatform", values.offerPlatform);
-    formData.append("offerCountry", JSON.stringify(values.offerCountry));
+    formData.append("offerCountry", values.offerCountry);
     // formData.append("offerCountry", values.offerCountry);
-    formData.append("fraudUser", JSON.stringify(values.fraudUser));
+    formData.append("fraudUser",values.fraudUser);
     formData.append("dailyCAPLimit", values.dailyCAPLimit);
     formData.append("customPostbaclParams", values.customPostbaclParams);
     formData.append("isActive", values.isActive);
@@ -601,7 +601,7 @@ const AddOffer = () => {
                   <Label>Offer created for</Label>
                   <SelectFieldWrapper>
                     <SelectField
-                      placeholder="Select user"
+                      placeholder="Select users"
                       defaultValue={initialValues.offerPlatform}
                       style={{
                         width: "100%",
@@ -710,7 +710,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Slect fraud user to unlisted from offer</Label>
+                  <Label>Select fraud user to unlisted from offer</Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField

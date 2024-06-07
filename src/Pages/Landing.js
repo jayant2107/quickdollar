@@ -23,7 +23,7 @@ const Landing = () => {
             <div className="outletDiv">
               <Outlet />
               <div className="policyDiv">
-                
+
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@ const LandingWrapper = styled.div`
   .landingSidebar {
     height: 100vh;
     min-height: 550px;
-    width: 19%;
+    width: 277px;
 
     @media only screen and (max-width: 982px) and (min-width: 550px) {
       background: transparent !important;
@@ -70,7 +70,7 @@ const LandingWrapper = styled.div`
     }
   }
   .headerOutletDiv {
-    width: 81%;
+    width: calc(100% - 277px);
     background: ${({ theme }) => theme?.landingOutletBg};
     position: relative;
     transition: all 0.4s ease-out 0s;
@@ -135,7 +135,7 @@ const LandingWrapper = styled.div`
         line-height: 17px;
         cursor: pointer;
         color: ${({ byTheme }) =>
-          byTheme === "day" ? "rgba(0, 0, 0, 0.6)" : "#fff"};
+    byTheme === "day" ? "rgba(0, 0, 0, 0.6)" : "#fff"};
         display: flex;
         align-items: center;
         margin: 0px;

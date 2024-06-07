@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Applogo } from "../../Utils/Images";
@@ -17,12 +17,12 @@ import { Switch } from 'antd';
 export default function Sidebar() {
   const navigate = useNavigate();
   const [width] = useWindowWidth();
-  const [showMoreUserOptions, setShowMoreUserOptions] = useState(false);
-  const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(false);
-  const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
-  const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
-  const [showMoreSettingOptions, setShowMoreSettingOptions] = useState(false);
   const location = useLocation();
+  const [showMoreUserOptions, setShowMoreUserOptions] = useState(location.state?.showMoreUserOptions || false);
+  const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(location.state?.showMoreOfferOptions || false);
+  const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(location.state?.showMoreGiftOptions || false);
+  const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(location.state?.showMoreFrontPageOptions || false);
+  const [showMoreSettingOptions, setShowMoreSettingOptions] = useState(location.state?.showMoreSettingOptions || false);
   const [showModal, setShowModal] = useState(false);
 
   const handleModalOpen = () => {
@@ -46,6 +46,26 @@ export default function Sidebar() {
   const onToggleChange = (checked) => {
     console.log(`switch to ${checked}`);
   };
+  
+  useEffect(() => {
+    navigate(location.pathname, {
+      state: {
+        showMoreUserOptions,
+        showMoreOfferOptions,
+        showMoreGiftOptions,
+        showMoreFrontPageOptions,
+        showMoreSettingOptions
+      }
+    });
+  }, [
+    showMoreUserOptions,
+    showMoreOfferOptions,
+    showMoreGiftOptions,
+    showMoreFrontPageOptions,
+    showMoreSettingOptions,
+    navigate,
+    location.pathname
+  ]);
 
   const ItemList = () => {
     return (
@@ -82,7 +102,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreUserOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/user/allusers"} onClick={() => navigate("/quickdollar/user/allusers")}>
               <p>
                 All Users
@@ -103,7 +123,7 @@ export default function Sidebar() {
                 Decrypt User info
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/offer/alloffers" || location.pathname === "/quickdollar/offer/addoffer" || location.pathname === "/quickdollar/offer/addcustomoffers" || location.pathname === "/quickdollar/offer/viewcustomoffers" || location.pathname === "/quickdollar/offer/completedoffers" ? (
@@ -122,7 +142,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreOfferOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/alloffers"} onClick={() => navigate("/quickdollar/offer/alloffers")}>
               <p>
                 All Offers
@@ -148,7 +168,7 @@ export default function Sidebar() {
                 Completed Offers
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/giftcard/allgiftcard" || location.pathname === "/quickdollar/giftcard/addgiftcard" || location.pathname === "/quickdollar/giftcard/requestedgiftcard" || location.pathname === "/quickdollar/giftcard/deliveredgiftcard" ? (
@@ -167,7 +187,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreGiftOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/allgiftcard"} onClick={() => navigate("/quickdollar/giftcard/allgiftcard")}>
               <p>
                 All Gift Cards
@@ -188,7 +208,7 @@ export default function Sidebar() {
                 Delivered Gift Cards
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/sendmessage" ? (
@@ -223,7 +243,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreFrontPageOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/allfrontageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/allfrontageoffer")}>
               <p>
                 All Frontpage Offer
@@ -234,7 +254,7 @@ export default function Sidebar() {
                 Add Frontpage Offer
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/announcement" ? (
@@ -285,7 +305,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreSettingOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/settings/web"} onClick={() => navigate("/quickdollar/settings/web")}>
               <p>
                 WEB
@@ -301,11 +321,11 @@ export default function Sidebar() {
                 IOS
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
         <NavIcon2>
           <p>
-            {renderIntlMassage("Pause API Survey")}
+          Pause API Survey
           </p>
           <Switch onChange={onToggleChange} />
         </NavIcon2>
@@ -357,7 +377,7 @@ export default function Sidebar() {
 const SidebarContainer = styled.div`
   height: 100vh;
   min-height: 550px;
-  width: 19%;
+  width: 277px;
   background-color: #252529;
   display: flex;
   flex-direction: column;
@@ -455,9 +475,9 @@ const InnerContainer = styled.div`
   padding-top: 40px;
 `;
 const NavIcon = styled.div`
-  padding-left: 20px;
+  padding-left: 10px;
   background: ${({ theme }) => theme?.secondaryColor};
-  padding-right: 20px;
+  padding-right: 10px;
   font-size: 20px;
   cursor: pointer;
   line-height: 17px;
@@ -469,7 +489,7 @@ const NavIcon = styled.div`
   padding-top: 15px;
   padding-bottom: 15px;
   border-radius: 10px;
-
+width: calc(100% - 20px);
   @media (max-width: 982px) {
     justify-content: center;
     padding-left: 0px;
@@ -520,9 +540,10 @@ const NavIcon = styled.div`
 // `;
 
 const NavIcon2 = styled.div`
-  padding-left: 20px;
+  padding-left: 10px;
   cursor: pointer;
-  padding-right: 20px;
+  padding-right: 10px;
+  width: calc(100% - 20px);
   font-size: 20px;
   font-size: 20px;
   line-height: 17px;
@@ -557,6 +578,8 @@ const NavIcon2 = styled.div`
     }
   }
 `;
+
+
 
 // const NavIcon3 = styled.div`
 //   padding-left: 20px;
