@@ -18,6 +18,7 @@ import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditUserModal from "../../../Components/EditModal/EditUserModal";
+import { useNavigate } from "react-router-dom";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -34,6 +35,8 @@ const AllOffers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
+
+  const navigate = useNavigate();
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -410,7 +413,11 @@ const AllOffers = () => {
           edit={formActions.edit}
           deleteAction={formActions.delete}
           // onSend={() => showSendModal(record)}
-          onEdit={() => showEditModal(record)}
+          onEdit={() =>
+            navigate("/quickdollar/offer/editOffer", {
+              state: { id: selectedRecord?.idOffer },
+            })
+          }
           onDelete={() => showDeleteModal(record)}
         />
       ),

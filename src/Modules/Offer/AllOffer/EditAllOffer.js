@@ -6,10 +6,15 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { addOffer, getAllGeoCodes, getAllUser } from "../../../Services/Collection";
+import { useLocation } from "react-router-dom";
+import {
+  editOffers,
+  getAllGeoCodes,
+  getAllUser,
+} from "../../../Services/Collection";
 import { toast } from "react-toastify";
 
-const EditAllOffer = () => {
+const EditOffer = () => {
   const initialValues = {
     offerTitle: "",
     h1Title: "",
@@ -32,7 +37,7 @@ const EditAllOffer = () => {
     isDailyOffer: "false",
     relistOffer: false,
     StaticURL: false,
-    shopOffer: false  ,
+    shopOffer: false,
     quickThoughts: false,
     preHomeScreen: false,
     offerWall: false,
@@ -41,18 +46,20 @@ const EditAllOffer = () => {
     dailySurvey: false,
     download: false,
     coupons: false,
-    shops: false,  
+    shops: false,
     androidApplicationGroup: false,
     iosApplicationGroup: false,
-    user:"",
+    user: "",
     userOfferUrl: "",
-    };
+  };
 
   const [geoCodes, setGeoCodes] = useState([]);
   const [userData, setUserData] = useState([]);
+  const [page, setPage] = useState(1);
   const [offerImgPreview, setOfferImgPreview] = useState(null);
   const offerImgInputRef = useRef(null);
-
+  const location = useLocation();
+  const { id } = location.state || {};
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -64,6 +71,75 @@ const EditAllOffer = () => {
     [{ font: [] }],
     [{ align: [] }],
   ];
+
+  // const validationSchema = yup.object().shape({
+  //   offerTitle: yup.string().required("Title is Required"),
+  //   h1Title: yup.string().required("H1 title is required"),
+  //   offerImage: yup
+  //     .mixed()
+  //     .required("Offer image is required")
+  //     .test("fileType", "Only image files are allowed", (value) => {
+  //       if (value) {
+  //         return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
+  //       }
+  //       return true;
+  //     })
+  //     .test("fileSize", "File size must be less than 2MB", (value) => {
+  //       if (value) {
+  //         return value.size <= 2 * 1024 * 1024;
+  //       }
+  //       return true;
+  //     }),
+  //   offerLink: yup.string().required("Offer Link is required"),
+  //   offerPoints: yup
+  //     .string()
+  //     .required("Offer amount is required")
+  //     .test(
+  //       "is-number",
+  //       "Enter number only",
+  //       (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
+  //     ),
+  //   offerText: yup.string().required("Offer Text is required"),
+  //   offerShortDescription: yup
+  //     .string()
+  //     .required("Offer Short Description is required"),
+  //   offerLongDescription: yup
+  //     .string()
+  //     .required("Offer Long Description is required"),
+  //   offerCreatedFor: yup.string().required("Offer Created is required"),
+  //   customPostbaclParams: yup.string(),
+  //   offerCountry: yup
+  //     .array()
+  //     .min(1, "Countries are required")
+  //     .required("Countries are required"),
+  //   fraudUser: yup.array().required("Fraud User is required"),
+  //   dailyCAPLimit: yup.string().required("Cap Limit is required"),
+  //   preHomeScreen: yup.boolean(),
+  //   offerWall: yup.boolean(),
+  //   homeScreen: yup.boolean(),
+  //   monthlySubscription: yup.boolean(),
+  //   dailySurvey: yup.boolean(),
+  //   download: yup.boolean(),
+  //   coupons: yup.boolean(),
+  //   shops: yup.boolean(),
+
+  //   // Platform checkboxes
+  //   androidApplicationGroup: yup.boolean(),
+  //   iosApplicationGroup: yup.boolean(),
+
+  //   offerCountry: yup.array()
+  //     .of(yup.string())
+  //     .min(1, "Select at least one country"),
+
+  //   // Daily CAP limit
+  //   dailyCAPLimit: yup.number()
+  //     .typeError("Daily CAP limit must be a number")
+  //     .positive("Daily CAP limit must be a positive number")
+  //     .required("Daily CAP limit is required"),
+
+  //   // Fraud Users
+  //   fraudUser: yup.array().of(yup.string()),
+  // });
 
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
@@ -100,20 +176,24 @@ const EditAllOffer = () => {
       .string()
       .required("Offer Long Description is required"),
     offerCreatedFor: yup.string().required("Offer Created is required"),
-    customPostbaclParams: yup.string(),
     offerCountry: yup
       .array()
-      .min(1, "Countries are required")
-      .required("Countries are required"),
-    fraudUser: yup.string().required("Fraud User is required"),
-    dailyCAPLimit: yup.string().required("Cap Limit is required"),
+      .of(yup.string())
+      .min(1, "Select at least one country"),
+    dailyCAPLimit: yup.number()
+      .typeError("Daily CAP limit must be a number")
+      .positive("Daily CAP limit must be a positive number")
+      .required("Daily CAP limit is required"),
+    // user: yup.string().required("User is required"),
   });
 
   const handleSubmit = async (
     values,
     { resetForm, setFieldValue, setH1TitleValue, setLongDescriptionValue }
   ) => {
+    console.log("submit");
     const formData = new FormData();
+    formData.append("idOffer", id);
     formData.append("offerTitle", values.offerTitle);
     formData.append("h1Title", values.h1Title);
     formData.append("offerImage", values.offerImage);
@@ -135,8 +215,23 @@ const EditAllOffer = () => {
     formData.append("isDailyOffer", values.isDailyOffer);
     formData.append("relistOffer", values.relistOffer ? "true" : "false");
     formData.append("StaticURL", values.StaticURL ? "true" : "false");
+    formData.append("shopOffer", values.shopOffer);
+    formData.append("quickThoughts", values.quickThoughts);
+    formData.append("preHomeScreen", values.preHomeScreen);
+    formData.append("offerWall", values.offerWall);
+    formData.append("homeScreen", values.homeScreen);
+    formData.append("monthlySubscription", values.monthlySubscription);
+    formData.append("dailySurvey", values.dailySurvey);
+    formData.append("download", values.download);
+    formData.append("coupons", values.coupons);
+    formData.append("shops", values.shops);
+    formData.append("androidApplicationGroup", values.androidApplicationGroup);
+    formData.append("iosApplicationGroup", values.iosApplicationGroup);
+    formData.append("user", values.user);
+    formData.append("userOfferUrl", values.userOfferUrl);
+    formData.append("fraudUser", JSON.stringify(values.fraudUser));
     try {
-      const res = await addOffer(formData);
+      const res = await editOffers(formData);
       if (res?.status === 200) {
         toast.success("Add Offer successfully");
         setFieldValue("additionalText", "");
@@ -179,11 +274,13 @@ const EditAllOffer = () => {
   const fetchUsers = async () => {
     console.log("start");
     // setLoader(true);
+    const params = new URLSearchParams();
+    params.append("limit", 20);
     try {
-      const res = await getAllUser();
+      const res = await getAllUser(params);
       if (res?.status === 200) {
         setUserData(res?.data?.findUsers);
-        console.log(res?.data?.findUsers, "users");
+        console.log(res, "users");
       } else {
         let message =
           res?.response?.data?.message ||
@@ -233,12 +330,22 @@ const EditAllOffer = () => {
   const userOptions = userData.map((data) => ({
     label: `${data?.firstName} ${data?.lastName}`,
     value: `${data?.firstName} ${data?.lastName}`,
-  }))
+  }));
+
+  const handleScroll = (event) => {
+    const { target } = event;
+    if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   useEffect(() => {
     fetchGeoCordData();
-    fetchUsers();
   }, []);
+
+  useEffect(() => {
+    fetchUsers(page);
+  }, [page]);
 
   return (
     <div>
@@ -803,9 +910,9 @@ const EditAllOffer = () => {
                     </Checkbox>
                     <Checkbox
                       style={{ width: "100%", marginLeft: "0px" }}
-                      name="shop"
-                      checked={values.shop}
-                      onChange={(e) => setFieldValue("shop", e.target.checked)}
+                      name="shops"
+                      checked={values.shops}
+                      onChange={(e) => setFieldValue("shops", e.target.checked)}
                     >
                       Shop
                     </Checkbox>
@@ -967,48 +1074,24 @@ const EditAllOffer = () => {
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
-                {/* <FieldWrapper>
-                  <Label>Slect fraud user to unlisted from offer</Label>
-                  <SelectFieldWrapper>
-                    <SelectField
-                      placeholder="Select user"
-                      defaultValue={initialValues.fraudUser}
-                      style={{
-                        width: "100%",
-                        marginBottom: "3px",
-                      }}
-                      value={values.fraudUser || null}
-                      onChange={(value) => setFieldValue("fraudUser", value)}
-                      options={[
-                        {
-                          value: "fraudUser",
-                          label: "fraudUser",
-                        }
-                      ]}
-                    />
-                    <RequiredWrapper>
-                      <ErrorMessage name="fraudUser" />
-                    </RequiredWrapper>
-                  </SelectFieldWrapper>
-                </FieldWrapper> */}
 
                 <FieldWrapper>
                   <Label>Select fraud user to unlisted from offer</Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
+                        showSearch
                         mode="multiple"
                         allowClear
+                        onPopupScroll={handleScroll}
                         style={{ width: "100%" }}
                         placeholder="Search for a user"
                         value={values.fraudUser}
-                        onChange={(value) =>
-                          setFieldValue("fraudUser", value)
-                        }
+                        onChange={(value) => setFieldValue("fraudUser", value)}
                         options={userOptions}
                       />
                       <RequiredWrapper>
-                        <ErrorMessage name="offerCountry" />
+                        <ErrorMessage name="fraudUser" />
                       </RequiredWrapper>
                     </ChooseCountry>
                   </FieldContainer>
@@ -1034,7 +1117,7 @@ const EditAllOffer = () => {
   );
 };
 
-export default EditAllOffer;
+export default EditOffer;
 
 const AnnouncementWrapper = styled.div`
   box-sizing: border-box;

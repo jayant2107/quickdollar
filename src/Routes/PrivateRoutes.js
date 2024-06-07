@@ -29,7 +29,7 @@ import MainSettings from "../Modules/Settings/MainSetting";
 import WebSetting from '../Modules/Settings/WebSetting/WebSetting';
 import Android from '../Modules/Settings/Android/Android';
 import Ios from '../Modules/Settings/IOS/Ios';
-import EditAllOffer from '../Modules/Offer/AllOffer/EditAllOffer';
+import EditOffer from '../Modules/Offer/AllOffer/EditAllOffer';
 
 export const privateRoutes = [
     {
@@ -47,7 +47,7 @@ export const privateRoutes = [
                 path: "offer", element: <MainOffer />, children: [
                     { path: "alloffers", element: <AllOffers /> },
                     { path: "addoffer", element: <AddOffer /> },
-                    { path: "alloffers/editAllOffer", element: <EditAllOffer /> },
+                    { path: "editOffer", element: <EditOffer /> },
                     { path: "addcustomoffers", element: <AddCustomOffer /> },
                     { path: "viewcustomoffers", element: <ViewCustomOffers /> },
                     { path: "completedoffers", element: <CompletedOffers /> },
