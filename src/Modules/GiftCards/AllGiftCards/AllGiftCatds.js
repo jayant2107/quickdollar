@@ -80,7 +80,6 @@ const AllGiftCards = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
-    setCurrentPage(1);
   };
 
 
@@ -230,6 +229,7 @@ const AllGiftCards = () => {
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
+        if(!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },

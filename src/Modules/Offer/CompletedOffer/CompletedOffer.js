@@ -121,7 +121,6 @@ const CompletedOffers = () => {
     console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
-    setCurrentPage(1);
   };
 
   const columns = [
@@ -299,11 +298,11 @@ const CompletedOffers = () => {
       dataIndex: "createdAt",
       key: "date",
       render: (text, record) => {
+        if(!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      sorter: true,
-      sortOrder: fieldName === "createdAt" ? orderMethod : false,
+     
     
     },
     {

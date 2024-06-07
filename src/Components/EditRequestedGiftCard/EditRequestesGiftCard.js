@@ -20,7 +20,6 @@ const EditRequestGiftCard = ({
     giftCardName: record.giftcard.giftCardName || '',
     giftCardPoints: record.giftcard.giftCardPoints||"",
     isActive: record.giftcard.isActive ? "true" : "false",
-    sendRewards: ""
   };
  
 
@@ -45,7 +44,6 @@ const EditRequestGiftCard = ({
       giftCardName:giftCardName,
       giftCardPoints:giftCardPoints,
       isActive:isActive,
-    sendRewards:sendRewards
 
 
     }
@@ -156,13 +154,7 @@ const EditRequestGiftCard = ({
                         </FieldContainer>
                       </FieldWrapper>
 
-                      <FieldWrapper>
-                        <Label>Send Reward</Label>
-                        <FieldContainer>
-                          <InputField name="sendRewards" placeholder="Reward"  />
-                         
-                        </FieldContainer>
-                      </FieldWrapper>
+                    
 
                     </InputWrapper>
 

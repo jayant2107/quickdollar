@@ -375,7 +375,7 @@ const Header = () => {
 
   return (
     <HeaderWrapper byTheme={byTheme}>
-      {width < 551 && width > 280 ? (
+      {width < 983 && width > 280 ? (
         <div className="headerBtnDiv">
           <div
             className="openBtnDiv"
@@ -480,11 +480,12 @@ const Header = () => {
 export default Header;
 
 const HeaderWrapper = styled.div`
-  @media (max-width: 550px) {
+  @media (max-width: 983px) {
     height: 50px;
     position: fixed;
     width: 100%;
     z-index: 9;
+
     -webkit-box-shadow: 0 3px 5px -3px #000;
     -moz-box-shadow: 0 3px 5px -3px #000;
     box-shadow: 0 3px 5px -3px #000;
@@ -497,7 +498,7 @@ const HeaderWrapper = styled.div`
     position: relative;
     display: flex;
 
-    @media (max-width: 550px) {
+    @media (max-width: 983px) {
       align-items: center;
       height: 50px;
     }
@@ -517,7 +518,7 @@ const HeaderWrapper = styled.div`
   font-family: "Poppins", sans-serif;
   cursor: pointer;
     }
-      @media (max-width: 550px) {
+      @media (max-width: 983px) {
         gap: 5px;
       }
       .FiIcon {
@@ -549,7 +550,7 @@ const HeaderWrapper = styled.div`
           min-width: 200px;
           }
 
-        @media (max-width: 550px) {
+        @media (max-width: 983px) {
           top: 55px;
           right: 8px;
         }
@@ -658,13 +659,16 @@ const InnerContainer = styled.div`
   flex-direction: column;
   gap: 25px;
   width: max-content;
-  height: 100%;
+  // height: 100%;
   background: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.25) 0px 10px 20px;
   color: rgb(0, 0, 0);
   position: fixed;
   transition: all 0.4s ease-out 0s;
   overflow-y: scroll;
+  top: 3px;
+    height: 100vh;
+    
 `;
 
 const LogoWrap = styled.div`
@@ -687,4 +691,6 @@ const SidebarMenu = styled.div`
   flex-direction: column;
   gap: 15px;
   padding:20px;
+  
+  
 `;
