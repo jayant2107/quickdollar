@@ -388,7 +388,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Is Active</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <FieldWrapper >
                       <RdioWrapper>
                         <div>
                           <Field
@@ -419,7 +419,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Is Hot Offer</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <FieldWrapper >
                       <RdioWrapper>
                         <div>
                           <Field
@@ -450,7 +450,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Hot Offer For</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <FieldWrapper >
                       <RdioWrapper>
                         <div>
                           <Field
@@ -490,7 +490,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>App Installation</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <FieldWrapper >
                       <RdioWrapper >
                         <div>
                           <Field
@@ -524,7 +524,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Conversion Callback Type</Label>
                   <FieldContainer>
-                    <FieldWrapper style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                    <FieldWrapper >
                       <RdioWrapper>
                         <div>
                           <Field
@@ -816,6 +816,7 @@ const InputWrapper = styled.div`
 
 const FieldWrapper = styled.div`
   display: flex;
+  align-items: start;
   gap: 10px;
   width: 100%;
   @media only screen and (min-width: 320px) and (max-width: 480px) {
@@ -961,6 +962,13 @@ flex-direction: column;
 gap: 7px;
 margin-bottom: 15px;
 align-items: flex-start;
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  display: flex ;
+  flex-direction: inherit !important;
+gap: 7px;
+margin-bottom: 15px;
+align-items: flex-start;
+}
 `
 
 const SelectFieldWrapper = styled.div`
