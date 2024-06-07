@@ -26,12 +26,12 @@ const Header = () => {
   const profileDivRef = useRef(null);
   const sideBarDivRef = useRef(null);
   const location = useLocation();
-  const [showMoreUserOptions, setShowMoreUserOptions] = useState(false);
-  const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(false);
-  const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(false);
-  const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(false);
+  const [showMoreUserOptions, setShowMoreUserOptions] = useState(location.state?.showMoreUserOptions || false);
+  const [showMoreOfferOptions, setShowMoreOfferOptions] = useState(location.state?.showMoreOfferOptions || false);
+  const [showMoreGiftOptions, setShowMoreGiftOptions] = useState(location.state?.showMoreGiftOptions || false);
+  const [showMoreFrontPageOptions, setShowMoreFrontPageOptions] = useState(location.state?.showMoreFrontPageOptions || false);
+  const [showMoreSettingOptions, setShowMoreSettingOptions] = useState(location.state?.showMoreSettingOptions || false);
   const [showModal, setShowModal] = useState(false);
-  const [showMoreSettingOptions, setShowMoreSettingOptions] = useState(false);
 
   const handleModalOpen = () => {
     setShowModal(true);
@@ -40,6 +40,26 @@ const Header = () => {
   const onToggleChange = (checked) => {
     console.log(`switch to ${checked}`);
   };
+
+  useEffect(() => {
+    navigate(location.pathname, {
+      state: {
+        showMoreUserOptions,
+        showMoreOfferOptions,
+        showMoreGiftOptions,
+        showMoreFrontPageOptions,
+        showMoreSettingOptions
+      }
+    });
+  }, [
+    showMoreUserOptions,
+    showMoreOfferOptions,
+    showMoreGiftOptions,
+    showMoreFrontPageOptions,
+    showMoreSettingOptions,
+    navigate,
+    location.pathname
+  ]);
 
   const ItemList2 = () => {
     return (
@@ -76,7 +96,7 @@ const Header = () => {
           </NavIcon2>
         )}
         {showMoreUserOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/user/allusers"} onClick={() => navigate("/quickdollar/user/allusers")}>
               <p>
                 <IntlMassage id="All Users" />
@@ -97,7 +117,7 @@ const Header = () => {
                 <IntlMassage id="Decrypt User info" />
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/offer/alloffers" || location.pathname === "/quickdollar/offer/addoffer" || location.pathname === "/quickdollar/offer/addcustomoffers" || location.pathname === "/quickdollar/offer/viewcustomoffers" || location.pathname === "/quickdollar/offer/completedoffers" ? (
@@ -116,7 +136,7 @@ const Header = () => {
           </NavIcon2>
         )}
         {showMoreOfferOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/alloffers"} onClick={() => navigate("/quickdollar/offer/alloffers")}>
               <p>
                 <IntlMassage id="All Offers" />
@@ -142,7 +162,7 @@ const Header = () => {
                 <IntlMassage id="Completed Offers" />
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/giftcard/allgiftcard" || location.pathname === "/quickdollar/giftcard/addgiftcard" || location.pathname === "/quickdollar/giftcard/requestedgiftcard" || location.pathname === "/quickdollar/giftcard/deliveredgiftcard" ? (
@@ -161,7 +181,7 @@ const Header = () => {
           </NavIcon2>
         )}
         {showMoreGiftOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/allgiftcard"} onClick={() => navigate("/quickdollar/giftcard/allgiftcard")}>
               <p>
                 <IntlMassage id="All Gift Cards" />
@@ -182,7 +202,7 @@ const Header = () => {
                 <IntlMassage id="Delivered Gift Cards" />
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/sendmessage" ? (
@@ -217,7 +237,7 @@ const Header = () => {
           </NavIcon2>
         )}
         {showMoreFrontPageOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/allfrontageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/allfrontageoffer")}>
               <p>
                 <IntlMassage id="All Frontpage Offer" />
@@ -228,7 +248,7 @@ const Header = () => {
                 <IntlMassage id="Add Frontpage Offer" />
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
 
         {location.pathname === "/quickdollar/announcement" ? (
@@ -279,7 +299,7 @@ const Header = () => {
           </NavIcon2>
         )}
         {showMoreSettingOptions && (
-          <>
+          <div style={{paddingLeft:"30px"}}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/settings/web"} onClick={() => navigate("/quickdollar/settings/web")}>
               <p>
                 <IntlMassage id="WEB" />
@@ -295,7 +315,7 @@ const Header = () => {
                 <IntlMassage id="IOS" />
               </p>
             </NavIcon2>
-          </>
+          </div>
         )}
         <NavIcon2>
           <p>
