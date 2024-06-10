@@ -310,6 +310,8 @@ const AllGiftCards = () => {
     fetchData();
   }, [currentPage, pageSize,search,fieldName, orderMethod]);
 
+  document.title="Gift Cards - Login - quickdollarapp";
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">

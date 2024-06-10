@@ -17,9 +17,9 @@ const EditRequestGiftCard = ({
   console.log(record)
 
   const initialValues = {
-    giftCardName: record.giftcard.giftCardName || '',
-    giftCardPoints: record.giftcard.giftCardPoints||"",
-    isActive: record.giftcard.isActive ? "true" : "false",
+    giftCardName: record?.giftcard?.giftCardName || '',
+    giftCardPoints: record?.giftcard?.giftCardPoints||"",
+    isActive: record?.giftcard?.isActive ? "true" : "false",
   };
  
 
@@ -103,7 +103,7 @@ const EditRequestGiftCard = ({
                     <InputWrapper>
 
                       <FieldWrapper>
-                        <Label>Gift Card Name</Label>
+                        <Label ><Asterisk>*</Asterisk>Gift Card Name</Label>
                         <FieldContainer>
                           <InputField name="giftCardName" placeholder="Gift Card Name" />
                           <RequiredWrapper>
@@ -113,7 +113,7 @@ const EditRequestGiftCard = ({
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Gift Card Price in $</Label>
+                        <Label><Asterisk>*</Asterisk>Gift Card Price in $</Label>
                         <FieldContainer>
                           <InputField name="giftCardPoints" placeholder="Gift Card Price in $" />
                           <RequiredWrapper>
@@ -265,7 +265,6 @@ background-color: black !important;
 border: none;
 width: 100%;
 height: 48px;
-
 `;
 
 const ResetBtn = styled(Button)`
@@ -283,3 +282,8 @@ color: black ;
 const RadioLabel = styled.label`
   margin: 0;
 `;
+
+
+const Asterisk = styled.span`
+color: red
+`

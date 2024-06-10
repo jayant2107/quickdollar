@@ -358,6 +358,10 @@ const RequestGiftCard = () => {
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
+
+  document.title="Requested Gift Cards - Login - quickdollarapp";
+
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
@@ -466,3 +470,6 @@ const StatusStyledText = styled.span`
   cursor: pointer;
   text-transform: capitalize;
 `;
+const Asterisk = styled.span`
+color: red
+`

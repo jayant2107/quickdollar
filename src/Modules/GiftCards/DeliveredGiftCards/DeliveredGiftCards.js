@@ -341,6 +341,9 @@ const DeliveredGift = () => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
+
+  document.title="Delivered Gift Cards - Login - quickdollarapp";
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">

@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
-import EditUserModal from "../../../Components/EditModal/EditUserModal";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
+import { useNavigate } from "react-router-dom";
 
 const CompletedOffers = () => {
   const [loader, setLoader] = useState(true);
@@ -18,13 +18,12 @@ const CompletedOffers = () => {
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
-  const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-
+  const navigate = useNavigate();
    const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
@@ -44,20 +43,14 @@ const CompletedOffers = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
   };
-  const showEditModal = (record) => {
-    setSelectedRecord(record);
-    setEditModal(true);
-  };
+  
 
   const showDeleteModal = (record) => {
     setSelectedRecord(record);
     setDeleteModal(true);
   };
 
-  const handleEditCancel = () => {
-    setEditModal(false);
-    setSelectedRecord(null);
-  };
+ 
 
   const fetchData = async () => {
     setLoader(true);
@@ -70,6 +63,7 @@ const CompletedOffers = () => {
       params.append("orderMethod", orderMethod);
       console.log("Fetch Params:", params.toString()); 
       const res = await getCompletedoffers(params);
+      console.log(res,"completed offers")
       if (res?.status === 200) {
         console.log(res?.data?.findCompletedOffers, "completdOffer");
         setUserData(res?.data?.findCompletedOffers || []);
@@ -217,8 +211,6 @@ const CompletedOffers = () => {
       key: "title",
       dataIndex: "offerTitle",
       render: (text, record) => record?.offer?.offerTitle,
-      sorter: true,
-      sortOrder: fieldName === "offerTitle" ? orderMethod : false,
     
     },
     {
@@ -313,10 +305,14 @@ const CompletedOffers = () => {
       width: 150,
       render: (text, record) => (
         <TableAction
-          apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
-          onEdit={() => showEditModal(record)}
+          onEdit={() => {
+            console.log("selectedRecord:", record);
+            navigate("/quickdollar/offer/editOffer", {
+              state: { id: record?.idOffer, text: "location" },
+            });
+          }}
           onDelete={() => showDeleteModal(record)}
         />
       ),
@@ -340,6 +336,8 @@ const CompletedOffers = () => {
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize,search,fieldName, orderMethod]);
+
+  document.title="Completed Offers - Login - quickdollarapp";
   return (
     <AllUserWrapper byTheme={byTheme}>
        {deleteModal && (
@@ -351,16 +349,7 @@ const CompletedOffers = () => {
           handleDelete={handleDelete}
         />
       )}
-      {editModal && (
-        <EditUserModal
-          showEditModal={showEditModal}
-          handleEditCancel={handleEditCancel}
-          editModal={editModal}
-          record={selectedRecord}
-          viewLoader={loader}
-          fetchData={fetchData}
-        />
-      )}
+      
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Completed Offers</h1>
       </div>
@@ -427,9 +416,3 @@ const AllUserWrapper = styled.div`
   }
 `;
 
-const StyledText = styled.span`
-  color: ${({ color }) => color};
-  border: 1px solid ${({ color }) => color};
-  padding: 5px 10px;
-  border-radius: 5px;
-`;

@@ -65,6 +65,7 @@ const Login = () => {
       .required("Email is required"),
     password: yup.string().required("Password is required"),
   });
+  document.title="Login - Quickdollarapp"
 
   const handleSubmit = async (values) => {
     try {
@@ -79,6 +80,7 @@ const Login = () => {
           ...res?.data,
           token: res?.token,
         };
+     
         toast.success("Login Successfully");
         navigate("/quickdollar/dashboard");
         dispatch(authlogin(filterData));

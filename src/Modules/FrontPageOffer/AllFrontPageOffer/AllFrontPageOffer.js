@@ -305,7 +305,9 @@ const AllFrontPageOffer = () => {
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
+  
 
+  document.title="Front Page Offers - Login - quickdollarapp";
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (
