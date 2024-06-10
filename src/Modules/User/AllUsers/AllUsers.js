@@ -32,7 +32,7 @@ const AllUsers = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
 
-   const handleSearch = useCallback(
+  const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
       setCurrentPage(1);
@@ -143,7 +143,6 @@ const AllUsers = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
-     
     },
     {
       title: (
@@ -168,9 +167,8 @@ const AllUsers = () => {
       ),
       dataIndex: "countryCode",
       key: "country",
-      width:150,  
+      width: 150,
       render: (text, record) => record?.countryCode || "NA",
-     
     },
     {
       title: (
@@ -195,9 +193,8 @@ const AllUsers = () => {
       ),
       dataIndex: "Points",
       key: "points",
-      width:150,  
+      width: 150,
       render: (text, record) => record?.Points || "0",
-      
     },
     {
       title: (
@@ -222,7 +219,7 @@ const AllUsers = () => {
       ),
       dataIndex: "userRoleID",
       key: "role",
-      width:150,  
+      width: 150,
       render: (text, record) => {
         let roleName;
         let roleIcon;
@@ -253,7 +250,6 @@ const AllUsers = () => {
           </RoleStyledText>
         );
       },
-      
     },
     {
       title: (
@@ -278,7 +274,7 @@ const AllUsers = () => {
       ),
       dataIndex: "isActive",
       key: "status",
-      width:150,  
+      width: 150,
       render: (text, record) => (
         <StatusStyledText
           status={record.isActive ? "Active" : "Inactive"}
@@ -292,7 +288,6 @@ const AllUsers = () => {
           )}
         </StatusStyledText>
       ),
-      
     },
 
     {
@@ -318,7 +313,7 @@ const AllUsers = () => {
       ),
       dataIndex: "userApplicationtype",
       key: "usertype",
-      width:150,  
+      width: 150,
       render: (text, record) => {
         let userType;
         switch (record?.userApplicationtype) {
@@ -339,7 +334,6 @@ const AllUsers = () => {
         }
         return <StyledText>{userType}</StyledText>;
       },
-     
     },
     {
       title: (
@@ -364,15 +358,14 @@ const AllUsers = () => {
       ),
       dataIndex: "createdAt",
       key: "createdat",
-      width:200,  
+      width: 200,
       render: (text, record) => {
-        if(record?.createdAt === null){
-          return "NA"
+        if (record?.createdAt === null) {
+          return "NA";
         }
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      
     },
     {
       title: "Action",
@@ -444,7 +437,7 @@ const AllUsers = () => {
   const handleDelete = async (id) => {
     let res = await deleteUser(id);
     if (res?.status === 200) {
-     await fetchData();
+      await fetchData();
     }
     return res;
   };
@@ -467,8 +460,9 @@ const AllUsers = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, search,fieldName,orderMethod]);
+  }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
+  document.title = "Users - Login - quickdollarapp";
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (

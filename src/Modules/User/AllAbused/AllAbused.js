@@ -441,6 +441,8 @@ const AllAbusedUsers = () => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
+   document.title="Abused Users - Login - quickdollarapp"
+
   return (
     <AllAbusedUserWrapper byTheme={byTheme}>
       {deleteModal && (

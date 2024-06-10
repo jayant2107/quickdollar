@@ -70,6 +70,8 @@ const TableNew = ({
           )}
         </div>
       </TableWrapper>
+
+      <p>Copyright © 2024 QuickDollar. All rights reserved.</p>
     </>
   );
 };

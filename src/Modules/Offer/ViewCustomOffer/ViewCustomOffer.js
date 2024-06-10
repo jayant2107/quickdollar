@@ -14,8 +14,7 @@ import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
-import EditUserModal from "../../../Components/EditModal/EditUserModal";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ViewCustomOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -24,7 +23,6 @@ const ViewCustomOffers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
-  const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [search, setSearch] = useState("");
@@ -51,20 +49,14 @@ const ViewCustomOffers = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
   };
-  const showEditModal = (record) => {
-    setSelectedRecord(record);
-    setEditModal(true);
-  };
+  
 
   const showDeleteModal = (record) => {
     setSelectedRecord(record);
     setDeleteModal(true);
   };
 
-  const handleEditCancel = () => {
-    setEditModal(false);
-    setSelectedRecord(null);
-  };
+
 
   const fetchData = async () => {
     setLoader(true);
@@ -205,7 +197,7 @@ const ViewCustomOffers = () => {
       dataIndex: "offerLink",
       width: 400,
 
-      render: (text, record) => <a>{record?.offerLink || "NA"}</a>,
+      render: (text, record) => <Link to="#"> {record?.offerLink || "NA"}</Link>,
     },
     {
       title: (
@@ -356,7 +348,6 @@ const ViewCustomOffers = () => {
       width: 150,
       render: (text, record) => (
         <TableAction
-          apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
           onEdit={() =>
@@ -400,6 +391,9 @@ const ViewCustomOffers = () => {
   useEffect(() => {
     fetchData(); // Fetch geo codes
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
+
+  document.title="Custom Offers - Login - quickdollarapp";
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (
@@ -411,16 +405,7 @@ const ViewCustomOffers = () => {
           handleDelete={handleDelete}
         />
       )}
-      {editModal && (
-        <EditUserModal
-          showEditModal={showEditModal}
-          handleEditCancel={handleEditCancel}
-          editModal={editModal}
-          record={selectedRecord}
-          viewLoader={loader}
-          fetchData={fetchData}
-        />
-      )}
+     
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>

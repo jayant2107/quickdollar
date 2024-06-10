@@ -107,7 +107,7 @@ export default function Forgot() {
                             type="submit"
                             style={{ fontFamily: "Poppins" }}
                           >
-                            Send link to the email
+                            Submit
                           </button>
                         )}
                       </BtnWrap>
