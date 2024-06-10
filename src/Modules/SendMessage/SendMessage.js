@@ -62,6 +62,8 @@ const SendMessage = () => {
         }
     };
 
+    document.title="Sendmessage - Login - quickdollarapp";
+    
     return (
         <div>
             <Header>
@@ -77,7 +79,7 @@ const SendMessage = () => {
                         <Form>
                             <InputWrapper>
                                 <div>
-                                    <Label>Select user to send notification</Label>
+                                    <Label><Asterisk>*</Asterisk>Select user to send notification</Label>
                                     <SelectField
                                         placeholder="Select user"
                                         defaultValue={initialValues.userType}
@@ -109,7 +111,7 @@ const SendMessage = () => {
                                 </div>
 
                                 <div>
-                                    <Label>Your Subject</Label>
+                                    <Label><Asterisk>*</Asterisk>Your Subject</Label>
                                     <InputField name="msgtitle" placeholder="Message subject" />
                                     <RequiredWrapper>
                                         <ErrorMessage name="msgtitle" />
@@ -117,7 +119,7 @@ const SendMessage = () => {
                                 </div>
 
                                 <div>
-                                    <Label>Your Message</Label>
+                                    <Label><Asterisk>*</Asterisk>Your Message</Label>
                                     <QuillFieldContainer>
                                         <StyledReactQuill
                                             theme="snow"
@@ -284,4 +286,7 @@ const StyledReactQuill = styled(ReactQuill)`
 const QuillFieldContainer = styled.div`
 width: 100%;
 margin-bottom:7px
+`
+const Asterisk = styled.span`
+color: red
 `

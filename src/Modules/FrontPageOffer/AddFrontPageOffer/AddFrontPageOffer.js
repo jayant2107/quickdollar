@@ -75,6 +75,9 @@ const AddFrontPageOffer = () => {
         setOfferImgPreview(null);
         setButtonImgPreview(null);
     };
+
+    document.title="Add Frontpage Offer - Login - quickdollarapp";
+
     return (
         <div>
             <Header>
@@ -90,7 +93,7 @@ const AddFrontPageOffer = () => {
                         <Form>
                             <InputWrapper>
                                 <FieldWrapper>
-                                    <Label>Frontpage Offer Title</Label>
+                                    <Label><Asterisk>*</Asterisk>Frontpage Offer Title</Label>
                                     <FieldContainer>
                                         <InputField name="frontpageofferTitle" placeholder="Offer title" />
                                         <RequiredWrapper>
@@ -100,7 +103,7 @@ const AddFrontPageOffer = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Frontpage Offer Link</Label>
+                                    <Label><Asterisk>*</Asterisk>Frontpage Offer Link</Label>
                                     <FieldContainer>
                                         <InputField name="frontpageofferLink" placeholder="Offer link" />
                                         <RequiredWrapper>
@@ -110,7 +113,7 @@ const AddFrontPageOffer = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Frontpage Offer Image</Label>
+                                    <Label><Asterisk>*</Asterisk>Frontpage Offer Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
                                             <UploadButton onClick={() => offerImgInputRef.current.click()}>Upload</UploadButton>
@@ -133,7 +136,7 @@ const AddFrontPageOffer = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Frontpage Button Image</Label>
+                                    <Label><Asterisk>*</Asterisk>Frontpage Button Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
                                             <UploadButton onClick={() => buttonImgInputRef.current.click()}>Upload</UploadButton>
@@ -297,4 +300,7 @@ const Image = styled.img`
 width: 120px;
 height: 120px;
 object-fit: contain;
+`
+const Asterisk = styled.span`
+color: red
 `

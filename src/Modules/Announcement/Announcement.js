@@ -50,6 +50,8 @@ const Announcement = () => {
         }
            };
 
+           document.title="Announcement - Login - quickdollarapp";
+
     return (
         <div>
             <Header>Send Push Notification</Header>
@@ -63,7 +65,7 @@ const Announcement = () => {
                         <Form>
                             <InputWrapper>
                                 <div>
-                                    <Label>Select user to send notification</Label>
+                                    <Label><Asterisk>*</Asterisk>Select user to send notification</Label>
                                     <SelectField
                                         style={{ width: '100%', marginBottom: "3px", }}
                                         placeholder="Please select"
@@ -95,7 +97,7 @@ const Announcement = () => {
                                 </div>
 
                                 <div>
-                                    <Label>Title</Label>
+                                    <Label><Asterisk>*</Asterisk>Title</Label>
                                     <InputField name="title" placeholder="Notification Title" />
                                     <RequiredWrapper>
                                         <ErrorMessage name="title" />
@@ -103,7 +105,7 @@ const Announcement = () => {
                                 </div>
 
                                 <div>
-                                    <Label>Message</Label>
+                                    <Label><Asterisk>*</Asterisk>Message</Label>
                                     <TextAreaField
                                         name="message"
                                         placeholder="Notification Message"
@@ -262,4 +264,8 @@ const SubmitBtn = styled(Button)`
 color: ${({ theme }) => theme?.primaryColor};
 background: ${({ theme }) => theme?.secondaryColor};
 border: none;
+`
+
+const Asterisk = styled.span`
+color: red
 `

@@ -80,6 +80,8 @@ const AddGiftCard = () => {
         setGiftImgPreview(null);
     };
 
+    document.title="Add Gift Card - Login - quickdollarapp";
+    
     return (
         <div>
             <Header>
@@ -96,7 +98,7 @@ const AddGiftCard = () => {
                             <InputWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Gift Card Name</Label>
+                                    <Label><Asterisk>*</Asterisk>Gift Card Name</Label>
                                     <FieldContainer>
                                         <InputField name="giftCardName" placeholder="Gift Card Name" />
                                         <RequiredWrapper>
@@ -107,7 +109,7 @@ const AddGiftCard = () => {
 
 
                                 <FieldWrapper>
-                                    <Label>Gift Card Image</Label>
+                                    <Label><Asterisk>*</Asterisk>Gift Card Image</Label>
                                     <FieldContainer>
                                         <ChooseContainer>
                                             <UploadButton onClick={() => giftImgInputRef.current.click()}>Upload</UploadButton>
@@ -130,7 +132,7 @@ const AddGiftCard = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Gift Card Price in $</Label>
+                                    <Label><Asterisk>*</Asterisk>Gift Card Price in $</Label>
                                     <FieldContainer>
                                         <InputField name="giftCardPoints" placeholder="Gift Card Price in $" />
                                         <RequiredWrapper>
@@ -159,7 +161,7 @@ const AddGiftCard = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Is Active</Label>
+                                    <Label><Asterisk>*</Asterisk>Is Active</Label>
                                     <FieldContainer>
                                         <FieldWrapper>
                                             <div>
@@ -363,4 +365,8 @@ width: 40%;
 height: 35px;
 border: 1px solid black;
 margin-bottom: 1rem;
+`
+
+const Asterisk = styled.span`
+color: red
 `

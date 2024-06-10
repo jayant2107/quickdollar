@@ -19,19 +19,19 @@ const EditGiftCardModal = ({
   record,
   fetchData,
 }) => {
-  const [loader,setLoader]=useState(false);
+  const [loader, setLoader] = useState(false);
   console.log(record, "recorddd")
   const [offerImgPreview, setOfferImgPreview] = useState(record.giftCardImage);
-  const [flag,setFlag]=useState(false);
-  const navigate=useNavigate()
+  const [flag, setFlag] = useState(false);
+  const navigate = useNavigate()
 
 
   const initialValues = {
-    giftCardName: record.giftCardName || '',
-    frontpageofferImage:  '',
-    giftCardPoints: record.giftCardPoints || '',
-    giftCardNote: record.giftCardNote || '',
-    isActive: record.isActive ? "true" : "false",
+    giftCardName: record?.giftCardName || '',
+    frontpageofferImage: '',
+    giftCardPoints: record?.giftCardPoints || '',
+    giftCardNote: record?.giftCardNote || '',
+    isActive: record?.isActive ? "true" : "false",
   };
   const offerImgInputRef = useRef(null);
 
@@ -52,37 +52,37 @@ const EditGiftCardModal = ({
     formData.append('giftCardPoints', values.giftCardPoints);
     formData.append('giftCardNote', values.giftCardNote);
     formData.append('isActive', values.isActive);
-    if(flag){
+    if (flag) {
       formData.append('frontpageofferImage', values.frontpageofferImage);
     }
-    
+
     for (const pair of formData.entries()) {
       console.log(`${pair[0]}: ${pair[1]}`);
     }
     try {
       setLoader(true)
-        const res = await editGiftCard(formData);
-        setLoader(false)
-        if (res?.status === 200) {
-          await fetchData()
-            toast.success("Edit Gift Card successfully");
-            resetForm();
-            setOfferImgPreview(null);
-            handleEditCancel();
-        } else {
-            let message =
-                res?.response?.data?.message ||
-                res?.message ||
-                res?.error ||
-                "Something went wrong";
-            toast.error(message);
-        }
+      const res = await editGiftCard(formData);
+      setLoader(false)
+      if (res?.status === 200) {
+        await fetchData()
+        toast.success("Edit Gift Card successfully");
+        resetForm();
+        setOfferImgPreview(null);
+        handleEditCancel();
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
     } catch (error) {
-        console.log(error, "error");
-        toast.error(error?.message || "Something went wrong");
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
     }
   };
-  
+
   const handleFileChange = (e, setFieldValue, setPreview) => {
     const file = e.target.files[0];
     if (file) {
@@ -129,14 +129,14 @@ const EditGiftCardModal = ({
                     <InputWrapper>
                       <FieldWrapper>
 
-                        <Button className="offerBtn" onClick={()=>navigate("/quickdollar/giftcard/requestedgiftcard")}>
+                        <Button className="offerBtn" onClick={() => navigate("/quickdollar/giftcard/requestedgiftcard")}>
                           <FaGift />
                           Requested Gift Card
                         </Button>
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Gift Card Name<Asterisk>*</Asterisk></Label>
+                        <Label><Asterisk>*</Asterisk>Gift Card Name</Label>
                         <FieldContainer>
                           <InputField name="giftCardName" placeholder="Gift Card Name" />
                           <RequiredWrapper>
@@ -170,7 +170,7 @@ const EditGiftCardModal = ({
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Gift Card Price in $<Asterisk>*</Asterisk></Label>
+                        <Label><Asterisk>*</Asterisk>Gift Card Price in $</Label>
                         <FieldContainer>
                           <InputField name="giftCardPoints" placeholder="Gift Card Price in $" />
                           <RequiredWrapper>
@@ -196,7 +196,7 @@ const EditGiftCardModal = ({
                       </FieldWrapper>
 
                       <FieldWrapper>
-                        <Label>Is Active<Asterisk>*</Asterisk></Label>
+                        <Label><Asterisk>*</Asterisk>Is Active</Label>
                         <FieldContainer>
                           <FieldWrapper>
                             <Radio>
@@ -232,7 +232,7 @@ const EditGiftCardModal = ({
 
                     <Footer>
                       <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
-                      <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
+                      <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
                     </Footer>
                   </Form>
                 )}

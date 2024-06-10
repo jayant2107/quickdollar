@@ -51,7 +51,7 @@ const DecryptUserInfo = ({
             <Form>
               <InputWrapper>
                 <div>
-                  <Label>Encrypted Key</Label>
+                  <Label><Asterisk>*</Asterisk>Encrypted Key</Label>
                   <InputField name="decryptKey" placeholder="Encrypted Key" />
                   <RequiredWrapper>
                     <ErrorMessage name="decryptKey" />
@@ -153,3 +153,7 @@ font-family: Poppins;
   border: 1px solid black;
 }
 `;
+
+const Asterisk = styled.span`
+color: red
+`

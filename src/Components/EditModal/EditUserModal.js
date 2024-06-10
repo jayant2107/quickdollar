@@ -24,20 +24,20 @@ const EditUserModal = ({
   const [loader,setLoader]=useState(false);
   console.log(record, "Recordddd")
   const initialValues = {
-    firstName: record.firstName||"",
-    lastName: record.lastName||"",
-    email: record.email||"",
-    paypalEmail: record.paypalEmail||"",
-    address1: record.addresslineone||"",
-    address2: record.addresslineotwo||"",
-    country: record.countryCode||"",
-    city: record.city||"",
-    state: record.state||"",
-    zip: record.zipcode,
-    telephone: record.contactNumber||"",
-    userPoints: record.Points||"",
-    isAdmin: record.userRoleID === 2 ? "2" : "3",
-    suspendAccount: record.is_suspended ? "true" : "false",
+    firstName: record?.firstName||"",
+    lastName: record?.lastName||"",
+    email: record?.email||"",
+    paypalEmail: record?.paypalEmail||"",
+    address1: record?.addresslineone||"",
+    address2: record?.addresslineotwo||"",
+    country: record?.countryCode||"",
+    city: record?.city||"",
+    state: record?.state||"",
+    zip: record?.zipcode,
+    telephone: record?.contactNumber||"",
+    userPoints: record?.Points||"",
+    isAdmin: record?.userRoleID === 2 ? "2" : "3",
+    suspendAccount: record?.is_suspended ? "true" : "false",
   };
 
   const navigate = useNavigate();
@@ -148,21 +148,21 @@ const EditUserModal = ({
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>First Name<Asterisk>*</Asterisk></Label>
+                      <Label><Asterisk>*</Asterisk>First Name</Label>
                       <InputField name="firstName" placeholder="First Name" />
                       <RequiredWrapper>
                         <ErrorMessage name="firstName" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Last Name<Asterisk>*</Asterisk></Label>
+                      <Label><Asterisk>*</Asterisk>Last Name</Label>
                       <InputField name="lastName" placeholder="Last Name" />
                       <RequiredWrapper>
                         <ErrorMessage name="lastName" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Email Address<Asterisk>*</Asterisk></Label>
+                      <Label><Asterisk>*</Asterisk>Email Address</Label>
                       <InputField name="email" placeholder="Email Address" />
                       <RequiredWrapper>
                         <ErrorMessage name="email" />

@@ -108,6 +108,7 @@ const PromotionEmail = () => {
         fetchGeoCordData();
     }, [])
 
+    document.title="Promotion Email - Login - quickdollarapp";
 
     return (
         <div>
@@ -122,7 +123,7 @@ const PromotionEmail = () => {
                         <Form>
                             <InputWrapper>
                                 <FieldWrapper>
-                                    <Label>Email Subject</Label>
+                                    <Label><Asterisk>*</Asterisk>Email Subject</Label>
                                     <FieldContainer>
                                         <InputField name="subject" placeholder="Email subject" />
                                         <RequiredWrapper>
@@ -132,7 +133,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Email Heading</Label>
+                                    <Label><Asterisk>*</Asterisk>Email Heading</Label>
                                     <FieldContainer>
                                         <InputField name="heading" placeholder="Email heading" />
                                         <RequiredWrapper>
@@ -142,7 +143,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Offer Description</Label>
+                                    <Label><Asterisk>*</Asterisk>Offer Description</Label>
                                     <QuillFieldContainer>
                                         <StyledReactQuill
                                             theme="snow"
@@ -170,7 +171,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Additional Text</Label>
+                                    <Label><Asterisk>*</Asterisk>Additional Text</Label>
                                     <FieldContainer>
                                         <TextAreaField
                                             name="additionalText"
@@ -189,7 +190,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Offer Text</Label>
+                                    <Label><Asterisk>*</Asterisk>Offer Text</Label>
                                     <FieldContainer>
                                         <InputField name="offerText" placeholder="Offer text" />
                                         <RequiredWrapper>
@@ -199,7 +200,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Offer Amount in $</Label>
+                                    <Label><Asterisk>*</Asterisk>Offer Amount in $</Label>
                                     <FieldContainer>
                                         <InputField name="offerAmount" placeholder="Offer amount" />
                                         <RequiredWrapper>
@@ -209,7 +210,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Offer ID</Label>
+                                    <Label><Asterisk>*</Asterisk>Offer ID</Label>
                                     <FieldContainer>
                                         <InputField name="offerId" placeholder="1" />
                                         <RequiredWrapper>
@@ -219,7 +220,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Offer Link</Label>
+                                    <Label><Asterisk>*</Asterisk>Offer Link</Label>
                                     <FieldContainer>
                                         <InputField name="offerLink" placeholder="Offer link" />
                                         <RequiredWrapper>
@@ -229,7 +230,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Custom Postback Params</Label>
+                                    <Label><Asterisk>*</Asterisk>Custom Postback Params</Label>
                                     <FieldContainer>
                                         <InputField name="customPostbackParm" placeholder="Custom postback params" />
                                         <RequiredWrapper>
@@ -239,7 +240,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Offer Country Code</Label>
+                                    <Label><Asterisk>*</Asterisk>Offer Country Code</Label>
                                     <FieldContainer>
                                         <ChooseCountry>
                                             <SelectField
@@ -465,3 +466,7 @@ const QuillFieldContainer = styled.div`
     margin-bottom: 7px;
     overflow: hidden; // Ensure overflow is handled
 `;
+
+const Asterisk = styled.span`
+color: red
+`

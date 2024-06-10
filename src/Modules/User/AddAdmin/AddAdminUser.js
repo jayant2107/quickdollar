@@ -64,6 +64,8 @@ const AddAdminUser = () => {
     console.log(`checked = ${e.target.checked}`);
   };
 
+  document.title="Manage Users - Login - quickdollarapp";
+
   return (
     <div>
       <Header>
@@ -81,7 +83,7 @@ const AddAdminUser = () => {
               <InputWrapper>
 
                 <FieldWrapper>
-                  <Label>First Name</Label>
+                  <Label><Asterisk>*</Asterisk>First Name</Label>
                   <FieldContainer>
                     <InputField name="firstName" placeholder="First Name" />
                     <RequiredWrapper>
@@ -90,7 +92,7 @@ const AddAdminUser = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Last Name</Label>
+                  <Label><Asterisk>*</Asterisk>Last Name</Label>
                   <FieldContainer>
                     <InputField name="lastName" placeholder="Last Name" />
                     <RequiredWrapper>
@@ -99,7 +101,7 @@ const AddAdminUser = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Username</Label>
+                  <Label><Asterisk>*</Asterisk>Username</Label>
                   <FieldContainer>
                     <InputField name="userName" placeholder="User Name" />
                     <RequiredWrapper>
@@ -108,7 +110,7 @@ const AddAdminUser = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Email Address</Label>
+                  <Label><Asterisk>*</Asterisk>Email Address</Label>
                   <FieldContainer>
                     <InputField name="emailAddress" placeholder="Email Address" />
                     <RequiredWrapper>
@@ -117,7 +119,7 @@ const AddAdminUser = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Password</Label>
+                  <Label><Asterisk>*</Asterisk>Password</Label>
                   <FieldContainer>
                     <InputField name="password" placeholder="Password" />
                     <RequiredWrapper>
@@ -126,7 +128,7 @@ const AddAdminUser = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Confirm Password</Label>
+                  <Label><Asterisk>*</Asterisk>Confirm Password</Label>
                   <FieldContainer>
                     <InputField name="confirmPassword" placeholder="Confirm Password" />
                     <RequiredWrapper>
@@ -282,4 +284,7 @@ const ResetBtn = styled(Button)`
 color: ${({ theme }) => theme?.primaryColor};
 background: red;
 border: none;
+`
+const Asterisk = styled.span`
+color: red
 `

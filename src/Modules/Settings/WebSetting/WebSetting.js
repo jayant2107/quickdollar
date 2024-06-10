@@ -46,7 +46,7 @@ const WebSetting = () => {
         appSubTitle: yup.string().required('Subtitle is required'),
         headerText: yup.string().required('Header text is required'),
         currencySign: yup.string().required('Currency Sign text is required'),
-        emailcontent: yup.string().required('Welcome email is required'),
+        // emailcontent: yup.string().required('Welcome email is required'),
         cubeOfferCountryCode: yup.array().min(1, 'Countries are required').required('Countries are required'),
     });
 
@@ -104,6 +104,8 @@ const WebSetting = () => {
         fetchGeoCordData();
     }, [])
 
+    document.title="Web_Settings - Login - quickdollarapp";
+
     return (
         <div>
             <Header>Web Settings</Header>
@@ -117,7 +119,7 @@ const WebSetting = () => {
                         <Form>
                             <InputWrapper>
                                 <FieldWrapper>
-                                    <Label>Application Title</Label>
+                                    <Label><Asterisk>*</Asterisk>Application Title</Label>
                                     <FieldContainer>
                                         <InputField name="appTitle" placeholder="Application title" />
                                         <RequiredWrapper>
@@ -127,7 +129,7 @@ const WebSetting = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Application Sub-Title</Label>
+                                    <Label><Asterisk>*</Asterisk>Application Sub-Title</Label>
                                     <FieldContainer>
                                         <InputField name="appSubTitle" placeholder="Application sub-title" />
                                         <RequiredWrapper>
@@ -137,7 +139,7 @@ const WebSetting = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Header Text</Label>
+                                    <Label><Asterisk>*</Asterisk>Header Text</Label>
                                     <FieldContainer>
                                         <InputField name="headerText" placeholder="Header text" />
                                         <RequiredWrapper>
@@ -147,7 +149,7 @@ const WebSetting = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Currency Sign</Label>
+                                    <Label><Asterisk>*</Asterisk>Currency Sign</Label>
                                     <FieldContainer>
                                         <InputField name="currencySign" placeholder="Currency sign" />
                                         <RequiredWrapper>
@@ -320,7 +322,7 @@ const WebSetting = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>Cube Offer Country Code</Label>
+                                    <Label><Asterisk>*</Asterisk>Cube Offer Country Code</Label>
                                     <FieldContainer>
                                         <ChooseCountry>
                                             <SelectField
@@ -527,4 +529,6 @@ flex-direction: column;
 gap: 7px;
 margin-bottom: 15px;
 `
-
+const Asterisk = styled.span`
+color: red
+`

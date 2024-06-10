@@ -77,14 +77,14 @@ const SendModal = ({
                 <Form>
                   <InputWrapper>
                     <div>
-                      <Label>Recipient</Label>
+                      <Label><Asterisk>*</Asterisk>Recipient</Label>
                       <InputField name="recipient" placeholder="Recipient" />
                       <RequiredWrapper>
                         <ErrorMessage name="recipient" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Your Subject</Label>
+                      <Label><Asterisk>*</Asterisk>Your Subject</Label>
                       <InputField
                         name="yourSubject"
                         placeholder="Message Subject"
@@ -94,7 +94,7 @@ const SendModal = ({
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Your Message</Label>
+                      <Label><Asterisk>*</Asterisk>Your Message</Label>
                       <TextAreaField
                         name="yourMessage"
                         placeholder="Your Message"
@@ -227,3 +227,7 @@ const TextAreaField = styled(TextArea)`
     color: black;
   }
 `;
+
+const Asterisk = styled.span`
+color: red
+`

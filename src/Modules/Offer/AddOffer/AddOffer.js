@@ -98,28 +98,28 @@ const AddOffer = () => {
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     const formData = new FormData();
-    formData.append("offerTitle", values.offerTitle);
-    formData.append("h1Title", values.h1Title);
-    formData.append("offerImage", values.offerImage);
-    formData.append("offerLink", values.offerLink);
-    formData.append("offerPoints", values.offerPoints);
-    formData.append("offerText", values.offerText);
-    formData.append("offerShortDescription", values.offerShortDescription);
-    formData.append("offerLongDescription", values.offerLongDescription);
-    formData.append("offerPlatform", values.offerPlatform);
-    formData.append("offerCountry", values.offerCountry);
+    formData.append("offerTitle", values?.offerTitle);
+    formData.append("h1Title", values?.h1Title);
+    formData.append("offerImage", values?.offerImage);
+    formData.append("offerLink", values?.offerLink);
+    formData.append("offerPoints", values?.offerPoints);
+    formData.append("offerText", values?.offerText);
+    formData.append("offerShortDescription", values?.offerShortDescription);
+    formData.append("offerLongDescription", values?.offerLongDescription);
+    formData.append("offerPlatform", values?.offerPlatform);
+    formData.append("offerCountry", values?.offerCountry);
     // formData.append("offerCountry", values.offerCountry);
-    formData.append("fraudUser",values.fraudUser);
-    formData.append("dailyCAPLimit", values.dailyCAPLimit);
-    formData.append("customPostbaclParams", values.customPostbaclParams);
-    formData.append("isActive", values.isActive);
-    formData.append("isHotOffer", values.isHotOffer);
-    formData.append("hotOfferFor", values.hotOfferFor);
-    formData.append("app_install", values.app_install);
-    formData.append("conversionCallback", values.conversionCallback);
-    formData.append("isDailyOffer", values.isDailyOffer);
-    formData.append("relistOffer", values.relistOffer ? "true" : "false");
-    formData.append("StaticURL", values.StaticURL ? "true" : "false");
+    formData.append("fraudUser", values?.fraudUser);
+    formData.append("dailyCAPLimit", values?.dailyCAPLimit);
+    formData.append("customPostbaclParams", values?.customPostbaclParams);
+    formData.append("isActive", values?.isActive);
+    formData.append("isHotOffer", values?.isHotOffer);
+    formData.append("hotOfferFor", values?.hotOfferFor);
+    formData.append("app_install", values?.app_install);
+    formData.append("conversionCallback", values?.conversionCallback);
+    formData.append("isDailyOffer", values?.isDailyOffer);
+    formData.append("relistOffer", values?.relistOffer ? "true" : "false");
+    formData.append("StaticURL", values?.StaticURL ? "true" : "false");
     try {
       setLoader(true)
       const res = await addOffer(formData);
@@ -165,30 +165,25 @@ const AddOffer = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    console.log("start");
-    // setLoader(true);
-    try {
-      const res = await getAllUser();
-      if (res?.status === 200) {
-        setUserData(res?.data?.findUsers);
-        console.log(res?.data?.findUsers, "users");
-      } else {
-        let message =
-          res?.response?.data?.message ||
-          res?.message ||
-          res?.error ||
-          "Something went wrong";
-        setUserData([]);
-        toast.error(message);
-      }
-    } catch (error) {
-      console.log(error, "error");
-      toast.error(error?.message || "Something went wrong");
-    } finally {
-      // setLoader(false);
-    }
-  };
+  // const fetchUsers = async () => {
+  //   try {
+  //     const res = await getAllUser();
+  //     if (res?.status === 200) {
+  //       setUserData(res?.data?.findUsers);
+  //     } else {
+  //       let message =
+  //         res?.response?.data?.message ||
+  //         res?.message ||
+  //         res?.error ||
+  //         "Something went wrong";
+  //       setUserData([]);
+  //       toast.error(message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, "error");
+  //     toast.error(error?.message || "Something went wrong");
+  //   } 
+  // };
 
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -207,14 +202,14 @@ const AddOffer = () => {
     value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
   }));
 
-  const userOptions = userData.map((data) => ({
-    label: `${data?.firstName} ${data?.lastName}`,
-    value: `${data?.firstName} ${data?.lastName}`,
-  }))
+  // const userOptions = userData.map((data) => ({
+  //   label: `${data?.firstName} ${data?.lastName}`,
+  //   value: `${data?.firstName} ${data?.lastName}`,
+  // }))
 
   useEffect(() => {
     fetchGeoCordData();
-    fetchUsers();
+    // fetchUsers();
   }, [])
 
   const handleFileChange = (e, setFieldValue, setPreview) => {
@@ -229,6 +224,8 @@ const AddOffer = () => {
     }
   };
 
+  document.title="Add Offer - Login - quickdollarapp";
+
   return (
     <div>
       <Header>Add Offer</Header>
@@ -242,7 +239,7 @@ const AddOffer = () => {
             <Form>
               <InputWrapper>
                 <FieldWrapper>
-                  <Label>Offer Title</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Title</Label>
                   <FieldContainer>
                     <InputField
                       name="offerTitle"
@@ -256,7 +253,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer H1 Title</Label>
+                  <Label><Asterisk>*</Asterisk>Offer H1 Title</Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -284,7 +281,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Image</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Image</Label>
                   <FieldContainer>
                     <ChooseContainer>
                       <UploadButton onClick={() => offerImgInputRef.current.click()}>Upload</UploadButton>
@@ -307,7 +304,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Link</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Link</Label>
                   <FieldContainer>
                     <InputField name="offerLink" placeholder="Offer link" />
                     <RequiredWrapper>
@@ -317,7 +314,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Amount in $</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Amount in $</Label>
                   <FieldContainer>
                     <InputField name="offerPoints" placeholder="Offer amount" />
                     <RequiredWrapper>
@@ -327,7 +324,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Text</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Text</Label>
                   <FieldContainer>
                     <InputField name="offerText" placeholder="Offer text" />
                     <RequiredWrapper>
@@ -337,7 +334,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Short Description</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Short Description</Label>
                   <FieldContainer>
                     <TextAreaField
                       name="offerShortDescription"
@@ -358,7 +355,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Long Description</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Long Description</Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -598,7 +595,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer created for</Label>
+                  <Label><Asterisk>*</Asterisk>Offer created for</Label>
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select users"
@@ -660,7 +657,7 @@ const AddOffer = () => {
                 </FieldWrapper>)}
 
                 <FieldWrapper>
-                  <Label>Offer Country Code</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Country Code</Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
@@ -696,7 +693,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Daily CAP limit for offer</Label>
+                  <Label><Asterisk>*</Asterisk>Daily CAP limit for offer</Label>
                   <FieldContainer>
                     <InputField
                       name="dailyCAPLimit"
@@ -712,19 +709,24 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Select fraud user to unlisted from offer</Label>
                   <FieldContainer>
-                    <ChooseCountry>
+                    <InputField
+                      name="fraudUser"
+                      placeholder="Fraud user
+"
+                    />
+                    {/* <ChooseCountry>
                       <SelectField
                         mode="multiple"
                         allowClear
                         style={{ width: "100%" }}
                         placeholder="Search for a user"
-                        value={values.fraudUser}
+                        value={values?.fraudUser}
                         onChange={(value) =>
                           setFieldValue("fraudUser", value)
                         }
                         options={userOptions}
                       />
-                    </ChooseCountry>
+                    </ChooseCountry> */}
                   </FieldContainer>
                 </FieldWrapper>
 
@@ -993,4 +995,8 @@ const Image = styled.img`
 width: 120px;
 height: 120px;
 object-fit: contain;
+`
+
+const Asterisk = styled.span`
+color: red
 `

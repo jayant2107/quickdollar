@@ -95,6 +95,8 @@ const Android = () => {
     fetchGeoCordData();
   }, [])
 
+  document.title="Android_Settings - Login - quickdollarapp";
+  
   return (
     <div>
       <Header>Android Settings</Header>
@@ -108,7 +110,7 @@ const Android = () => {
             <Form>
               <InputWrapper>
                 <FieldWrapper>
-                  <Label>Application Title</Label>
+                  <Label><Asterisk>*</Asterisk>Application Title</Label>
                   <FieldContainer>
                     <InputField name="appTitle" placeholder="Application title" />
                     <RequiredWrapper>
@@ -118,7 +120,7 @@ const Android = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Application Sub-Title</Label>
+                  <Label><Asterisk>*</Asterisk>Application Sub-Title</Label>
                   <FieldContainer>
                     <InputField name="appSubTitle" placeholder="Application sub-title" />
                     <RequiredWrapper>
@@ -128,7 +130,7 @@ const Android = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Header Text</Label>
+                  <Label><Asterisk>*</Asterisk>Header Text</Label>
                   <FieldContainer>
                     <InputField name="headerText" placeholder="Header text" />
                     <RequiredWrapper>
@@ -138,7 +140,7 @@ const Android = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Currency Sign</Label>
+                  <Label><Asterisk>*</Asterisk>Currency Sign</Label>
                   <FieldContainer>
                     <InputField name="currencySign" placeholder="Currency sign" />
                     <RequiredWrapper>
@@ -283,7 +285,7 @@ const Android = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer display count</Label>
+                  <Label><Asterisk>*</Asterisk>Offer display count</Label>
                   <FieldContainer>
                     <InputField name="offerDisplayCount" placeholder="Offer display count" />
                     <RequiredWrapper>
@@ -412,7 +414,7 @@ const Android = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Cube Offer Country Code</Label>
+                  <Label><Asterisk>*</Asterisk>Cube Offer Country Code</Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
@@ -624,4 +626,7 @@ display: flex;
 flex-direction: column;
 gap: 7px;
 margin-bottom: 15px;
+`
+const Asterisk = styled.span`
+color: red
 `

@@ -123,14 +123,14 @@ const EditFrontpageModal = ({
                 <Form>
                   <InputWrapper>
                     <div>
-                      <Label>Front Pageoffer Title<Asterisk>*</Asterisk></Label>
+                      <Label><Asterisk>*</Asterisk>Front Pageoffer Title</Label>
                       <InputField name="title" placeholder="title" />
                       <RequiredWrapper>
                         <ErrorMessage name="title" />
                       </RequiredWrapper>
                     </div>
                     <div>
-                      <Label>Front Pageoffer Link<Asterisk>*</Asterisk></Label>
+                      <Label><Asterisk>*</Asterisk>Front Pageoffer Link</Label>
                       <InputField name="link" placeholder="link" />
                       <RequiredWrapper>
                         <ErrorMessage name="link" />
