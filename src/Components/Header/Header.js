@@ -68,14 +68,14 @@ const Header = () => {
           <NavIcon onClick={() => navigate("/quickdollar/dashboard")}>
             <AiFillDashboard />
             <p>
-              <IntlMassage id="Dashboard" />
+              Dashboard
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => navigate("/quickdollar/dashboard")}>
             <AiFillDashboard />
             <p>
-              <IntlMassage id="Dashboard" />
+              Dashboard
             </p>
           </NavIcon2>
         )}
@@ -84,37 +84,37 @@ const Header = () => {
           <NavIcon onClick={() => handleItemClick("Users")}>
             <FaUsers />
             <p>
-              <IntlMassage id="Users" />
+              Users
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => handleItemClick("Users")}>
             <FaUsers />
             <p>
-              <IntlMassage id="Users" />
+              Users
             </p>
           </NavIcon2>
         )}
         {showMoreUserOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/user/allusers"} onClick={() => navigate("/quickdollar/user/allusers")}>
               <p>
-                <IntlMassage id="All Users" />
+                All Users
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/user/allabused"} onClick={() => navigate("/quickdollar/user/allabused")}>
               <p>
-                <IntlMassage id="All Abused Users" />
+                All Abused Users
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/user/addadminuser"} onClick={() => navigate("/quickdollar/user/addadminuser")}>
               <p>
-                <IntlMassage id="Add Admin User" />
+                Add Admin User
               </p>
             </NavIcon2>
             <NavIcon2 onClick={handleModalOpen}>
               <p>
-                <IntlMassage id="Decrypt User info" />
+                Decrypt User info
               </p>
             </NavIcon2>
           </div>
@@ -124,27 +124,27 @@ const Header = () => {
           <NavIcon onClick={() => handleItemClick("Offers")}>
             <IoMail />
             <p>
-              <IntlMassage id="Offers" />
+              Offers
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => handleItemClick("Offers")}>
             <IoMail />
             <p>
-              <IntlMassage id="Offers" />
+              Offers
             </p>
           </NavIcon2>
         )}
         {showMoreOfferOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/alloffers"} onClick={() => navigate("/quickdollar/offer/alloffers")}>
               <p>
-                <IntlMassage id="All Offers" />
+                All Offers
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/addoffer"} onClick={() => navigate("/quickdollar/offer/addoffer")}>
               <p>
-                <IntlMassage id="Add Offer" />
+                Add Offer
               </p>
             </NavIcon2>
             {/* <NavIcon2 isActive={location.pathname === "/quickdollar/offer/addcustomoffers"} onClick={() => navigate("/quickdollar/offer/addcustomoffers")}>
@@ -154,12 +154,12 @@ const Header = () => {
             </NavIcon2> */}
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/viewcustomoffers"} onClick={() => navigate("/quickdollar/offer/viewcustomoffers")}>
               <p>
-                <IntlMassage id="View Custom Offers" />
+                View Custom Offers
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/completedoffers"} onClick={() => navigate("/quickdollar/offer/completedoffers")}>
               <p>
-                <IntlMassage id="Completed Offers" />
+                Completed Offers
               </p>
             </NavIcon2>
           </div>
@@ -169,37 +169,37 @@ const Header = () => {
           <NavIcon onClick={() => handleItemClick("Gift Cards")}>
             <FaGift />
             <p>
-              <IntlMassage id="Gift Cards" />
+              Gift Cards
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => handleItemClick("Gift Cards")}>
             <FaGift />
             <p>
-              <IntlMassage id="Gift Cards" />
+              Gift Cards
             </p>
           </NavIcon2>
         )}
         {showMoreGiftOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/allgiftcard"} onClick={() => navigate("/quickdollar/giftcard/allgiftcard")}>
               <p>
-                <IntlMassage id="All Gift Cards" />
+                All Gift Cards
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/addgiftcard"} onClick={() => navigate("/quickdollar/giftcard/addgiftcard")}>
               <p>
-                <IntlMassage id="Add Gift Card" />
+                Add Gift Card
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/requestedgiftcard"} onClick={() => navigate("/quickdollar/giftcard/requestedgiftcard")}>
               <p>
-                <IntlMassage id="Requested Gift Cards" />
+                Requested Gift Cards
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/deliveredgiftcard"} onClick={() => navigate("/quickdollar/giftcard/deliveredgiftcard")}>
               <p>
-                <IntlMassage id="Delivered Gift Cards" />
+                Delivered Gift Cards
               </p>
             </NavIcon2>
           </div>
@@ -209,14 +209,14 @@ const Header = () => {
           <NavIcon onClick={() => navigate("/quickdollar/sendmessage")}>
             <IoMail />
             <p>
-              <IntlMassage id="Send Message" />
+              Send Message
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => navigate("/quickdollar/sendmessage")}>
             <IoMail />
             <p>
-              <IntlMassage id="Send Message" />
+              Send Message
             </p>
           </NavIcon2>
         )}
@@ -225,27 +225,27 @@ const Header = () => {
           <NavIcon onClick={() => handleItemClick("Frontpage Offer")}>
             <IoMail />
             <p>
-              <IntlMassage id="Frontpage Offer" />
+              Frontpage Offer
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => handleItemClick("Frontpage Offer")}>
             <IoMail />
             <p>
-              <IntlMassage id="Frontpage Offer" />
+              Frontpage Offer
             </p>
           </NavIcon2>
         )}
         {showMoreFrontPageOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/allfrontageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/allfrontageoffer")}>
               <p>
-                <IntlMassage id="All Frontpage Offer" />
+                All Frontpage Offer
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/addfrontpageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/addfrontpageoffer")}>
               <p>
-                <IntlMassage id="Add Frontpage Offer" />
+                Add Frontpage Offer
               </p>
             </NavIcon2>
           </div>
@@ -255,14 +255,14 @@ const Header = () => {
           <NavIcon onClick={() => navigate("/quickdollar/announcement")}>
             <FaBell />
             <p>
-              <IntlMassage id="Annoouncement" />
+              Announcement
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => navigate("/quickdollar/announcement")}>
             <FaBell />
             <p>
-              <IntlMassage id="Annoouncement" />
+              Announcement
             </p>
           </NavIcon2>
         )}
@@ -271,14 +271,14 @@ const Header = () => {
           <NavIcon onClick={() => navigate("/quickdollar/promotionEmail")}>
             <FaBell />
             <p>
-              <IntlMassage id="Promotion Email" />
+              Promotion Email
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => navigate("/quickdollar/promotionEmail")}>
             <FaBell />
             <p>
-              <IntlMassage id="Promotion Email" />
+              Promotion Email
             </p>
           </NavIcon2>
         )}
@@ -287,39 +287,39 @@ const Header = () => {
           <NavIcon onClick={() => handleItemClick("Settings")}>
             <SettingsIcon />
             <p>
-              <IntlMassage id="Settings" />
+              Settings
             </p>
           </NavIcon>
         ) : (
           <NavIcon2 onClick={() => handleItemClick("Settings")}>
             <SettingsIcon />
             <p>
-              <IntlMassage id="Settings" />
+              Settings
             </p>
           </NavIcon2>
         )}
         {showMoreSettingOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/settings/web"} onClick={() => navigate("/quickdollar/settings/web")}>
               <p>
-                <IntlMassage id="WEB" />
+                WEB
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/settings/android"} onClick={() => navigate("/quickdollar/settings/android")}>
               <p>
-                <IntlMassage id="Android" />
+                Android
               </p>
             </NavIcon2>
             <NavIcon2 isActive={location.pathname === "/quickdollar/settings/ios"} onClick={() => navigate("/quickdollar/settings/ios")}>
               <p>
-                <IntlMassage id="IOS" />
+                IOS
               </p>
             </NavIcon2>
           </div>
         )}
         <NavIcon2>
           <p>
-          Pause API Survey
+            Pause API Survey
 
           </p>
           <Switch onChange={onToggleChange} />

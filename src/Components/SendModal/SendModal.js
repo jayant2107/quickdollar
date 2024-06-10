@@ -77,8 +77,8 @@ const SendModal = ({
                 <Form>
                   <InputWrapper>
                     <div>
-                      <Label><Asterisk>*</Asterisk>Recipient</Label>
-                      <InputField name="recipient" placeholder="Recipient" />
+                      <Label>Recipient</Label>
+                      <DisabledInputField name="recipient" placeholder="Recipient" readOnly />
                       <RequiredWrapper>
                         <ErrorMessage name="recipient" />
                       </RequiredWrapper>
@@ -174,6 +174,19 @@ const InputField = styled(Field)`
   border-radius: 10px;
   outline: none;
   margin-bottom: 3px;
+`;
+
+const DisabledInputField = styled(Field)`
+  width: -webkit-fill-available;
+  padding: 15px 0px 15px 15px;
+  border: 1px solid #e5e5e5;
+  font-size: 14px;
+  color: #666;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 3px;
+  background: #e5e5e5;
+  color: #666;
 `;
 
 const InputWrapper = styled.div`

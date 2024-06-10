@@ -9,11 +9,13 @@ import TableAction from "../../../Components/TableNew/TableActions";
 import { toast } from "react-toastify";
 import {
   deleteRequestedGiftCard,
+  editGiftCard,
   getRequestedGiftCard,
 } from "../../../Services/Collection";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { DateTime } from "luxon";
 import EditRequestGiftCard from "../../../Components/EditRequestedGiftCard/EditRequestesGiftCard";
+import { Button, Switch } from "antd";
 
 const RequestGiftCard = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -29,7 +31,7 @@ const RequestGiftCard = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("asc");
   const [orderType, setOrderType] = useState("3");
-
+  const [sentRewards, setSentRewards] = useState({});
   const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
@@ -37,6 +39,9 @@ const RequestGiftCard = () => {
     }),
     []
   );
+
+  
+
   const fetchData = async () => {
     setLoader(true);
     try {
@@ -70,7 +75,7 @@ const RequestGiftCard = () => {
     }
   };
 
-  const handleSort = (columnKey,type) => {
+  const handleSort = (columnKey, type) => {
     let newOrder;
     // If the clicked column is the same as the currently sorted column, toggle the sorting order
     if (columnKey === fieldName) {
@@ -89,11 +94,45 @@ const RequestGiftCard = () => {
     setCurrentPage(1);
   };
 
+
+  const handleSendReward = async(recordId) => {
+    console.log(`Send reward button clicked for record ID: ${recordId}`);
+    setSentRewards((prevStatus) => {
+      const newStatus = { ...prevStatus, [recordId]: true };
+      console.log("Updated sendStatus:", newStatus);
+      return newStatus;
+    });
+    const payload={
+      id:recordId,
+      status:true,
+    }
+    try {
+      setLoader(true)
+      const res = await editGiftCard(payload);
+      setLoader(false)
+      if (res?.status === 200) {
+        await fetchData()
+        toast.success("Edit Gift Card successfully");
+        handleEditCancel();
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
+  };
+
   const columns = [
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardName","2")}
+          onClick={() => handleSort("giftCardName", "2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -120,7 +159,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints","2")}
+          onClick={() => handleSort("giftCardPoints", "2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -145,7 +184,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("firstName","1")}
+          onClick={() => handleSort("firstName", "1")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -180,18 +219,18 @@ const RequestGiftCard = () => {
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
-       },
+    },
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints","3")}
+          onClick={() => handleSort("giftCardPoints", "3")}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-         User Total Amount{" "}
+          User Total Amount{" "}
           <img
             src={srcSortImage("giftCardPoints", {
               sortBasis: fieldName,
@@ -202,24 +241,24 @@ const RequestGiftCard = () => {
           />
         </div>
       ),
-      
+
       dataIndex: "giftCardPoints",
       key: "price",
       render: (text, record) => record?.giftCardPoints || "NA",
-      
+
     },
     {
-      
+
       title: (
         <div
-          onClick={() => handleSort("Status","3")}
+          onClick={() => handleSort("Status", "3")}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-         Status{" "}
+          Status{" "}
           <img
             src={srcSortImage("Status", {
               sortBasis: fieldName,
@@ -227,7 +266,7 @@ const RequestGiftCard = () => {
             })}
             alt="sort icon"
             style={{ width: "12px", height: "12px" }}
-          />
+          />  
         </div>
       ),
       dataIndex: "Status",
@@ -243,27 +282,43 @@ const RequestGiftCard = () => {
           )}
         </StatusStyledText>
       ),
-       },
+    },
 
     {
       title: "Send Reward",
       dataIndex: "reward",
       key: "reward",
+      render: (text, record) => (
+        <>
+          {record?.Status ? (
+            <SentButton disabled={true}>Sent</SentButton>
+          ) : (
+            <SendButton
+              sent={sentRewards[record.idRequestedGiftCard]}
+              onClick={() => handleSendReward(record.idRequestedGiftCard)}
+              disabled={sentRewards[record.idRequestedGiftCard]}
+            >
+              {sentRewards[record.idRequestedGiftCard] ? "Sent" : "Send"}
+            </SendButton>
+          )}
+        </>
+      
+      ),
     },
 
     {
       title: (
         <div
-          onClick={() => handleSort("createdAt","2")}
+          onClick={() => handleSort("updatedAt", "3")}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-         Requested Date{" "}
+          Requested Date{" "}
           <img
-            src={srcSortImage("createdAt", {
+            src={srcSortImage("updatedAt", {
               sortBasis: fieldName,
               sortType: orderMethod,
             })}
@@ -272,17 +327,17 @@ const RequestGiftCard = () => {
           />
         </div>
       ),
-     
-      dataIndex: "createdAt",
+
+      dataIndex: "updatedAt",
       key: "requesteddate",
       render: (text, record) => {
-        if(record?.giftcard?.updatedAt === null){
+        if (record?.updatedAt === null) {
           return "NA"
         }
-        const date = DateTime.fromISO(record?.giftcard?.updatedAt);
+        const date = DateTime.fromISO(record?.updatedAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-       },
+    },
     {
       title: "Action",
       key: "operation",
@@ -353,13 +408,13 @@ const RequestGiftCard = () => {
     edit: true,
     delete: true,
   };
- 
+
 
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-  document.title="Requested Gift Cards - Login - quickdollarapp";
+  document.title = "Requested Gift Cards - Login - quickdollarapp";
 
 
   return (
@@ -470,6 +525,27 @@ const StatusStyledText = styled.span`
   cursor: pointer;
   text-transform: capitalize;
 `;
-const Asterisk = styled.span`
-color: red
-`
+const SendButton = styled.button`
+  background-color: ${({ sent }) => (sent ? "#ccc" : "rgb(0, 230, 51)")};
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 12px;
+  cursor: ${({ sent }) => (sent ? "not-allowed" : "pointer")};
+  opacity: ${({ sent }) => (sent ? 0.6 : 1)};
+  &:hover {
+    background-color: ${({ sent }) => (sent ? "#ccc" : "rgb(0, 230, 51)")};
+  }
+`;
+const SentButton = styled.button`
+  background-color:#ccc ;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 12px;
+  cursor:  not-allowed 
+  opacity: 0.6;
+  &:hover {
+    background-color: #ccc ;
+  }
+`;

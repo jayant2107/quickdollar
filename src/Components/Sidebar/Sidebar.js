@@ -46,7 +46,7 @@ export default function Sidebar() {
   const onToggleChange = (checked) => {
     console.log(`switch to ${checked}`);
   };
-  
+
   useEffect(() => {
     navigate(location.pathname, {
       state: {
@@ -102,7 +102,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreUserOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/user/allusers"} onClick={() => navigate("/quickdollar/user/allusers")}>
               <p>
                 All Users
@@ -142,7 +142,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreOfferOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/offer/alloffers"} onClick={() => navigate("/quickdollar/offer/alloffers")}>
               <p>
                 All Offers
@@ -187,7 +187,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreGiftOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/giftcard/allgiftcard"} onClick={() => navigate("/quickdollar/giftcard/allgiftcard")}>
               <p>
                 All Gift Cards
@@ -243,7 +243,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreFrontPageOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/frontpageoffer/allfrontageoffer"} onClick={() => navigate("/quickdollar/frontpageoffer/allfrontageoffer")}>
               <p>
                 All Frontpage Offer
@@ -305,7 +305,7 @@ export default function Sidebar() {
           </NavIcon2>
         )}
         {showMoreSettingOptions && (
-          <div style={{paddingLeft:"30px"}}>
+          <div style={{ paddingLeft: "30px" }}>
             <NavIcon2 isActive={location.pathname === "/quickdollar/settings/web"} onClick={() => navigate("/quickdollar/settings/web")}>
               <p>
                 WEB
@@ -325,7 +325,7 @@ export default function Sidebar() {
         )}
         <NavIcon2>
           <p>
-          Pause API Survey
+            Pause API Survey
           </p>
           <Switch onChange={onToggleChange} />
         </NavIcon2>
@@ -385,7 +385,7 @@ const SidebarContainer = styled.div`
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
   color: #000;
   position: fixed;
-  transition: all ease-out 0.4s;
+  transition: all ease-out 0.8s;
   overflow-y: scroll;
 
 ::-webkit-scrollbar {

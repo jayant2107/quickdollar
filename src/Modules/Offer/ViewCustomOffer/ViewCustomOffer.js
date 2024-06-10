@@ -222,7 +222,7 @@ const ViewCustomOffers = () => {
       ),
 
       key: "amount",
-      width: 300,
+      width: 200,
       dataIndex: "offerPoints",
       render: (text, record) => record?.offerPoints,
     },
@@ -237,6 +237,7 @@ const ViewCustomOffers = () => {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
+      width: 300,
       render: (text, record) => record?.offerCountry || "NA",
     },
     {
@@ -267,7 +268,6 @@ const ViewCustomOffers = () => {
       title: "App Installation",
       key: "installation",
       dataIndex: "app_install",
-      width: 150,
       render: (text, record) => (
         <StyledText text={record?.app_install ? "Yes" : "No"}>
           {record?.app_install ? "Yes" : "No"}
@@ -279,7 +279,6 @@ const ViewCustomOffers = () => {
 
       key: "offer",
       dataIndex: "isDailyOffer",
-      width: 150,
       render: (text, record) => (
         <StyledText text={record?.isDailyOffer ? "Yes" : "No"}>
           {record?.isDailyOffer ? "Yes" : "No"}
@@ -335,6 +334,7 @@ const ViewCustomOffers = () => {
 
       dataIndex: "createdAt",
       key: "createdat",
+      width: 300,
       render: (text, record) => {
         if(!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
@@ -385,7 +385,7 @@ const ViewCustomOffers = () => {
   };
 
   const scrollConfig = {
-    x: 7000, // Horizontal scrolling
+    x: 4000, // Horizontal scrolling
   };
 
   useEffect(() => {
