@@ -6,72 +6,106 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   editOffers,
   getAllGeoCodes,
-  getAllUser,
+  getDropDownUsers,
 } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 
+const offerLocationOptions = [
+  {
+    label: "preHomeScreen",
+    value: "1",
+  },
+  {
+    label: "offerWall",
+    value: "2",
+  },
+  {
+    label: "homeScreen",
+    value: "3",
+  },
+  {
+    label: "monthlySubscription",
+    value: "4",
+  },
+  {
+    label: "dailySurvey",
+    value: "5",
+  },
+  {
+    label: "download",
+    value: "6",
+  },
+  {
+    label: "coupons",
+    value: "7",
+  },
+  {
+    label: "shops",
+    value: "8",
+  },
+];
+
 const EditOffer = () => {
-  const initialValues = {
-    offerTitle: "",
-    h1Title: "",
-    offerImage: "",
-    offerLink: "",
-    offerPoints: "",
-    offerText: "",
-    offerShortDescription: "",
-    offerLongDescription: "",
-    offerCreatedFor: "",
-    offerCountry: [],
-    fraudUser: [],
-    dailyCAPLimit: "",
-    customPostbaclParams: "",
-    isActive: "false",
-    isHotOffer: "false",
-    hotOfferFor: "hotOfferForWeb",
-    app_install: "false",
-    conversionCallback: "false",
-    isDailyOffer: "false",
-    relistOffer: false,
-    StaticURL: false,
-    shopOffer: false,
-    quickThoughts: false,
-    preHomeScreen: false,
-    offerWall: false,
-    homeScreen: false,
-    monthlySubscription: false,
-    dailySurvey: false,
-    download: false,
-    coupons: false,
-    shops: false,
-    androidApplicationGroup: false,
-    iosApplicationGroup: false,
-    user: "",
-    userOfferUrl: "",
-    offerLocation: [],
-  };
-
-  const FormState = Object.freeze({
-    PRE_HOME_SCREEN: 0,
-    OFFER_WALL: 1,
-    HOME_SCREEN: 2,
-    MONTHLY_SUBSCRIPTION: 3,
-    DAILY_SURVEY: 4,
-    DOWNLOAD: 5,
-    COUPONS: 6,
-    SHOPS: 7,
-  });
-
   const [geoCodes, setGeoCodes] = useState([]);
-  const [userData, setUserData] = useState([]);
   const [page, setPage] = useState(1);
+  const [userData, setUserData] = useState([]);
   const [offerImgPreview, setOfferImgPreview] = useState(null);
   const offerImgInputRef = useRef(null);
-  const location = useLocation();
-  const { id, text } = location.state || {};
+  const [selectAll, setSelectAll] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [h1TitleValue, setH1TitleValue] = useState("");
+  const [longDescriptionValue, setLongDescriptionValue] = useState("long description");
+
+  const record = useSelector((state) => state.offerRecord.record);
+  const { idOffer } = useParams();
+  console.log(record, "record");
+  const navigate = useNavigate();
+
+  // function htmlToPlainText(htmlString) {
+  //   // Create a new DOMParser
+  //   const parser = new DOMParser();
+  //   // Parse the HTML string into a document
+  //   const doc = parser.parseFromString(htmlString, "text/html");
+  //   // Extract the text content
+  //   console.log(doc.body.textContent);
+  //   return doc.body.textContent || "";
+  // }
+
+  const initialValues = {
+    offerTitle: record?.offerTitle,
+    offerLink: record?.offerLink,
+    offerPoints: record?.offerPoints,
+    offerImage: record?.offerImage,
+    offerText: record?.offerText,
+    offerShortDescription: record?.offerShortDescription,
+    offerLongDescription: record?.offerLongDescription,
+    offerCountry: record?.offerCountry.split(","),
+    fraudUser: [],
+    dailyCAPLimit: record?.dailyCAPLimit,
+    isActive: record?.isActive?.toString(),
+    app_install: record?.app_install?.toString(),
+    conversionCallback: record?.conversionCallback.toString(),
+    isDailyOffer: record?.isDailyOffer?.toString(),
+    relistOffer: record?.relistOffer?.toString(),
+    StaticURL: record?.StaticURL?.toString(),
+    offerLocation: record?.displaylocation.split(","),
+    offerPlatform: record?.offerPlatform?.split(","),
+    // offerCreatedFor: "",
+    // customPostbaclParams: "",
+    // isHotOffer: "false",
+    // hotOfferFor: "hotOfferForWeb",
+    // androidApplicationGroup: false,
+    // iosApplicationGroup: false,
+    // user: "",
+    // userOfferUrl: "",
+  };
+
+  console.log([record?.offerPlatform]);
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -174,12 +208,7 @@ const EditOffer = () => {
     offerLink: yup.string().required("Offer Link is required"),
     offerPoints: yup
       .string()
-      .required("Offer amount is required")
-      .test(
-        "is-number",
-        "Enter number only",
-        (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
-      ),
+      .required("Offer amount is required"),
     offerText: yup.string().required("Offer Text is required"),
     offerShortDescription: yup
       .string()
@@ -201,60 +230,29 @@ const EditOffer = () => {
   });
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
-    console.log("submit");
-    const formData = new FormData();
-    formData.append("idOffer", id);
-    formData.append("text", text);
-    formData.append("offerTitle", values.offerTitle);
-    // formData.append("h1Title", values.h1Title);
-    formData.append("offerImage", values.offerImage);
-    formData.append("offerLink", values.offerLink);
-    formData.append("offerPoints", values.offerPoints);
-    // formData.append("offerText", values.offerText);
-    formData.append("offerShortDescription", values.offerShortDescription);
-    // formData.append("offerLongDescription", values.offerLongDescription);
-    // formData.append("offerCreatedFor", values.offerCreatedFor);
-    formData.append("offerCountry", values.offerCountry);
-    // formData.append("fraudUser", values.fraudUser);
-    formData.append("dailyCAPLimit", values.dailyCAPLimit);
-    // formData.append("customPostbaclParams", values.customPostbaclParams);
-    formData.append("isActive", values.isActive);
-    // formData.append("isHotOffer", values.isHotOffer);
-    // formData.append("hotOfferFor", values.hotOfferFor);
-    formData.append("app_install", values.app_install);
-    formData.append("conversionCallback", values.conversionCallback);
-    formData.append("isDailyOffer", values.isDailyOffer);
-    formData.append("relistOffer", values.relistOffer ? "true" : "false");
-    formData.append("StaticURL", values.StaticURL ? "true" : "false");
-    formData.append("shopOffer", values.shopOffer);
-    formData.append("quickThoughts", values.quickThoughts);
-    formData.append(
-      "offerLocation",
-      Object.keys(initialValues)
-        .map((key, index) =>
-          initialValues[key] ? FormState[key.toUpperCase()] : -1
-        )
-        .filter((index) => index !== -1)
-    );
-    // formData.append("offerWall", values.offerWall);
-    // formData.append("homeScreen", values.homeScreen);
-    // formData.append("monthlySubscription", values.monthlySubscription);
-    // formData.append("dailySurvey", values.dailySurvey);
-    // formData.append("download", values.download);
-    // formData.append("coupons", values.coupons);
-    // formData.append("shops", values.shops);
-    // formData.append("androidApplicationGroup", values.androidApplicationGroup);
-    // formData.append("iosApplicationGroup", values.iosApplicationGroup);
-    // formData.append("user", values.user);
-    // formData.append("userOfferUrl", values.userOfferUrl);
-    // formData.append("fraudUser", JSON.stringify(values.fraudUser));
+    console.log("--submit");
     try {
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
+      const formData = new FormData();
+      formData.append("idOffer", idOffer);
+      formData.append("offerTitle", values?.offerTitle);
+      formData.append("offerLink", values?.offerLink);
+      formData.append("offerPoints", values?.offerPoints);
+      formData.append("offerShortDescription", values?.offerShortDescription);
+      formData.append("isActive", values?.isActive);
+      formData.append("app_install", values?.app_install);
+      formData.append("dailyCAPLimit", values?.dailyCAPLimit);
+      formData.append("conversionCallback", values?.conversionCallback);
+      formData.append("offerCountry", values?.offerCountry);
+      formData.append("isDailyOffer", values?.isDailyOffer);
+      formData.append("offerImage", values?.offerImage);
+      formData.append("StaticURL", values?.StaticURL);
+      formData.append("offerLocation", values?.offerLocation);
+      formData.append("offerPlatform", values?.offerPlatform);
+      console.log(values);
       const res = await editOffers(formData);
       if (res?.status === 200) {
-        toast.success("Add Offer successfully");
+        toast.success("Edited Offer successfully");
+        navigate("/quickdollar/offer/alloffers")
         setFieldValue("additionalText", "");
         resetForm();
         setH1TitleValue("");
@@ -299,9 +297,9 @@ const EditOffer = () => {
     const params = new URLSearchParams();
     params.append("limit", 20);
     try {
-      const res = await getAllUser(params);
+      const res = await getDropDownUsers();
       if (res?.status === 200) {
-        setUserData(res?.data?.findUsers);
+        setUserData(res?.data);
         console.log(res, "users");
       } else {
         let message =
@@ -319,11 +317,6 @@ const EditOffer = () => {
       // setLoader(false);
     }
   };
-
-  const [selectAll, setSelectAll] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [h1TitleValue, setH1TitleValue] = useState("");
-  const [longDescriptionValue, setLongDescriptionValue] = useState("");
 
   const handleReset = (resetForm) => {
     resetForm();
@@ -345,8 +338,8 @@ const EditOffer = () => {
   };
 
   const options = geoCodes.map((jsonData) => ({
-    label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-    value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    label: `${jsonData?.iso_code_2}`,
+    value: `${jsonData?.iso_code_2}`,
   }));
 
   const userOptions = userData.map((data) => ({
@@ -363,11 +356,10 @@ const EditOffer = () => {
 
   useEffect(() => {
     fetchGeoCordData();
+    fetchUsers();
   }, []);
 
-  useEffect(() => {
-    fetchUsers(page);
-  }, [page]);
+  document.title = "Edit Offer - Login - quickdollarapp";
 
   return (
     <div>
@@ -514,7 +506,7 @@ const EditOffer = () => {
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
-                      value={longDescriptionValue}
+                      value={values.offerLongDescription}
                       onChange={(content) => {
                         setLongDescriptionValue(content);
                         setFieldValue("offerLongDescription", content);
@@ -673,19 +665,19 @@ const EditOffer = () => {
                           <Field
                             type="radio"
                             name="app_install"
-                            value="false"
-                            id="app_installNo"
+                            value="true"
+                            id="app_installYes"
                           />
-                          <RadioLabel htmlFor="app_installNo">No</RadioLabel>
+                          <RadioLabel htmlFor="app_installYes">Yes</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
                             name="app_install"
-                            value="true"
-                            id="app_installYes"
+                            value="false"
+                            id="app_installNo"
                           />
-                          <RadioLabel htmlFor="app_installYes">Yes</RadioLabel>
+                          <RadioLabel htmlFor="app_installNo">No</RadioLabel>
                         </div>
                       </RdioWrapper>
                     </FieldWrapper>
@@ -705,6 +697,17 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
+                      <div>
+                          <Field
+                            type="radio"
+                            name="conversionCallback"
+                            value="true"
+                            id="conversionCallbackNo"
+                          />
+                          <RadioLabel htmlFor="conversionCallbackNo">
+                            Remove from dashboard with conversion
+                          </RadioLabel>
+                        </div>
                         <div>
                           <Field
                             type="radio"
@@ -714,17 +717,6 @@ const EditOffer = () => {
                           />
                           <RadioLabel htmlFor="conversionCallbackYes">
                             Remove from dashboard without conversion
-                          </RadioLabel>
-                        </div>
-                        <div>
-                          <Field
-                            type="radio"
-                            name="conversionCallback"
-                            value="true"
-                            id="conversionCallbackNo"
-                          />
-                          <RadioLabel htmlFor="conversionCallbackNo">
-                            Remove from dashboard with conversion
                           </RadioLabel>
                         </div>
                       </RdioWrapper>
@@ -742,19 +734,19 @@ const EditOffer = () => {
                         <Field
                           type="radio"
                           name="isDailyOffer"
-                          value="false"
-                          id="isDailyOfferNo"
+                          value="true"
+                          id="isDailyOfferYes"
                         />
-                        <RadioLabel htmlFor="isDailyOfferNo">No</RadioLabel>
+                        <RadioLabel htmlFor="isDailyOfferYes">Yes</RadioLabel>
                       </div>
                       <div>
                         <Field
                           type="radio"
                           name="isDailyOffer"
-                          value="true"
-                          id="isDailyOfferYes"
+                          value="false"
+                          id="isDailyOfferNo"
                         />
-                        <RadioLabel htmlFor="isDailyOfferYes">Yes</RadioLabel>
+                        <RadioLabel htmlFor="isDailyOfferNo">No</RadioLabel>
                       </div>
                     </RdioWrapper>
                   </FieldWrapper>
@@ -818,146 +810,89 @@ const EditOffer = () => {
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer Platform</Label>
-                  <FieldContainer
+                  <Field name="offerPlatform">
+                    {({ field, form: { setFieldValue } }) => (
+                      <FieldContainer style={{display:"flex"}}>
+                        <Checkbox.Group
+                          className="checkboxGroup"
+                          value={field.value}
+                          options={[
+                            { label: "shopOffer", value: "1" },
+                            { label: "quickThoughts", value: "2" },
+                          ]}
+                          onChange={(selectedValues) =>
+                            setFieldValue("offerPlatform", selectedValues)
+                          }
+                        />
+
+                        <RequiredWrapper>
+                          <ErrorMessage name="offerPlatform" />
+                        </RequiredWrapper>
+                      </FieldContainer>
+                    )}
+                  </Field>
+                  {/* <FieldContainer
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "start",
                     }}
                   >
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="shopOffer"
-                      checked={values.shopOffer}
-                      onChange={(e) =>
-                        setFieldValue("shopOffer", e.target.checked)
+                    <Checkbox.Group
+                      className="checkboxGroup"
+                      options={[
+                        { label: "shopOffer", value: "1" },
+                        { label: "quickThoughts", value: "2" },
+                      ]}
+                      onChange={(selectedValues) =>
+                        setFieldValue("offerPlatform", selectedValues)
                       }
-                    >
-                      Shop
-                    </Checkbox>
-
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="quickThoughts"
-                      checked={values.quickThoughts}
-                      onChange={(e) =>
-                        setFieldValue("quickThoughts", e.target.checked)
-                      }
-                    >
-                      QuickThoughts
-                    </Checkbox>
+                    />
                     <RequiredWrapper>
                       <ErrorMessage name="relistOffer" />
                     </RequiredWrapper>
-                  </FieldContainer>
+                  </FieldContainer> */}
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer location to display</Label>
-                  <FieldContainer
+                  {/* <FieldContainer
                     style={{
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "start",
                     }}
                   >
-                    {/* {
-                      offerLocationBox.map((item, index) => {
-                        return (
-                          <Checkbox
-                            style={{ width: "100%", marginLeft: "0px" }}
-                            name={item}
-                            checked={values[item]}
-                            onChange={(e) =>
-                              setFieldValue(item, e.target.checked)
-                            }
-                          >
-                            {item}
-                          </Checkbox>
-                        )
-                      })
-                    } */}
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="preHomeScreen"
-                      checked={values.preHomeScreen}
-                      onChange={(e) =>
-                        setFieldValue("preHomeScreen", e.target.checked)
+                    <Checkbox.Group
+                      className="checkboxGroup"
+                      value={offerLocation.value}
+                      options={offerLocationOptions}
+                      onChange={(selectedValues) =>
+                        setFieldValue("offerLocation", selectedValues)
                       }
-                    >
-                      Pre home screen
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="offerWall"
-                      checked={values.offerWall}
-                      onChange={(e) =>
-                        setFieldValue("offerWall", e.target.checked)
-                      }
-                    >
-                      Offer wall
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="homeScreen"
-                      checked={values.homeScreen}
-                      onChange={(e) =>
-                        setFieldValue("homeScreen", e.target.checked)
-                      }
-                    >
-                      Home screen
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="monthlySubscription"
-                      checked={values.monthlySubscription}
-                      onChange={(e) =>
-                        setFieldValue("monthlySubscription", e.target.checked)
-                      }
-                    >
-                      $ 450 a month
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="dailySurvey"
-                      checked={values.dailySurvey}
-                      onChange={(e) =>
-                        setFieldValue("dailySurvey", e.target.checked)
-                      }
-                    >
-                      Daily Survey
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="download"
-                      checked={values.download}
-                      onChange={(e) =>
-                        setFieldValue("download", e.target.checked)
-                      }
-                    >
-                      Download
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="coupons"
-                      checked={values.coupons}
-                      onChange={(e) =>
-                        setFieldValue("coupons", e.target.checked)
-                      }
-                    >
-                      Coupons
-                    </Checkbox>
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="shops"
-                      checked={values.shops}
-                      onChange={(e) => setFieldValue("shops", e.target.checked)}
-                    >
-                      Shop
-                    </Checkbox>
+                    />
+
                     <RequiredWrapper>
                       <ErrorMessage name="relistOffer" />
                     </RequiredWrapper>
-                  </FieldContainer>
+                  </FieldContainer> */}
+                  <Field name="offerLocation">
+                    {({ field, form: { setFieldValue } }) => (
+                      <FieldContainer style={{display:"flex"}}>
+                        <Checkbox.Group
+                          className="checkboxGroup"
+                          value={field.value}
+                          options={offerLocationOptions}
+                          onChange={(selectedValues) =>
+                            setFieldValue("offerLocation", selectedValues)
+                          }
+                        />
+
+                        <RequiredWrapper>
+                          <ErrorMessage name="offerLocation" />
+                        </RequiredWrapper>
+                      </FieldContainer>
+                    )}
+                  </Field>
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Select platform for offer</Label>
@@ -1238,6 +1173,14 @@ const FieldWrapper = styled.div`
   @media only screen and (min-width: 320px) and (max-width: 480px) {
     flex-direction: column;
     gap: 0px;
+  }
+
+  .checkboxGroup {
+    flex-direction: column;
+    align-self: start;
+    label {
+      margin-inline-start: 0;
+    }
   }
 `;
 

@@ -49,14 +49,11 @@ const ViewCustomOffers = () => {
     setDeleteModal(false);
     setSelectedRecord(null);
   };
-  
 
   const showDeleteModal = (record) => {
     setSelectedRecord(record);
     setDeleteModal(true);
   };
-
-
 
   const fetchData = async () => {
     setLoader(true);
@@ -197,7 +194,9 @@ const ViewCustomOffers = () => {
       dataIndex: "offerLink",
       width: 400,
 
-      render: (text, record) => <Link to="#"> {record?.offerLink || "NA"}</Link>,
+      render: (text, record) => (
+        <Link to="#"> {record?.offerLink || "NA"}</Link>
+      ),
     },
     {
       title: (
@@ -336,7 +335,7 @@ const ViewCustomOffers = () => {
       key: "createdat",
       width: 300,
       render: (text, record) => {
-        if(!record?.createdAt) return "NA";
+        if (!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
@@ -347,14 +346,22 @@ const ViewCustomOffers = () => {
       fixed: "right",
       width: 150,
       render: (text, record) => (
+        // <TableAction
+        //   apply={formActions.apply}
+        //   edit={formActions.edit}
+        //   deleteAction={formActions.delete}
+        //   onEdit={() =>
+        //     navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
+        //   }}
+        //   onDelete={() => showDeleteModal(record)}
+        // />
         <TableAction
+          apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
-          onEdit={() =>
-            navigate("/quickdollar/offer/editOffer", {
-              state: { id: selectedRecord?.idOffer },
-            })
-          }
+          onEdit={() => {
+            navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
+          }}
           onDelete={() => showDeleteModal(record)}
         />
       ),
@@ -392,7 +399,7 @@ const ViewCustomOffers = () => {
     fetchData(); // Fetch geo codes
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-  document.title="Custom Offers - Login - quickdollarapp";
+  document.title = "Custom Offers - Login - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -405,7 +412,7 @@ const ViewCustomOffers = () => {
           handleDelete={handleDelete}
         />
       )}
-     
+
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>
