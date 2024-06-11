@@ -9,8 +9,8 @@ import TableAction from "../../../Components/TableNew/TableActions";
 import { toast } from "react-toastify";
 import {
   deleteRequestedGiftCard,
-  editGiftCard,
   getRequestedGiftCard,
+  editRequestedGiftCard,
 } from "../../../Services/Collection";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { DateTime } from "luxon";
@@ -104,16 +104,15 @@ const RequestGiftCard = () => {
     });
     const payload={
       id:recordId,
-      status:true,
+      sendRewards:1,
     }
     try {
       setLoader(true)
-      const res = await editGiftCard(payload);
+      const res = await editRequestedGiftCard(payload);
       setLoader(false)
       if (res?.status === 200) {
         await fetchData()
-        toast.success("Edit Gift Card successfully");
-        handleEditCancel();
+        toast.success("Reward Sent");
       } else {
         let message =
           res?.response?.data?.message ||
@@ -244,7 +243,7 @@ const RequestGiftCard = () => {
 
       dataIndex: "giftCardPoints",
       key: "price",
-      render: (text, record) => record?.giftCardPoints || "NA",
+      render: (text, record) => record?.user?.Points || "NA",
 
     },
     {
