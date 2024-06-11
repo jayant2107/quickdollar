@@ -211,26 +211,7 @@ const DeliveredGift = () => {
     
     },
     {
-      title: (
-        <div
-          onClick={() => handleSort("userApplicationtype","1")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-         User Type{" "}
-          <img
-            src={srcSortImage("userApplicationtype", {
-              sortBasis: fieldName,
-              sortType: orderMethod,
-            })}
-            alt="sort icon"
-            style={{ width: "12px", height: "12px" }}
-          />
-        </div>
-      ),
+      title:"User Type",
       
       dataIndex: "userApplicationtype",
       key: "usertype",

@@ -196,27 +196,7 @@ const AllUsers = () => {
       width: 150,
       render: (text, record) => record?.Points || "0",
     },
-    {
-      title: (
-        <div
-          onClick={() => handleSort("userRoleID")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          Role{" "}
-          <img
-            src={srcSortImage("userRoleID", {
-              sortBasis: fieldName,
-              sortType: orderMethod,
-            })}
-            alt="sort icon"
-            style={{ width: "12px", height: "12px" }}
-          />
-        </div>
-      ),
+    { title:"Role",
       dataIndex: "userRoleID",
       key: "role",
       width: 150,
@@ -291,26 +271,7 @@ const AllUsers = () => {
     },
 
     {
-      title: (
-        <div
-          onClick={() => handleSort("userApplicationtype")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          User Type{" "}
-          <img
-            src={srcSortImage("userApplicationtype", {
-              sortBasis: fieldName,
-              sortType: orderMethod,
-            })}
-            alt="sort icon"
-            style={{ width: "12px", height: "12px" }}
-          />
-        </div>
-      ),
+      title:"User Type",
       dataIndex: "userApplicationtype",
       key: "usertype",
       width: 150,
