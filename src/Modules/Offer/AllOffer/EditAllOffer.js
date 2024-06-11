@@ -10,8 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   editOffers,
+  getAllDropdownUsers,
   getAllGeoCodes,
-  getDropDownUsers,
 } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 
@@ -297,7 +297,7 @@ const EditOffer = () => {
     const params = new URLSearchParams();
     params.append("limit", 20);
     try {
-      const res = await getDropDownUsers();
+      const res = await getAllDropdownUsers();
       if (res?.status === 200) {
         setUserData(res?.data);
         console.log(res, "users");

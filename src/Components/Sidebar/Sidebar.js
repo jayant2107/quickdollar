@@ -126,7 +126,7 @@ export default function Sidebar() {
           </div>
         )}
 
-        {location.pathname === "/quickdollar/offer/alloffers" || location.pathname === "/quickdollar/offer/addoffer" || location.pathname === "/quickdollar/offer/addcustomoffers" || location.pathname === "/quickdollar/offer/viewcustomoffers" || location.pathname === "/quickdollar/offer/completedoffers" ? (
+        {location.pathname === "/quickdollar/offer/alloffers" || location.pathname === "/quickdollar/offer/addoffer" || location.pathname === "/quickdollar/offer/addcustomoffers" || location.pathname === "/quickdollar/offer/viewcustomoffers" || location.pathname === "/quickdollar/offer/completedoffers" ||  location.pathname === "/quickdollar/offer/editOffer" ? (
           <NavIcon onClick={() => handleItemClick("Offers")}>
             <IoMail />
             <p>
