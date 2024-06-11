@@ -62,7 +62,7 @@ const TableNew = ({
             <Table
               columns={columnsWithSno}
               dataSource={data}
-              pagination={pagination}
+              pagination={data.length > 0 ? pagination : false}
               scroll={scroll}
               // onChange={onChange}
               locale={{ emptyText: "No Data Found" }}
