@@ -13,13 +13,12 @@ import { addWebSetting } from '../../../Services/Collection';
 const WebSetting = () => {
 
     const initialValues = {
-        appTitle: '',
-        appSubTitle: '',
-        headerText: '',
-        currencySign: '',
-
+        appTitle: 'Make up to $500 a month',
+        appSubTitle: 'High paying surveys and many more',
+        headerText: 'QD',
+        currencySign: '$',
         emailcontent: "",
-        cubeOfferCountryCode: [],
+        cubeOfferCountryCode: 'US',
         showRedeembutton: 'true',
         showUserBalance: 'true',
         showBonusButton: 'false',
@@ -38,7 +37,14 @@ const WebSetting = () => {
         [{ 'align': [] }],
     ];
 
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(`Welcome to Quick Dollar,
+    The easy money making site that gives you Cash
+    We have added best handpicked offers from trusted sources for our customers, so explore
+    them and start making up to  $450 a month by just investing your free time.
+    Thanks again  for joining Quick Dollar; and may God bless you bountifully
+    Best,
+    Quick Dollar`);
+
     const [geoCodes, setGeoCodes] = useState([]);
 
     const validationSchema = yup.object().shape({
@@ -52,9 +58,13 @@ const WebSetting = () => {
 
     const handleSubmit = async (values, { resetForm, setFieldValue }) => {
         try {
-            let res = await addWebSetting(values);
+            let payload = {
+                ...values,
+                cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
+              }
+            let res = await addWebSetting(payload);
             if (res?.status === 200) {
-                toast.success("Message send Successfully");
+                toast.success("Web Setting added Successfully");
                 resetForm()
                 setFieldValue('additionalText', '');
                 setValue('');
@@ -96,7 +106,7 @@ const WebSetting = () => {
 
     const options = geoCodes.map(jsonData => ({
         label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-        value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+        value: `${jsonData?.iso_code_2}`,
     }));
 
 
@@ -104,7 +114,7 @@ const WebSetting = () => {
         fetchGeoCordData();
     }, [])
 
-    document.title="Web_Settings - Login - quickdollarapp";
+    document.title = "Web_Settings - Login - quickdollarapp";
 
     return (
         <div>
@@ -141,7 +151,7 @@ const WebSetting = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Header Text</Label>
                                     <FieldContainer>
-                                        <InputField name="headerText" placeholder="Header text" />
+                                        <InputField name="headerText" placeholder="Header text like QD" />
                                         <RequiredWrapper>
                                             <ErrorMessage name="headerText" />
                                         </RequiredWrapper>
@@ -151,7 +161,7 @@ const WebSetting = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Currency Sign</Label>
                                     <FieldContainer>
-                                        <InputField name="currencySign" placeholder="Currency sign" />
+                                        <InputField name="currencySign" placeholder="Currency sign like $" />
                                         <RequiredWrapper>
                                             <ErrorMessage name="currencySign" />
                                         </RequiredWrapper>

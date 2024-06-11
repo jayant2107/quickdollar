@@ -6,7 +6,7 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { addOffer, getAllGeoCodes, getAllUser } from '../../../Services/Collection';
+import { addOffer, getAllGeoCodes, getAllDropdownUsers } from '../../../Services/Collection';
 import { toast } from "react-toastify";
 import Loader from '../../../Components/Loader/Loader'
 const AddOffer = () => {
@@ -36,9 +36,10 @@ const AddOffer = () => {
   };
 
   const [geoCodes, setGeoCodes] = useState([]);
+  const [allDropdownUsers, setAllDropdownUsers] = useState([]);
   const [offerImgPreview, setOfferImgPreview] = useState(null);
+  const [offerImgError, setOfferImgError] = useState(null);
   const offerImgInputRef = useRef(null);
-  const [userData, setUserData] = useState([]);
   const [loader, setLoader] = useState(false);
 
   const toolbarOptions = [
@@ -55,28 +56,7 @@ const AddOffer = () => {
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
     h1Title: yup.string().required('H1 title is required'),
-    offerImage: yup.mixed()
-      .required('Offer image is required')
-      .test(
-        'fileType',
-        'Only image files are allowed',
-        (value) => {
-          if (value) {
-            return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
-          }
-          return true;
-        }
-      )
-      .test(
-        'fileSize',
-        'File size must be less than 2MB',
-        (value) => {
-          if (value) {
-            return value.size <= 2 * 1024 * 1024;
-          }
-          return true;
-        }
-      ),
+    offerImage: yup.mixed().required('Offer image is required'),
     offerLink: yup.string().required('Offer Link is required'),
     offerPoints: yup.string().required('Offer amount is required').test(
       'is-number',
@@ -95,6 +75,32 @@ const AddOffer = () => {
       value => !isNaN(value) && Number.isInteger(parseFloat(value))
     ),
   });
+
+  const validateFile = (file) => {
+    if (!file) return 'File is required';
+    if (file.size > 2000000) return 'File too large';
+    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    return null;
+  };
+
+  const handleFileChange = (e, setFieldValue, setPreview) => {
+    const file = e.target.files[0];
+    const error = validateFile(file);
+    if (error) {
+      setOfferImgError(error);
+      setOfferImgPreview(null);
+    } else {
+      setOfferImgError(null);
+      setFieldValue(e.target.name, file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset the input value to allow the same file to be selected again
+    offerImgInputRef.current.value = null;
+  };
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     const formData = new FormData();
@@ -165,25 +171,24 @@ const AddOffer = () => {
     }
   };
 
-  // const fetchUsers = async () => {
-  //   try {
-  //     const res = await getAllUser();
-  //     if (res?.status === 200) {
-  //       setUserData(res?.data?.findUsers);
-  //     } else {
-  //       let message =
-  //         res?.response?.data?.message ||
-  //         res?.message ||
-  //         res?.error ||
-  //         "Something went wrong";
-  //       setUserData([]);
-  //       toast.error(message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "error");
-  //     toast.error(error?.message || "Something went wrong");
-  //   } 
-  // };
+  const fetchdropDownUsers = async () => {
+    try {
+      const res = await getAllDropdownUsers();
+      if (res?.status === 200) {
+        setAllDropdownUsers(res?.data);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error, "error");
+      toast.error(error?.message || "Something went wrong");
+    }
+  };
 
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -199,32 +204,20 @@ const AddOffer = () => {
 
   const options = geoCodes.map(jsonData => ({
     label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-    value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    value: `${jsonData?.iso_code_2}`,
   }));
-
-  // const userOptions = userData.map((data) => ({
-  //   label: `${data?.firstName} ${data?.lastName}`,
-  //   value: `${data?.firstName} ${data?.lastName}`,
-  // }))
+  console.log(allDropdownUsers, "allDropdownUsers")
+  const userOptions = allDropdownUsers.map((data) => ({
+    label: `${data?.firstName} ${data?.lastName}`,
+    value: `${data?.idUser}`,
+  }))
 
   useEffect(() => {
     fetchGeoCordData();
-    // fetchUsers();
+    fetchdropDownUsers();
   }, [])
 
-  const handleFileChange = (e, setFieldValue, setPreview) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFieldValue(e.target.name, file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  document.title="Add Offer - Login - quickdollarapp";
+  document.title = "Add Offer - Login - quickdollarapp";
 
   return (
     <div>
@@ -296,6 +289,7 @@ const AddOffer = () => {
                       />
                       <UploadInstruction>Max size 2MB and resolution is 150x150 px</UploadInstruction>
                       {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
+                      {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
                     </ChooseContainer>
                     <RequiredWrapper>
                       <ErrorMessage name="offerImage" />
@@ -709,24 +703,20 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Select fraud user to unlisted from offer</Label>
                   <FieldContainer>
-                    <InputField
-                      name="fraudUser"
-                      placeholder="Fraud user
-"
-                    />
-                    {/* <ChooseCountry>
+                    <ChooseCountry>
                       <SelectField
                         mode="multiple"
                         allowClear
                         style={{ width: "100%" }}
-                        placeholder="Search for a user"
-                        value={values?.fraudUser}
-                        onChange={(value) =>
-                          setFieldValue("fraudUser", value)
-                        }
+                        placeholder="Select geo code"
+                        value={values.fraudUser}
+                        onChange={(value) => setFieldValue("fraudUser", value)}
                         options={userOptions}
                       />
-                    </ChooseCountry> */}
+                      <RequiredWrapper>
+                        <ErrorMessage name="offerCountry" />
+                      </RequiredWrapper>
+                    </ChooseCountry>
                   </FieldContainer>
                 </FieldWrapper>
 
@@ -1000,3 +990,8 @@ object-fit: contain;
 const Asterisk = styled.span`
 color: red
 `
+
+const ErrorText = styled.div`
+color: red;
+margin-top: 5px;
+`;

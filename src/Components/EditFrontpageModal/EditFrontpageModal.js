@@ -14,13 +14,15 @@ const EditFrontpageModal = ({
   record,
   fetchData,
 }) => {
-  const [loader,setLoader]=useState(false);
+  const [loader, setLoader] = useState(false);
   console.log(record)
   const [offerImgPreview, setOfferImgPreview] = useState(record?.frontpageofferImage);
   const [buttonImgPreview, setButtonImgPreview] = useState(record?.frontpageofferButton);
   const [flag, setFlag] = useState(false)
   const offerImgInputRef = useRef(null);
   const buttonImgInputRef = useRef(null);
+  const [offerImgError, setOfferImgError] = useState(null);
+  const [buttonImgError, setButtonImgError] = useState(null);
 
   const initialValues = {
     title: record?.frontpageofferTitle || "",
@@ -33,6 +35,33 @@ const EditFrontpageModal = ({
     title: yup.string().required("Title is required"),
     link: yup.string().required('Link is required'),
   });
+
+  const validateFile = (file) => {
+    if (!file) return 'File is required';
+    if (file.size > 2000000) return 'File too large';
+    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    return null;
+  };
+
+  const handleFileChange = (e, setFieldValue, setPreview, setError, inputRef, setImgPreview) => {
+    const file = e.target.files[0];
+    const error = validateFile(file);
+    if (error) {
+      setError(error);
+      setImgPreview(null); // Clear the image preview state
+    } else {
+      setError(null);
+      setFieldValue(e.target.name, file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        setFlag(true)
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset the input value to allow the same file to be selected again
+    inputRef.current.value = null;
+  };
 
   const handleSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
@@ -57,7 +86,8 @@ const EditFrontpageModal = ({
         setOfferImgPreview(null);
         setButtonImgPreview(null);
         handleEditCancel();
-        setOfferImgPreview(null);
+        setOfferImgError(null);
+        setButtonImgError(null);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -71,19 +101,6 @@ const EditFrontpageModal = ({
       toast.error(error?.message || "Something went wrong");
     }
 
-  };
-
-  const handleFileChange = (e, setFieldValue, setPreview) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFieldValue(e.target.name, file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-        setFlag(true)
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   useEffect(() => {
@@ -146,12 +163,14 @@ const EditFrontpageModal = ({
                             name="offerImg"
                             type="file"
                             onChange={(e) =>
-                              handleFileChange(e, setFieldValue, setOfferImgPreview)
+                              handleFileChange(e, setFieldValue, setOfferImgPreview, setOfferImgError, offerImgInputRef, setOfferImgPreview)
                             }
                             style={{ display: "none" }}
                           />
                           <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
                           {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
+                          {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
+
                         </ChooseContainer>
 
                       </FieldContainer>
@@ -167,12 +186,14 @@ const EditFrontpageModal = ({
                             name="buttonImg"
                             type="file"
                             onChange={(e) =>
-                              handleFileChange(e, setFieldValue, setButtonImgPreview)
+                              handleFileChange(e, setFieldValue, setButtonImgPreview, setButtonImgError, buttonImgInputRef, setButtonImgPreview)
                             }
                             style={{ display: "none" }}
                           />
                           <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
                           {buttonImgPreview && <Image src={buttonImgPreview} alt="Button Preview" />}
+                          {buttonImgError && <ErrorText>{buttonImgError}</ErrorText>}
+
                         </ChooseContainer>
 
                       </FieldContainer>
@@ -184,7 +205,7 @@ const EditFrontpageModal = ({
                       Cancel
                     </ResetBtn>
                     <SubmitBtn type="primary" htmlType="submit">
-                      Save{loader?<Loader/>:""}
+                      Save{loader ? <Loader /> : ""}
                     </SubmitBtn>
                   </Footer>
                 </Form>
@@ -312,7 +333,14 @@ const Image = styled.img`
 width: 120px;
 height: 120px;
 object-fit: contain;
+margin-bottom: 1rem;
 `
 const Asterisk = styled.span`
 color: red
 `
+
+const ErrorText = styled.div`
+color: red;
+margin-top: 5px;
+margin-bottom: 5px;
+`;

@@ -11,17 +11,17 @@ import { addIosSetting } from '../../../Services/Collection';
 const Ios = () => {
 
   const initialValues = {
-    appTitle: '',
-    appSubTitle: '',
-    headerText: '',
-    currencySign: '',
-    cubeOfferCountryCode: [],
+    appTitle: 'Welcome to iPeor',
+    appSubTitle: 'Enjoy Taking surveys',
+    headerText: 'QD',
+    currencySign: '$',
+    cubeOfferCountryCode: ['US'],
     showRedeembutton: 'true',
     showUserBalance: 'true',
     showBonusButton: 'true',
     showBonusBalance: 'false',
     maintanancemodeon: 'false',
-    offerDisplayCount: '',
+    offerDisplayCount: '50',
     pauseAllOffers: 'false',
     locationService: 'true',
     completedOffers: 'true',
@@ -46,9 +46,13 @@ const Ios = () => {
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     try {
-      let res = await addIosSetting(values);
+      let payload = {
+        ...values,
+        cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
+      }
+      let res = await addIosSetting(payload);
       if (res?.status === 200) {
-        toast.success("Message send Successfully");
+        toast.success("IOS Setting added Successfully");
         resetForm();
         setFieldValue('additionalText', '');
       }
@@ -87,7 +91,7 @@ const Ios = () => {
 
   const options = geoCodes.map(jsonData => ({
     label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-    value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    value: `${jsonData?.iso_code_2}`,
   }));
 
   useEffect(() => {
@@ -132,7 +136,7 @@ const Ios = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Header Text</Label>
                   <FieldContainer>
-                    <InputField name="headerText" placeholder="Header text" />
+                    <InputField name="headerText" placeholder="Header text like QD" />
                     <RequiredWrapper>
                       <ErrorMessage name="headerText" />
                     </RequiredWrapper>
@@ -142,7 +146,7 @@ const Ios = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Currency Sign</Label>
                   <FieldContainer>
-                    <InputField name="currencySign" placeholder="Currency sign" />
+                    <InputField name="currencySign" placeholder="Currency sign like $" />
                     <RequiredWrapper>
                       <ErrorMessage name="currencySign" />
                     </RequiredWrapper>
@@ -287,7 +291,7 @@ const Ios = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Offer display count</Label>
                   <FieldContainer>
-                    <InputField name="offerDisplayCount" placeholder="Offer display count" />
+                    <InputField name="offerDisplayCount" placeholder="10" />
                     <RequiredWrapper>
                       <ErrorMessage name="offerDisplayCount" />
                     </RequiredWrapper>

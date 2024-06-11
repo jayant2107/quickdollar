@@ -11,17 +11,19 @@ import { addAndroidSetting } from '../../../Services/Collection';
 const Android = () => {
 
   const initialValues = {
-    appTitle: '',
-    appSubTitle: '',
-    headerText: '',
-    currencySign: '',
-    cubeOfferCountryCode: [],
+    appTitle: 'Welcome to iPeor',
+    appSubTitle: 'Share your Opinion',
+    headerText: 'QD',
+    currencySign: '$',
+    cubeOfferCountryCode: 
+      "US"
+    ,
     showRedeembutton: 'true',
     showUserBalance: 'true',
     showBonusButton: 'true',
     showBonusBalance: 'true',
     maintanancemodeon: 'false',
-    offerDisplayCount: '',
+    offerDisplayCount: '100',
     pauseAllOffers: 'false',
     locationService: 'true',
     completedOffers: 'true',
@@ -46,9 +48,13 @@ const Android = () => {
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     try {
-      let res = await addAndroidSetting(values);
+      let payload = {
+        ...values,
+        cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
+      }
+      let res = await addAndroidSetting(payload);
       if (res?.status === 200) {
-        toast.success("Message send Successfully");
+        toast.success("Android Setting added Successfully");
         resetForm();
         setFieldValue('additionalText', '');
       }
@@ -87,7 +93,7 @@ const Android = () => {
 
   const options = geoCodes.map(jsonData => ({
     label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-    value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+    value: `${jsonData?.iso_code_2}`,
   }));
 
 
@@ -122,7 +128,7 @@ const Android = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Application Sub-Title</Label>
                   <FieldContainer>
-                    <InputField name="appSubTitle" placeholder="Application sub-title" />
+                    <InputField name="appSubTitle" placeholder="Application sub-title" readOnly/>
                     <RequiredWrapper>
                       <ErrorMessage name="appSubTitle" />
                     </RequiredWrapper>
@@ -132,7 +138,7 @@ const Android = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Header Text</Label>
                   <FieldContainer>
-                    <InputField name="headerText" placeholder="Header text" />
+                    <InputField name="headerText" placeholder="Header text like QD" />
                     <RequiredWrapper>
                       <ErrorMessage name="headerText" />
                     </RequiredWrapper>
@@ -142,7 +148,7 @@ const Android = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Currency Sign</Label>
                   <FieldContainer>
-                    <InputField name="currencySign" placeholder="Currency sign" />
+                    <InputField name="currencySign" placeholder="Currency sign like $" />
                     <RequiredWrapper>
                       <ErrorMessage name="currencySign" />
                     </RequiredWrapper>
@@ -287,7 +293,7 @@ const Android = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Offer display count</Label>
                   <FieldContainer>
-                    <InputField name="offerDisplayCount" placeholder="Offer display count" />
+                    <InputField name="offerDisplayCount" placeholder="10" />
                     <RequiredWrapper>
                       <ErrorMessage name="offerDisplayCount" />
                     </RequiredWrapper>

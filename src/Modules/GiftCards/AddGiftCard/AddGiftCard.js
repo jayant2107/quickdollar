@@ -9,7 +9,11 @@ import { toast } from "react-toastify";
 import Loader from '../../../Components/Loader/Loader';
 
 const AddGiftCard = () => {
-    const [loader,setLoader]=useState(false);
+    const [loader, setLoader] = useState(false);
+    const [gitftImgPreview, setGiftImgPreview] = useState(null);
+    const [giftImgError, setGiftImgError] = useState(null);
+    const giftImgInputRef = useRef(null);
+
     const initialValues = {
         giftCardName: '',
         giftCardImage: '',
@@ -18,14 +22,10 @@ const AddGiftCard = () => {
         isActive: "",
     };
 
-
-    const [gitftImgPreview, setGiftImgPreview] = useState(null);
-    const giftImgInputRef = useRef(null);
-
     const validationSchema = yup.object().shape({
         giftCardName: yup.string().required('Gift Card Name is required'),
         giftCardImage: yup.string().required('Gift Card Image is required'),
-        giftCardPoints: yup.string().required('Gift card priceis required').test(
+        giftCardPoints: yup.string().required('Gift card price is required').test(
             'is-number',
             'Enter number only',
             value => !isNaN(value) && Number.isInteger(parseFloat(value))
@@ -62,10 +62,21 @@ const AddGiftCard = () => {
             toast.error(error?.message || "Something went wrong");
         }
     };
+    const validateFile = (file) => {
+        if (!file) return 'File is required';
+        if (file.size > 2000000) return 'File too large';
+        if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+        return null;
+    };
 
     const handleFileChange = (e, setFieldValue, setPreview) => {
         const file = e.target.files[0];
-        if (file) {
+        const error = validateFile(file);
+        if (error) {
+            setGiftImgError(error);
+            setGiftImgPreview(null);
+        } else {
+            setGiftImgError(null);
             setFieldValue(e.target.name, file);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -73,6 +84,8 @@ const AddGiftCard = () => {
             };
             reader.readAsDataURL(file);
         }
+        // Reset the input value to allow the same file to be selected again
+        giftImgInputRef.current.value = null;
     };
 
     const handleReset = (resetForm) => {
@@ -80,8 +93,8 @@ const AddGiftCard = () => {
         setGiftImgPreview(null);
     };
 
-    document.title="Add Gift Card - Login - quickdollarapp";
-    
+    document.title = "Add Gift Card - Login - quickdollarapp";
+
     return (
         <div>
             <Header>
@@ -122,8 +135,9 @@ const AddGiftCard = () => {
                                                 }
                                                 style={{ display: "none" }}
                                             />
-                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                                            <UploadInstruction>Max size 2MB</UploadInstruction>
                                             {gitftImgPreview && <Image src={gitftImgPreview} alt="Giftcard Preview" />}
+                                            {giftImgError && <ErrorText>{giftImgError}</ErrorText>}
                                         </ChooseContainer>
                                         <RequiredWrapper>
                                             <ErrorMessage name="giftCardImage" />
@@ -188,27 +202,21 @@ const AddGiftCard = () => {
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
-
-
                             </InputWrapper>
-                        
-                          
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
                                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
-                           
-                        
+
                         </Form>
                     )}
                 </Formik>
-
             </AnnouncementWrapper>
         </div>
 
-    )
-}
+    );
+};
 
 export default AddGiftCard;
 
@@ -370,3 +378,8 @@ margin-bottom: 1rem;
 const Asterisk = styled.span`
 color: red
 `
+
+const ErrorText = styled.div`
+color: red;
+margin-top: 5px;
+`;

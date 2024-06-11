@@ -8,24 +8,26 @@ import { toast } from "react-toastify";
 import Loader from '../../../Components/Loader/Loader';
 
 const AddFrontPageOffer = () => {
-    const [loader,setLoader]=useState(false);
+    const [loader, setLoader] = useState(false);
+    const [offerImgPreview, setOfferImgPreview] = useState(null);
+    const [buttonImgPreview, setButtonImgPreview] = useState(null);
+    const [offerImgError, setOfferImgError] = useState(null);
+    const [buttonImgError, setButtonImgError] = useState(null);
+    const offerImgInputRef = useRef(null);
+    const buttonImgInputRef = useRef(null);
 
     const initialValues = {
         frontpageofferTitle: '',
         frontpageofferLink: '',
         frontpageofferImage: '',
-        frontpageofferButton: null
+        frontpageofferButton: ''
     };
-    const [offerImgPreview, setOfferImgPreview] = useState(null);
-    const [buttonImgPreview, setButtonImgPreview] = useState(null);
-    const offerImgInputRef = useRef(null);
-    const buttonImgInputRef = useRef(null);
 
     const validationSchema = yup.object().shape({
         frontpageofferTitle: yup.string().required('Offer title is required'),
         frontpageofferLink: yup.string().required('Offer link is required'),
-        frontpageofferImage: yup.string().required('Offer image is required'),
-        frontpageofferButton: yup.string().required('Button image is required'),
+        frontpageofferImage: yup.mixed().required('Offer image is required'),
+        frontpageofferButton: yup.mixed().required('Button image is required'),
     });
 
     const handleSubmit = async (values, { resetForm }) => {
@@ -44,6 +46,8 @@ const AddFrontPageOffer = () => {
                 resetForm();
                 setOfferImgPreview(null);
                 setButtonImgPreview(null);
+                setOfferImgError(null);
+                setButtonImgError(null);
             } else {
                 let message =
                     res?.response?.data?.message ||
@@ -58,9 +62,21 @@ const AddFrontPageOffer = () => {
         }
     };
 
-    const handleFileChange = (e, setFieldValue, setPreview) => {
+    const validateFile = (file) => {
+        if (!file) return 'File is required';
+        if (file.size > 2000000) return 'File too large';
+        if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+        return null;
+    };
+
+    const handleFileChange = (e, setFieldValue, setPreview, setError, inputRef, setImgPreview) => {
         const file = e.target.files[0];
-        if (file) {
+        const error = validateFile(file);
+        if (error) {
+            setError(error);
+            setImgPreview(null); // Clear the image preview state
+        } else {
+            setError(null);
             setFieldValue(e.target.name, file);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -68,15 +84,20 @@ const AddFrontPageOffer = () => {
             };
             reader.readAsDataURL(file);
         }
+        // Reset the input value to allow the same file to be selected again
+        inputRef.current.value = null;
     };
+
 
     const handleReset = (resetForm) => {
         resetForm();
         setOfferImgPreview(null);
         setButtonImgPreview(null);
+        setOfferImgError(null);
+        setButtonImgError(null);
     };
 
-    document.title="Add Frontpage Offer - Login - quickdollarapp";
+    document.title = "Add Frontpage Offer - Login - quickdollarapp";
 
     return (
         <div>
@@ -122,12 +143,13 @@ const AddFrontPageOffer = () => {
                                                 name="frontpageofferImage"
                                                 type="file"
                                                 onChange={(e) =>
-                                                    handleFileChange(e, setFieldValue, setOfferImgPreview)
+                                                    handleFileChange(e, setFieldValue, setOfferImgPreview, setOfferImgError, offerImgInputRef, setOfferImgPreview)
                                                 }
                                                 style={{ display: "none" }}
                                             />
-                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
+                                            <UploadInstruction>Max size 2MB</UploadInstruction>
                                             {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
+                                            {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
                                         </ChooseContainer>
                                         <RequiredWrapper>
                                             <ErrorMessage name="frontpageofferImage" />
@@ -145,12 +167,13 @@ const AddFrontPageOffer = () => {
                                                 name="frontpageofferButton"
                                                 type="file"
                                                 onChange={(e) =>
-                                                    handleFileChange(e, setFieldValue, setButtonImgPreview)
+                                                    handleFileChange(e, setFieldValue, setButtonImgPreview, setButtonImgError, buttonImgInputRef, setButtonImgPreview)
                                                 }
                                                 style={{ display: "none" }}
                                             />
-                                            <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
-                                            {buttonImgPreview && <Image src={buttonImgPreview} alt="Button Preview"/>}
+                                            <UploadInstruction>Max size 2MB</UploadInstruction>
+                                            {buttonImgPreview && <Image src={buttonImgPreview} alt="Button Preview" />}
+                                            {buttonImgError && <ErrorText>{buttonImgError}</ErrorText>}
                                         </ChooseContainer>
                                         <RequiredWrapper>
                                             <ErrorMessage name="frontpageofferButton" />
@@ -160,7 +183,7 @@ const AddFrontPageOffer = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
                                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
                         </Form>
@@ -168,8 +191,8 @@ const AddFrontPageOffer = () => {
                 </Formik>
             </AnnouncementWrapper>
         </div>
-    )
-}
+    );
+};
 
 export default AddFrontPageOffer;
 const AnnouncementWrapper = styled.div`
@@ -304,3 +327,8 @@ object-fit: contain;
 const Asterisk = styled.span`
 color: red
 `
+
+const ErrorText = styled.div`
+color: red;
+margin-top: 5px;
+`;

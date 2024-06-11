@@ -34,6 +34,7 @@ const EditGiftCardModal = ({
     isActive: record?.isActive ? "true" : "false",
   };
   const offerImgInputRef = useRef(null);
+  const [offerImgError, setOfferImgError] = useState(null);
 
   const validationSchema = yup.object().shape({
     giftCardName: yup.string().required('Gift Card Name is required'),
@@ -83,17 +84,31 @@ const EditGiftCardModal = ({
     }
   };
 
+  const validateFile = (file) => {
+    if (!file) return 'File is required';
+    if (file.size > 2000000) return 'File too large';
+    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    return null;
+  };
+
   const handleFileChange = (e, setFieldValue, setPreview) => {
     const file = e.target.files[0];
-    if (file) {
+    const error = validateFile(file);
+    if (error) {
+      setOfferImgError(error);
+      setOfferImgPreview(null);
+    } else {
+      setOfferImgError(null);
       setFieldValue(e.target.name, file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
-        setFlag(true);
+        setFlag(true)
       };
       reader.readAsDataURL(file);
     }
+    // Reset the input value to allow the same file to be selected again
+    offerImgInputRef.current.value = null;
   };
 
 
@@ -162,6 +177,7 @@ const EditGiftCardModal = ({
                             />
                             <UploadInstruction>Max size 2MB and resolution is 250x250 px</UploadInstruction>
                             {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
+                            {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
                           </ChooseContainer>
                           <RequiredWrapper>
                             <ErrorMessage name="frontpageofferImage" />
@@ -426,3 +442,8 @@ object-fit: contain;
 const Asterisk = styled.span`
 color: red
 `
+
+const ErrorText = styled.div`
+color: red;
+margin-top: 5px;
+`;

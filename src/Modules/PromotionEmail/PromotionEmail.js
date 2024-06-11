@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import Loader from '../../Components/Loader/Loader';
 
 const PromotionEmail = () => {
-    const [loader,setLoader]=useState(false);
+    const [loader, setLoader] = useState(false);
     const [triggerModal, setTriggerModal] = useState(false);
     const [previewData, setPreviewData] = useState({});
 
@@ -82,6 +82,7 @@ const PromotionEmail = () => {
 
     const fetchGeoCordData = async () => {
         try {
+            
             const res = await getAllGeoCodes();
             if (res?.status === 200) {
                 setGeoCodes(res?.msg);
@@ -101,14 +102,14 @@ const PromotionEmail = () => {
 
     const options = geoCodes.map(jsonData => ({
         label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-        value: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+        value: `${jsonData?.iso_code_2}`,
     }));
 
     useEffect(() => {
         fetchGeoCordData();
     }, [])
 
-    document.title="Promotion Email - Login - quickdollarapp";
+    document.title = "Promotion Email - Login - quickdollarapp";
 
     return (
         <div>
@@ -270,7 +271,7 @@ const PromotionEmail = () => {
                             </InputWrapper>
                             <Footer>
                                 <ResetButton type="button" onClick={() => handlePreview(values)}>Preview</ResetButton>
-                                <SubmitBtn type="primary" htmlType="submit">Submit{loader?<Loader/>:""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
