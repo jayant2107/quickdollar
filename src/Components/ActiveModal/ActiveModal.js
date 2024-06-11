@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import styled from "styled-components";
 import { userActiveModal } from "../../Services/Collection";
 import { toast } from "react-toastify";
@@ -56,10 +56,10 @@ const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
               </h4>
             </div>
             <div className="buttons">
-              <button onClick={handleCancel}>Cancel</button>
-              <button onClick={activeModals} className="confirm-button">
+              <CancelBtn onClick={handleCancel}>Cancel</CancelBtn>
+              <ConfirmBtn onClick={activeModals} className="confirm-button">
                 Confirm
-              </button>
+              </ConfirmBtn>
             </div>
           </div>
         </ActiveModalWrapper>
@@ -97,42 +97,8 @@ font-family: ${({ theme }) => theme?.fontFamily};
       display: flex;
       justify-content:center;
     }
-    button {
-      width: 208px;
-      color: black;
-      height:48px !important;
-      display:flex;
-      align-items:center !important;
-      justify-content:center !important;
-      border: 1px solid var(--Greyscale/1000);
-      border-radius: 10px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 17px;
-      // padding:  21px 24px;
-      margin: 5px 10px;
-      cursor: pointer;
-      background:transparent;
-    }
-    .confirm-button{
-      width: 208px;
-      color: white;
-      // box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
-      border-radius: 10px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 17px;
-      display:flex;
-      align-items:center !important;
-      justify-content:center !important;
-      margin: 5px 10px;
-      cursor: pointer;
-      border: none;
-    background: #007bff;
-
-    }
+   
+    
     .upperDivHead1 {
       font-weight: 600;
       font-size: 28px;
@@ -148,5 +114,80 @@ font-family: ${({ theme }) => theme?.fontFamily};
       color: #7b7f91;
       margin: 0px;
     }
+  }
+`;
+
+const CancelBtn = styled(Button)`
+  width: 208px;
+  color: black;
+  display: flex;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  margin: 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  height: 48px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid black !important;
+  
+  &:hover {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black  !important;
+  }
+
+  // Remove active effect
+  &:active {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background: transparent;
+    color: black !important;
+    border: 1px solid var(--Greyscale-1000) !important;
+  }
+`;
+
+
+const ConfirmBtn = styled(Button)`
+  width: 208px;
+  color: white;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 5px 10px;
+  cursor: pointer;
+  border: none;
+  height: 48px !important;
+   background-color: black !important;
+
+  // Remove hover effect
+  &:hover {
+    background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove active effect
+  &:active {
+   background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background-color: black !important;
+    color: white !important;
   }
 `;

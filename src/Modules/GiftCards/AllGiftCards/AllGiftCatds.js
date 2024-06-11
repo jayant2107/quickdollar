@@ -24,7 +24,7 @@ const AllGiftCards = () => {
   const [search, setSearch] = useState("");
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [fieldName, setFieldName] = useState("createdAt");
-  const [orderMethod, setorderMethod] = useState("asc");
+  const [orderMethod, setorderMethod] = useState("desc");
 
    const handleSearch = useCallback(
     debounce((value) => {

@@ -1,17 +1,15 @@
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 
 const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
-  console.log(id, "recorddd delete")
+  console.log(id, "recorddd delete");
   const handleDeletes = async () => {
-    let res =await handleDelete({ id: id})
+    let res = await handleDelete({ id: id });
     if (res?.status === 200) {
       toast.success("Delete Successfully");
       handleCancel();
-
-    }
-    else {
+    } else {
       let message =
         res?.response?.data?.message ||
         res?.message ||
@@ -19,8 +17,7 @@ const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
         "Something went wrong";
       toast.error(message);
     }
-
-  }
+  };
 
   return (
     <>
@@ -34,19 +31,18 @@ const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
         onCancel={handleCancel}
         footer={false}
         closable=""
-
       >
-        <ServiceModalWrapper  >
+        <ServiceModalWrapper>
           <div className="serviceModalUpperDiv">
             <div className="deleteMain">
-
               <h4 className="upperDivHead1">
                 Are you sure you want to delete?
               </h4>
             </div>
+
             <div className="buttons">
-              <button onClick={handleCancel}>Cancel</button>
-              <button onClick={handleDeletes} className="delete-button">Delete</button>
+              <CancelBtn onClick={handleCancel}>Cancel</CancelBtn>
+              <DeleteBtn onClick={handleDeletes}>Delete</DeleteBtn>
             </div>
           </div>
         </ServiceModalWrapper>
@@ -56,77 +52,34 @@ const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
 };
 export default DeleteModal;
 
-
-
-
-
 const ServiceModalWrapper = styled.div`
-font-family: ${({ theme }) => theme?.fontFamily};
+  font-family: ${({ theme }) => theme?.fontFamily};
   .serviceModalUpperDiv {
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap:32px;
+    gap: 32px;
     .deleteMain {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      .upperDivHead1{
-        font-size:24px;
-        font-weight:600;
+      .upperDivHead1 {
+        font-size: 24px;
+        font-weight: 600;
       }
-      
-        
     }
     .buttons {
       display: flex;
-      justify-content:center;
-    }
-    button {
-      width: 208px;
-      color: black;
-      height:48px !important;
-      display:flex;
-      align-items:center !important;
-      justify-content:center !important;
-      border: 1px solid var(--Greyscale/1000);
-      border-radius: 10px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 17px;
-      // padding:  21px 24px;
-      margin: 5px 10px;
-      cursor: pointer;
-      background:transparent;
-    }
-    .delete-button{
-      width: 208px;
-      color: white;
-      // box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
-      border-radius: 10px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 17px;
-      display:flex;
-      align-items:center !important;
-      justify-content:center !important;
-      margin: 5px 10px;
-      cursor: pointer;
-      border: none;
-    background: var(--Alerts-Error-Base, #E03137);
-
+      justify-content: center;
     }
     .upperDivHead1 {
-      font-weight: 600;
+      font-weight: 500;
       font-size: 28px;
       line-height: 29px;
       color: #242424;
       margin: 0px;
-      color:black;
-
+      color: black;
     }
     .upperDivPara1 {
       font-size: 16px;
@@ -134,79 +87,113 @@ font-family: ${({ theme }) => theme?.fontFamily};
       margin: 0px;
     }
   }
-    @media only screen and (  max-width:426px){
-     .serviceModalUpperDiv {
-    height:100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap:32px;
-    .deleteMain {
+  @media only screen and (max-width: 426px) {
+    .serviceModalUpperDiv {
+      height: 100%;
+      text-align: center;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      .upperDivHead1{
-        font-size:18px;
-        font-weight:600;
+      gap: 32px;
+      .deleteMain {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .upperDivHead1 {
+          font-size: 18px;
+          font-weight: 600;
+        }
       }
-      
-        
-    }
-    .buttons {
-      display: flex;
-      justify-content:center;
-    }
-    button {
-      width: 208px;
-      color: black;
-      height:48px !important;
-      display:flex;
-      align-items:center !important;
-      justify-content:center !important;
-      border: 1px solid var(--Greyscale/1000);
-      border-radius: 10px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 17px;
-      // padding:  21px 24px;
-      margin: 5px 10px;
-      cursor: pointer;
-      background:transparent;
-    }
-    .delete-button{
-      width: 208px;
-      color: white;
-      // box-shadow: rgba(61, 107, 192, 0.25) 0px 2px 16px;
-      border-radius: 10px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 17px;
-      display:flex;
-      align-items:center !important;
-      justify-content:center !important;
-      margin: 5px 10px;
-      cursor: pointer;
-      border: none;
-    background: var(--Alerts-Error-Base, #E03137);
-
-    }
-    .upperDivHead1 {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 29px;
-      color: #242424;
-      margin: 0px;
-      color:black;
-
-    }
-    .upperDivPara1 {
-      font-size: 16px;
-      color: #7b7f91;
-      margin: 0px;
+      .buttons {
+        display: flex;
+        justify-content: center;
+      }
+      .upperDivHead1 {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 29px;
+        color: #242424;
+        margin: 0px;
+        color: black;
+      }
+      .upperDivPara1 {
+        font-size: 16px;
+        color: #7b7f91;
+        margin: 0px;
+      }
     }
   }
-    }
+`;
+
+const CancelBtn = styled(Button)`
+  width: 208px;
+  color: #242424;
+  display: flex;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight:600;
+  font-size: 16px;
+  line-height: 17px;
+  margin: 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  height: 48px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid black !important;
+  
+  &:hover {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black  !important;
+  }
+
+  // Remove active effect
+  &:active {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background: transparent;
+    color: black !important;
+    border: 1px solid var(--Greyscale-1000) !important;
+  }
+`;
+const DeleteBtn = styled(Button)`
+  width: 208px;
+  color: white;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 5px 10px;
+  cursor: pointer;
+  border: none;
+  height: 48px !important;
+  background: var(--Alerts-Error-Base, #e03137);
+
+  // Remove hover effect
+  &:hover {
+    background: var(--Alerts-Error-Base, #e03137) !important;
+    color: white !important;
+  }
+
+  // Remove active effect
+  &:active {
+    background: var(--Alerts-Error-Base, #e03137) !important;
+    color: white !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background: var(--Alerts-Error-Base, #e03137) !important;
+    color: white !important;
+  }
 `;

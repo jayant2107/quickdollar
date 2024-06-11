@@ -24,7 +24,7 @@ const navigate = useNavigate();
         .matches(/^(?=.*[@$!%*?&])/, 'Password must contain at least one special character');
 
     const validationSchema = yup.object().shape({
-        // oldPassword: passwordRules,
+        oldPassword: passwordRules,
         newPassword: passwordRules,
         confirmPassword: yup.string()
             .required('Confirm Password is required')

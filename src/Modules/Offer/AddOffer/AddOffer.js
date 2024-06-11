@@ -708,7 +708,7 @@ const AddOffer = () => {
                         mode="multiple"
                         allowClear
                         style={{ width: "100%" }}
-                        placeholder="Select geo code"
+                        placeholder="Search for a user"
                         value={values.fraudUser}
                         onChange={(value) => setFieldValue("fraudUser", value)}
                         options={userOptions}
