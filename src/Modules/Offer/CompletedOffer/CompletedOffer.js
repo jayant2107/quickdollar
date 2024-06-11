@@ -9,6 +9,8 @@ import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addRecord } from "../../../Store/slices/OfferRecord";
 
 const CompletedOffers = () => {
   const [loader, setLoader] = useState(true);
@@ -24,6 +26,8 @@ const CompletedOffers = () => {
   const [orderMethod, setorderMethod] = useState("asc");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
    const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
@@ -306,12 +310,11 @@ const CompletedOffers = () => {
       render: (text, record) => (
         <TableAction
           edit={formActions.edit}
-          deleteAction={formActions.delete}
+          deleteAction={formActions.delete} 
           onEdit={() => {
-            console.log("selectedRecord:", record);
-            navigate("/quickdollar/offer/editOffer", {
-              state: { id: record?.idOffer, text: "location" },
-            });
+            console.log("record", record?.offer);
+            dispatch(addRecord(record?.offer));
+            navigate(`/quickdollar/offer/editOffer/${record?.offer?.idOffer}`);
           }}
           onDelete={() => showDeleteModal(record)}
         />

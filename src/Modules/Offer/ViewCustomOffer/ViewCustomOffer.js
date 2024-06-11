@@ -15,6 +15,9 @@ import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addRecord } from "../../../Store/slices/OfferRecord";
+
 
 const ViewCustomOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -30,6 +33,7 @@ const ViewCustomOffers = () => {
   const [orderMethod, setorderMethod] = useState("asc");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -346,20 +350,12 @@ const ViewCustomOffers = () => {
       fixed: "right",
       width: 150,
       render: (text, record) => (
-        // <TableAction
-        //   apply={formActions.apply}
-        //   edit={formActions.edit}
-        //   deleteAction={formActions.delete}
-        //   onEdit={() =>
-        //     navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
-        //   }}
-        //   onDelete={() => showDeleteModal(record)}
-        // />
         <TableAction
           apply={formActions.apply}
           edit={formActions.edit}
           deleteAction={formActions.delete}
           onEdit={() => {
+            dispatch(addRecord(record));
             navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
           }}
           onDelete={() => showDeleteModal(record)}

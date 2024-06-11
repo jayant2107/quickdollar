@@ -59,22 +59,14 @@ const EditOffer = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [h1TitleValue, setH1TitleValue] = useState("");
-  const [longDescriptionValue, setLongDescriptionValue] = useState("long description");
+  const [longDescriptionValue, setLongDescriptionValue] =
+    useState("long description");
+  const [flag, setFlag] = useState(false);
 
   const record = useSelector((state) => state.offerRecord.record);
   const { idOffer } = useParams();
   console.log(record, "record");
   const navigate = useNavigate();
-
-  // function htmlToPlainText(htmlString) {
-  //   // Create a new DOMParser
-  //   const parser = new DOMParser();
-  //   // Parse the HTML string into a document
-  //   const doc = parser.parseFromString(htmlString, "text/html");
-  //   // Extract the text content
-  //   console.log(doc.body.textContent);
-  //   return doc.body.textContent || "";
-  // }
 
   const initialValues = {
     offerTitle: record?.offerTitle,
@@ -84,8 +76,8 @@ const EditOffer = () => {
     offerText: record?.offerText,
     offerShortDescription: record?.offerShortDescription,
     offerLongDescription: record?.offerLongDescription,
-    offerCountry: record?.offerCountry.split(","),
-    fraudUser: [],
+    offerCountry: record?.offerCountry?.split(","),
+    fraudUser: record?.fraudUser?.split(","),
     dailyCAPLimit: record?.dailyCAPLimit,
     isActive: record?.isActive?.toString(),
     app_install: record?.app_install?.toString(),
@@ -93,11 +85,13 @@ const EditOffer = () => {
     isDailyOffer: record?.isDailyOffer?.toString(),
     relistOffer: record?.relistOffer?.toString(),
     StaticURL: record?.StaticURL?.toString(),
-    offerLocation: record?.displaylocation.split(","),
+    offerLocation: record?.displaylocation?.split(","),
     offerPlatform: record?.offerPlatform?.split(","),
-    // offerCreatedFor: "",
+    offerCreatedFor: record?.offerCreatedFor,
+    offerH1Title: record?.offerH1Title,
+    SelectPlatFormForOffer: record?.SelectPlatFormForOffer?.split(","),
     // customPostbaclParams: "",
-    // isHotOffer: "false",
+    isHotOffer: record?.isHotOffer?.toString(),
     // hotOfferFor: "hotOfferForWeb",
     // androidApplicationGroup: false,
     // iosApplicationGroup: false,
@@ -118,78 +112,9 @@ const EditOffer = () => {
     [{ align: [] }],
   ];
 
-  // const validationSchema = yup.object().shape({
-  //   offerTitle: yup.string().required("Title is Required"),
-  //   h1Title: yup.string().required("H1 title is required"),
-  //   offerImage: yup
-  //     .mixed()
-  //     .required("Offer image is required")
-  //     .test("fileType", "Only image files are allowed", (value) => {
-  //       if (value) {
-  //         return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-  //       }
-  //       return true;
-  //     })
-  //     .test("fileSize", "File size must be less than 2MB", (value) => {
-  //       if (value) {
-  //         return value.size <= 2 * 1024 * 1024;
-  //       }
-  //       return true;
-  //     }),
-  //   offerLink: yup.string().required("Offer Link is required"),
-  //   offerPoints: yup
-  //     .string()
-  //     .required("Offer amount is required")
-  //     .test(
-  //       "is-number",
-  //       "Enter number only",
-  //       (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
-  //     ),
-  //   offerText: yup.string().required("Offer Text is required"),
-  //   offerShortDescription: yup
-  //     .string()
-  //     .required("Offer Short Description is required"),
-  //   offerLongDescription: yup
-  //     .string()
-  //     .required("Offer Long Description is required"),
-  //   offerCreatedFor: yup.string().required("Offer Created is required"),
-  //   customPostbaclParams: yup.string(),
-  //   offerCountry: yup
-  //     .array()
-  //     .min(1, "Countries are required")
-  //     .required("Countries are required"),
-  //   fraudUser: yup.array().required("Fraud User is required"),
-  //   dailyCAPLimit: yup.string().required("Cap Limit is required"),
-  //   preHomeScreen: yup.boolean(),
-  //   offerWall: yup.boolean(),
-  //   homeScreen: yup.boolean(),
-  //   monthlySubscription: yup.boolean(),
-  //   dailySurvey: yup.boolean(),
-  //   download: yup.boolean(),
-  //   coupons: yup.boolean(),
-  //   shops: yup.boolean(),
-
-  //   // Platform checkboxes
-  //   androidApplicationGroup: yup.boolean(),
-  //   iosApplicationGroup: yup.boolean(),
-
-  //   offerCountry: yup.array()
-  //     .of(yup.string())
-  //     .min(1, "Select at least one country"),
-
-  //   // Daily CAP limit
-  //   dailyCAPLimit: yup.number()
-  //     .typeError("Daily CAP limit must be a number")
-  //     .positive("Daily CAP limit must be a positive number")
-  //     .required("Daily CAP limit is required"),
-
-  //   // Fraud Users
-  //   fraudUser: yup.array().of(yup.string()),
-  // });
-
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
-    h1Title: yup.string().required("H1 title is required"),
+    offerH1Title: yup.string().required("H1 title is required"),
     offerImage: yup
       .mixed()
       .required("Offer image is required")
@@ -206,9 +131,7 @@ const EditOffer = () => {
         return true;
       }),
     offerLink: yup.string().required("Offer Link is required"),
-    offerPoints: yup
-      .string()
-      .required("Offer amount is required"),
+    offerPoints: yup.string().required("Offer amount is required"),
     offerText: yup.string().required("Offer Text is required"),
     offerShortDescription: yup
       .string()
@@ -244,15 +167,22 @@ const EditOffer = () => {
       formData.append("conversionCallback", values?.conversionCallback);
       formData.append("offerCountry", values?.offerCountry);
       formData.append("isDailyOffer", values?.isDailyOffer);
-      formData.append("offerImage", values?.offerImage);
       formData.append("StaticURL", values?.StaticURL);
       formData.append("offerLocation", values?.offerLocation);
       formData.append("offerPlatform", values?.offerPlatform);
+      formData.append("offerLongDescription", values?.offerLongDescription);
+      formData.append("offerH1Title", values?.offerH1Title);
+      formData.append("offerCreatedFor", values?.offerCreatedFor);
+      formData.append("SelectPlatFormForOffer", values?.SelectPlatFormForOffer);
+      formData.append("fraudUser", values?.fraudUser);
+      if (flag) {
+        formData.append("offerImage", values?.offerImage);
+      }
       console.log(values);
       const res = await editOffers(formData);
       if (res?.status === 200) {
         toast.success("Edited Offer successfully");
-        navigate("/quickdollar/offer/alloffers")
+        navigate("/quickdollar/offer/alloffers");
         setFieldValue("additionalText", "");
         resetForm();
         setH1TitleValue("");
@@ -332,19 +262,20 @@ const EditOffer = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
+        setFlag(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const options = geoCodes.map((jsonData) => ({
-    label: `${jsonData?.iso_code_2}`,
+    label: `${jsonData?.country}- ${jsonData?.iso_code_2}`,
     value: `${jsonData?.iso_code_2}`,
   }));
 
   const userOptions = userData.map((data) => ({
     label: `${data?.firstName} ${data?.lastName}`,
-    value: `${data?.firstName} ${data?.lastName}`,
+    value: `${data?.idUser}`,
   }));
 
   const handleScroll = (event) => {
@@ -398,24 +329,24 @@ const EditOffer = () => {
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
-                      value={h1TitleValue}
+                      value={values.offerH1Title}
                       onChange={(content) => {
                         setH1TitleValue(content);
-                        setFieldValue("h1Title", content);
+                        setFieldValue("offerH1Title", content);
                         setIsEmpty(content === "<p><br></p>");
                       }}
                       modules={{ toolbar: toolbarOptions }}
                       tooltip={true}
                       onBlur={() => {
-                        setFieldTouched("h1Title", true);
+                        setFieldTouched("offerH1Title", true);
                         if (isEmpty) {
-                          setFieldValue("h1Title", "");
+                          setFieldValue("offerH1Title", "");
                         }
                       }}
                     />
                     <RequiredWrapper>
                       {touched.h1Title && errors.h1Title && (
-                        <ErrorMessage name="h1Title" />
+                        <ErrorMessage name="offerH1Title" />
                       )}
                     </RequiredWrapper>
                   </QuillFieldContainer>
@@ -697,7 +628,7 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
-                      <div>
+                        <div>
                           <Field
                             type="radio"
                             name="conversionCallback"
@@ -812,7 +743,7 @@ const EditOffer = () => {
                   <Label>Offer Platform</Label>
                   <Field name="offerPlatform">
                     {({ field, form: { setFieldValue } }) => (
-                      <FieldContainer style={{display:"flex"}}>
+                      <FieldContainer style={{ display: "flex" }}>
                         <Checkbox.Group
                           className="checkboxGroup"
                           value={field.value}
@@ -831,53 +762,12 @@ const EditOffer = () => {
                       </FieldContainer>
                     )}
                   </Field>
-                  {/* <FieldContainer
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "start",
-                    }}
-                  >
-                    <Checkbox.Group
-                      className="checkboxGroup"
-                      options={[
-                        { label: "shopOffer", value: "1" },
-                        { label: "quickThoughts", value: "2" },
-                      ]}
-                      onChange={(selectedValues) =>
-                        setFieldValue("offerPlatform", selectedValues)
-                      }
-                    />
-                    <RequiredWrapper>
-                      <ErrorMessage name="relistOffer" />
-                    </RequiredWrapper>
-                  </FieldContainer> */}
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer location to display</Label>
-                  {/* <FieldContainer
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "start",
-                    }}
-                  >
-                    <Checkbox.Group
-                      className="checkboxGroup"
-                      value={offerLocation.value}
-                      options={offerLocationOptions}
-                      onChange={(selectedValues) =>
-                        setFieldValue("offerLocation", selectedValues)
-                      }
-                    />
-
-                    <RequiredWrapper>
-                      <ErrorMessage name="relistOffer" />
-                    </RequiredWrapper>
-                  </FieldContainer> */}
                   <Field name="offerLocation">
                     {({ field, form: { setFieldValue } }) => (
-                      <FieldContainer style={{display:"flex"}}>
+                      <FieldContainer style={{ display: "flex" }}>
                         <Checkbox.Group
                           className="checkboxGroup"
                           value={field.value}
@@ -896,40 +786,27 @@ const EditOffer = () => {
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Select platform for offer</Label>
-                  <FieldContainer
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "start",
-                    }}
-                  >
-                    <Checkbox
-                      name="androidApplicationGroup"
-                      checked={values.androidApplicationGroup}
-                      onChange={(e) =>
-                        setFieldValue(
-                          "androidApplicationGroup",
-                          e.target.checked
-                        )
-                      }
-                    >
-                      Android-Application Group 1
-                    </Checkbox>
+                  <Field name="SelectPlatFormForOffer">
+                    {({ field, form: { setFieldValue } }) => (
+                      <FieldContainer style={{ display: "flex" }}>
+                        <Checkbox.Group
+                          className="checkboxGroup"
+                          value={field.value}
+                          options={[
+                            { label: "Android-Application Group 1", value: "1" },
+                            { label: "ios-Application Group 1", value: "2" },
+                          ]}
+                          onChange={(selectedValues) =>
+                            setFieldValue("SelectPlatFormForOffer", selectedValues)
+                          }
+                        />
 
-                    <Checkbox
-                      style={{ width: "100%", marginLeft: "0px" }}
-                      name="iosApplicationGroup"
-                      checked={values.iosApplicationGroup}
-                      onChange={(e) =>
-                        setFieldValue("iosApplicationGroup", e.target.checked)
-                      }
-                    >
-                      ios-Application Group 1
-                    </Checkbox>
-                    <RequiredWrapper>
-                      <ErrorMessage name="relistOffer" />
-                    </RequiredWrapper>
-                  </FieldContainer>
+                        <RequiredWrapper>
+                          <ErrorMessage name="SelectPlatFormForOffer" />
+                        </RequiredWrapper>
+                      </FieldContainer>
+                    )}
+                  </Field>
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Select offer url type</Label>
@@ -950,7 +827,7 @@ const EditOffer = () => {
                       is static URL
                     </Checkbox>
                     <RequiredWrapper>
-                      <ErrorMessage name="relistOffer" />
+                      <ErrorMessage name="StaticURL" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
