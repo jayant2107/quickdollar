@@ -16,9 +16,10 @@ import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
-import EditUserModal from "../../../Components/EditModal/EditUserModal";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addRecord } from "../../../Store/slices/OfferRecord";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -37,6 +38,7 @@ const AllOffers = () => {
   const [orderMethod, setorderMethod] = useState("asc");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { Option } = Select;
   const handleSearch = useCallback(
@@ -241,7 +243,7 @@ const AllOffers = () => {
       key: "link",
       width: 200,
       dataIndex: "offerLink",
-      render: (text, record) => <a>{record?.offerLink}</a>,
+      render: (text, record) => <Link to="/">{record?.offerLink}</Link>,
     },
     {
       title: (
@@ -410,10 +412,9 @@ const AllOffers = () => {
           deleteAction={formActions.delete}
           // onSend={() => showSendModal(record)}
           onEdit={() => {
-            console.log("selectedRecord:", record);
-            navigate("/quickdollar/offer/editOffer", {
-              state: { id: record?.idOffer, text: "location" },
-            });
+            console.log("Record:", record);
+            dispatch(addRecord(record));
+            navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
           }}
           onDelete={() => showDeleteModal(record)}
         />
@@ -432,36 +433,13 @@ const AllOffers = () => {
     x: 2100, // Horizontal scrolling
   };
 
-  const menuItems = [
-    { key: "all", label: "Select All" }, // Option for selecting all countries
-    ...geoCodes.map((jsonData) => ({
-      key: jsonData.id,
-      label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-    })),
-  ];
-
-  const handleOptionClick = (option) => {
-    if (option.key === "all") {
-      setSelectedOption("All"); // Set selectedOption to empty string to represent selecting all countries
-    } else {
-      // Extract iso_code_2 from the selected country's JSON data
-      const selectedIsoCode = geoCodes.find(
-        (item) => item.id === option.key
-      )?.iso_code_2;
-      setSelectedOption(selectedIsoCode || ""); // Set iso_code_2
-    }
-  };
-
-  const items = menuItems?.map((item) => ({
-    key: item?.key,
-    label: item?.label,
-    onClick: () => handleOptionClick(item),
-  }));
-
   useEffect(() => {
     fetchData();
     fetchGeoCordData(); // Fetch geo codes
   }, [currentPage, pageSize, search, fieldName, orderMethod, selectedOption]);
+
+  document.title = "Offers - Login - quickdollarapp";
+
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (
@@ -476,33 +454,7 @@ const AllOffers = () => {
 
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
-        {/* <Dropdown
-          menu={{
-            items,
-            style: {
-              maxHeight: "200px",
-              overflowY: "auto",
-            },
-          }}
-          trigger={["click"]}
-          getPopupContainer={(trigger) => trigger.parentNode}
-        >
-          <div
-            style={{
-              border: "1px solid #000",
-              padding: "10px",
-              width: "20rem",
-              borderRadius: "5px",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <span>{selectedOption}</span>
-            <DownOutlined />
-          </div>
-        </Dropdown> */}
+        <div style={{ display: "flex", gap: "20px" }}>
         <SelectField
           showSearch // Enable searching
           placeholder={selectedOption}
@@ -523,7 +475,6 @@ const AllOffers = () => {
             </Option>
           ))}
         </SelectField>
-        <div style={{ display: "flex", gap: "20px" }}>
           <button onClick={ActiveAllUser}>Active All Offers</button>
           <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }}>
             De-active All Offers
@@ -646,11 +597,15 @@ const StatusStyledText = styled.span`
 
 const SelectField = styled(Select)`
   .ant-select-selector {
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    padding: 11px 30px;
+    cursor: pointer;
+    font-family: ${({ theme }) => theme?.fontFamily};
     min-height: 43px !important;
     display: flex;
     align-items: center;
-    border-color: #e5e5e5 !important;
-    box-shadow: none !important;
     .ant-select-selection-search {
       display: flex;
       align-items: center;

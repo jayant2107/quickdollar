@@ -355,17 +355,24 @@ const ViewCustomOffers = () => {
       fixed: "right",
       width: 150,
       render: (text, record) => (
+        // <TableAction
+        //   apply={formActions.apply}
+        //   edit={formActions.edit}
+        //   deleteAction={formActions.delete}
+        //   onEdit={() =>
+        //     navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
+        //   }}
+        //   onDelete={() => showDeleteModal(record)}
+        // />
         <TableAction
-          apply={formActions.apply}
-          edit={formActions.edit}
-          deleteAction={formActions.delete}
-          onEdit={() =>
-            navigate("/quickdollar/offer/editOffer", {
-              state: { id: selectedRecord?.idOffer },
-            })
-          }
-          onDelete={() => showDeleteModal(record)}
-        />
+        apply={formActions.apply}
+        edit={formActions.edit}
+        deleteAction={formActions.delete}
+        onEdit={() => {
+          navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
+        }}
+        onDelete={() => showDeleteModal(record)}
+      />
       ),
     },
   ];

@@ -47,7 +47,7 @@ export const privateRoutes = [
                 path: "offer", element: <MainOffer />, children: [
                     { path: "alloffers", element: <AllOffers /> },
                     { path: "addoffer", element: <AddOffer /> },
-                    { path: "editOffer", element: <EditOffer /> },
+                    { path: "editOffer/:idOffer", element: <EditOffer /> },
                     { path: "addcustomoffers", element: <AddCustomOffer /> },
                     { path: "viewcustomoffers", element: <ViewCustomOffers /> },
                     { path: "completedoffers", element: <CompletedOffers /> },
