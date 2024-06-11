@@ -18,7 +18,7 @@ const WebSetting = () => {
         headerText: 'QD',
         currencySign: '$',
         emailcontent: "",
-        cubeOfferCountryCode: 'US',
+        cubeOfferCountryCode: ['US'],
         showRedeembutton: 'true',
         showUserBalance: 'true',
         showBonusButton: 'false',

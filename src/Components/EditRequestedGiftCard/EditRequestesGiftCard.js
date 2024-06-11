@@ -89,7 +89,7 @@ const EditRequestGiftCard = ({
         }}
       >
         <>
-          <Header>Edit Gift Card</Header>
+          <Header>Edit Requested Gift Card</Header>
           <div>
             <AnnouncementWrapper>
               <Formik
@@ -159,8 +159,8 @@ const EditRequestGiftCard = ({
                     </InputWrapper>
 
                     <Footer>
-                      <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
-                      <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                      <ResetBtn onClick={resetForm}>Reset</ResetBtn>
+                      <SubmitBtn  htmlType="submit">Submit</SubmitBtn>
                     </Footer>
                   </Form>
                 )}
@@ -176,20 +176,18 @@ const EditRequestGiftCard = ({
 export default EditRequestGiftCard;
 
 const AnnouncementWrapper = styled.div`
-width: calc(100% - 30px);
+
 height: 100%;
 background: rgb(255, 255, 255);
-margin-bottom: 20px;
 border-radius: 5px;
 overflow: hidden;
-padding:10px;
 `
 
 const Header = styled.p`
 display: flex;
 font-weight: 600;
 font-size: 24px;
-margin: 20px 0px;
+margin: 0px 0px 20px;
 font-family: Poppins;
 color: rgb(0, 0, 0);
 `
@@ -197,7 +195,6 @@ color: rgb(0, 0, 0);
 const Footer = styled.p`
 background: rgb(255, 255, 255);
 margin:0px;
-padding: .75rem 0;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -259,26 +256,80 @@ const FieldContainer = styled.div`
 width: 100%;
 text-align: start;
 `
-const SubmitBtn = styled(Button)`
-color: ${({ theme }) => theme?.primaryColor};
-background-color: black !important;
-border: none;
-width: 100%;
-height: 48px;
-`;
-
 const ResetBtn = styled(Button)`
-
-color: black ;
-  background: white!important;
-  width: 100%;
-  height: 48px;
-  border: 1px solid black;
+  width: 208px;
+  color: black;
+  display: flex;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  margin: 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  height: 48px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid black !important;
+  
   &:hover {
+    background: transparent;
     color: black !important;
+    border: 1px solid black  !important;
+  }
+
+  // Remove active effect
+  &:active {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background: transparent;
+    color: black !important;
+    border: 1px solid var(--Greyscale-1000) !important;
   }
 `;
 
+
+const SubmitBtn = styled(Button)`
+  width: 208px;
+  color: white;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 5px 10px;
+  cursor: pointer;
+  border: none;
+  height: 48px !important;
+   background-color: black !important;
+
+  // Remove hover effect
+  &:hover {
+    background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove active effect
+  &:active {
+   background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background-color: black !important;
+    color: white !important;
+  }
+`;
 const RadioLabel = styled.label`
   margin: 0;
 `;

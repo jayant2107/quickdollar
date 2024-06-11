@@ -16,7 +16,7 @@ const Android = () => {
     headerText: 'QD',
     currencySign: '$',
     cubeOfferCountryCode: 
-      "US"
+     [ "US"]
     ,
     showRedeembutton: 'true',
     showUserBalance: 'true',

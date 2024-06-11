@@ -201,10 +201,10 @@ const EditFrontpageModal = ({
                   </InputWrapper>
 
                   <Footer>
-                    <ResetBtn type="primary" onClick={handleEditCancel}>
+                    <CancelBtn  onClick={handleEditCancel}>
                       Cancel
-                    </ResetBtn>
-                    <SubmitBtn type="primary" htmlType="submit">
+                    </CancelBtn>
+                    <SubmitBtn  htmlType="submit">
                       Save{loader ? <Loader /> : ""}
                     </SubmitBtn>
                   </Footer>
@@ -276,24 +276,78 @@ const RequiredWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const SubmitBtn = styled(Button)`
-  color: ${({ theme }) => theme?.primaryColor};
-  background-color: black !important;
-  border: none;
-  width: 100%;
-  height: 48px;
+const CancelBtn = styled(Button)`
+  width: 208px;
+  color: black;
+  display: flex;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  margin: 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  height: 48px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid black !important;
+  
+  &:hover {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black  !important;
+  }
+
+  // Remove active effect
+  &:active {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background: transparent;
+    color: black !important;
+    border: 1px solid var(--Greyscale-1000) !important;
+  }
 `;
 
-const ResetBtn = styled(Button)`
-  color: black;
-  background: white;
-  width: 100%;
-  height: 48px;
-  border: 1px solid black;
+
+const SubmitBtn = styled(Button)`
+  width: 208px;
+  color: white;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 5px 10px;
+  cursor: pointer;
+  border: none;
+  height: 48px !important;
+   background-color: black !important;
+
+  // Remove hover effect
   &:hover {
-    color: black !important;
-    background: white !important;
-    border: 1px solid black;
+    background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove active effect
+  &:active {
+   background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background-color: black !important;
+    color: white !important;
   }
 `;
 
