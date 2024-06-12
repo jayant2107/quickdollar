@@ -86,7 +86,7 @@ const EditOffer = () => {
     relistOffer: record?.relistOffer?.toString(),
     StaticURL: record?.StaticURL?.toString(),
     offerLocation: record?.displaylocation?.split(","),
-    offerPlatform: record?.offerPlatform?.split(","),
+    // offerPlatform: record?.offerPlatform?.split(","),
     offerCreatedFor: record?.offerCreatedFor,
     offerH1Title: record?.offerH1Title,
     SelectPlatFormForOffer: record?.SelectPlatFormForOffer?.split(","),
