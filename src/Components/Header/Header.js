@@ -712,9 +712,8 @@ const SidebarMenu = styled.div`
   gap: 15px;
   padding:20px;
   overflow-y: scroll;
-  height: 520px;
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  height: 78vh;
+  scrollbar-width: none;
+  
   
 `;

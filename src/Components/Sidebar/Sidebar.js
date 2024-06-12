@@ -388,23 +388,10 @@ const SidebarContainer = styled.div`
   transition: all ease-out 0.8s;
   // overflow-y: scroll;
 
-::-webkit-scrollbar {
-  width: 8px;
-}
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px; 
-}
 
-::-webkit-scrollbar-thumb {
-  background: #888; 
-  border-radius: 10px; 
-}
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
+
 
   @media (max-width: 982px) {
     width: 10%;
@@ -427,10 +414,9 @@ const SidebarMenu = styled.ul`
   margin: 0;
   padding: 0;
   overflow-y: scroll;
-  height: 520px;
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  height:78vh;
+  scrollbar-width: none;
+ 
 `;
 // const SidebarMenuItem = styled.li`
 //   display: flex;
