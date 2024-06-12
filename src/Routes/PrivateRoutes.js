@@ -30,14 +30,17 @@ import WebSetting from '../Modules/Settings/WebSetting/WebSetting';
 import Android from '../Modules/Settings/Android/Android';
 import Ios from '../Modules/Settings/IOS/Ios';
 import EditOffer from '../Modules/Offer/AllOffer/EditAllOffer';
+import { Navigate } from 'react-router-dom';
 
 export const privateRoutes = [
     {
         path: "quickdollar", element: <Landing />, children: [
+            { path: "", element: <Navigate to="dashboard" /> },
             { path: "profile", element: <ChangePassword /> },
             { path: "dashboard", element: <Dashboard /> },
             {
                 path: "user", element: <MainUser />, children: [
+                    { path: "", element: <Navigate to="allusers" /> },
                     { path: "allusers", element: <AllUsers /> },
                     { path: "allabused", element: <AllAbusedUsers /> },
                     { path: "addadminuser", element: <AddAdminUser /> },
@@ -45,6 +48,7 @@ export const privateRoutes = [
             },
             {
                 path: "offer", element: <MainOffer />, children: [
+                    { path: "", element: <Navigate to="alloffers" /> },
                     { path: "alloffers", element: <AllOffers /> },
                     { path: "addoffer", element: <AddOffer /> },
                     { path: "editOffer/:idOffer", element: <EditOffer /> },
@@ -55,6 +59,7 @@ export const privateRoutes = [
             },
             {
                 path: "giftcard", element: <MainGiftCards />, children: [
+                    { path: "", element: <Navigate to="allgiftcard" /> },
                     { path: "allgiftcard", element: <AllGiftCards /> },
                     { path: "addgiftcard", element: <AddGiftCard /> },
                     { path: "requestedgiftcard", element: <RequestedGiftCards /> },
@@ -63,6 +68,7 @@ export const privateRoutes = [
             },
             {
                 path: "frontpageoffer", element: <MainFrontPageOffer />, children: [
+                    { path: "", element: <Navigate to="allfrontageoffer" /> },
                     { path: "allfrontageoffer", element: <AllFrontPageOffer /> },
                     { path: "addfrontpageoffer", element: <AddFrontPageOffer /> },
                 ]
@@ -74,6 +80,7 @@ export const privateRoutes = [
             { path: "skelton", element: <SkeletonLoader /> },
             {
                 path: "settings", element: <MainSettings />, children: [
+                    { path: "", element: <Navigate to="web" /> },
                     { path: "web", element: <WebSetting /> },
                     { path: "android", element: <Android /> },
                     { path: "ios", element: <Ios /> },
