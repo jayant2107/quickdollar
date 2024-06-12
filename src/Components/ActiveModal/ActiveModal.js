@@ -2,9 +2,13 @@ import { Button, Modal } from "antd";
 import styled from "styled-components";
 import { userActiveModal } from "../../Services/Collection";
 import { toast } from "react-toastify";
+import Loader from '../Loader/Loader';
+import { useState } from "react";
 
 const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
   // console.log(record)
+  const [loader, setLoader] = useState(false);
+
 
   const confirmMessage = record?.isActive === true
     ? "Are you sure you want to deactivate?"
@@ -17,7 +21,9 @@ const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
 
     }
     console.log(payload)
+    setLoader(true)
     let res = await userActiveModal(payload);
+    setLoader(false)
     console.log(res)
     if (res?.status === 200) {
       console.log(res.status)
@@ -57,8 +63,8 @@ const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
             </div>
             <div className="buttons">
               <CancelBtn onClick={handleCancel}>Cancel</CancelBtn>
-              <ConfirmBtn onClick={activeModals} className="confirm-button">
-                Confirm
+              <ConfirmBtn onClick={activeModals} className="confirm-button" disabled={loader}>
+                Confirm{loader ? <Loader /> : ""}
               </ConfirmBtn>
             </div>
           </div>
@@ -151,7 +157,7 @@ const CancelBtn = styled(Button)`
   &:focus {
     background: transparent;
     color: black !important;
-    border: 1px solid var(--Greyscale-1000) !important;
+    border: 1px solid black !important;
   }
 `;
 
