@@ -271,7 +271,7 @@ const ViewCustomOffers = () => {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
-      render: (text, record) =>  <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"600px" }} autoAdjustOverflow={false}  >
+      render: (text, record) =>  <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"400px" }} autoAdjustOverflow={false}  >
       <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
     </Tooltip>
     },

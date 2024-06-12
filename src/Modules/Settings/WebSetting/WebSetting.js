@@ -9,8 +9,10 @@ import { Checkbox } from 'antd';
 import { toast } from "react-toastify";
 import { getAllGeoCodes } from '../../../Services/Collection';
 import { addWebSetting } from '../../../Services/Collection';
+import Loader from '../../../Components/Loader/Loader';
 
 const WebSetting = () => {
+    const [loader, setLoader] = useState(false);
 
     const initialValues = {
         appTitle: 'Make up to $500 a month',
@@ -62,7 +64,9 @@ const WebSetting = () => {
                 ...values,
                 cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
               }
+              setLoader(true)
             let res = await addWebSetting(payload);
+            setLoader(false)
             if (res?.status === 200) {
                 toast.success("Web Setting added Successfully");
                 resetForm()
@@ -114,7 +118,7 @@ const WebSetting = () => {
         fetchGeoCordData();
     }, [])
 
-    document.title = "Web_Settings - quickdollarapp";
+    document.title = "Web Settings - quickdollarapp";
 
     return (
         <div>
@@ -125,7 +129,7 @@ const WebSetting = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ values, setFieldValue, touched, errors, setFieldTouched }) => (
+                    {({ values, setFieldValue, touched, errors, setFieldTouched ,resetForm}) => (
                         <Form>
                             <InputWrapper>
                                 <FieldWrapper>
@@ -354,7 +358,8 @@ const WebSetting = () => {
 
                             </InputWrapper>
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit"disabled={loader}>Submit {loader ? <Loader /> : ""}</SubmitBtn>
+                                <Button type="primary" danger onClick={resetForm}>Reset</Button>
                             </Footer>
                         </Form>
                     )}

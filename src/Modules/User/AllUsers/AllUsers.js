@@ -423,7 +423,7 @@ const AllUsers = () => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-  document.title = "Users - quickdollarapp";
+  document.title = "All Users - quickdollarapp";
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (

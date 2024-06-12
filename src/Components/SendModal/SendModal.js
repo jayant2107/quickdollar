@@ -6,6 +6,8 @@ import * as yup from "yup";
 import TextArea from "antd/es/input/TextArea";
 import { sendUserMessage } from "../../Services/Collection";
 import { toast } from "react-toastify";
+import Loader from "../Loader/Loader";
+import { useState } from "react";
 
 const SendModal = ({
   handleSendCancel,
@@ -14,6 +16,7 @@ const SendModal = ({
   viewLoader,
   record,
 }) => {
+  const [loader, setLoader] = useState(false) 
   const initialValues = {
     recipient: record?.email,
     yourSubject: "",
@@ -27,8 +30,10 @@ const SendModal = ({
   });
 
   const handleSubmit = async (values, { resetForm }) => {
+    setLoader(true)
     try {
       let res = await sendUserMessage(values);
+      setLoader(false)
       console.log(res, "res");
       if (res?.status === 200) {
         toast.success("Message send Successfully");
@@ -113,8 +118,8 @@ const SendModal = ({
                     <CancelBtn  onClick={handleSendCancel}>
                       Cancel
                     </CancelBtn>
-                    <SubmitBtn  htmlType="submit">
-                      Send
+                    <SubmitBtn  htmlType="submit" disabled={loader}>
+                      Send {loader?<Loader/>:""}
                     </SubmitBtn>
                   </Footer>
                 </Form>
@@ -233,7 +238,7 @@ const CancelBtn = styled(Button)`
   &:focus {
     background: transparent;
     color: black !important;
-    border: 1px solid var(--Greyscale-1000) !important;
+    border: 1px solid black !important;
   }
 `;
 

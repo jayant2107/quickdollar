@@ -292,7 +292,7 @@ const AllOffers = () => {
       key: "code",
       dataIndex: "offerCountry",
       render: (text, record) => (
-        <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"600px"}} autoAdjustOverflow={false}>
+        <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"400px"}} autoAdjustOverflow={false}>
           <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
         </Tooltip>
       ),
@@ -655,6 +655,4 @@ const TooltipContent = styled.div`
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   white-space: normal;
-  padding: 8px;
-  margin: 8px 0px;
 `;

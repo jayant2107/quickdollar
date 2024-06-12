@@ -296,7 +296,7 @@ const EditUserModal = ({
                     <CancelBtn  onClick={handleEditCancel}>
                       Cancel
                     </CancelBtn>
-                    <SubmitBtn  htmlType="submit">
+                    <SubmitBtn  htmlType="submit" disabled={loader}>
                       Save{loader?<Loader/>:""}
                     </SubmitBtn>
                   </Footer>
@@ -442,7 +442,7 @@ const CancelBtn = styled(Button)`
   &:focus {
     background: transparent;
     color: black !important;
-    border: 1px solid var(--Greyscale-1000) !important;
+    border: 1px solid black !important;
   }
 `;
 

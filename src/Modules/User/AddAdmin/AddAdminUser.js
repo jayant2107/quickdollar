@@ -17,7 +17,6 @@ const AddAdminUser = () => {
     emailAddress: '',
     password: '',
     confirmPassword: '',
-    isAdmin: true
   };
 
   const validationSchema = yup.object().shape({
@@ -38,7 +37,7 @@ const AddAdminUser = () => {
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const { firstName, lastName, userName, emailAddress, password } = values;
-      const payload = { firstName, lastName, userName, emailAddress, password };
+      const payload = { firstName, lastName, userName, emailAddress, password ,isAdmin: true};
       setLoader(true);
       let res = await addAdminUser(payload);
       setLoader(false);
@@ -136,19 +135,19 @@ const AddAdminUser = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-                <FieldWrapper>
+                {/* <FieldWrapper>
                   <Label>Is Admin</Label>
                   <FieldContainer>
                     <CheckboxWrapper>
                       <Checkbox onChange={onChange} name="isAdmin" checked>Yes</Checkbox>
                     </CheckboxWrapper>
                   </FieldContainer>
-                </FieldWrapper>
+                </FieldWrapper> */}
 
               </InputWrapper>
 
               <Footer>
-                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
+                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit{loader ? <Loader /> : ""}</SubmitBtn>
                 <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
               </Footer>
             </Form>

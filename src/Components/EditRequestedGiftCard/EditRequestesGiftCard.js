@@ -5,6 +5,8 @@ import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
 import { editRequestedGiftCard } from "../../Services/Collection";
 import { toast } from "react-toastify";
+import Loader from "../Loader/Loader";
+import { useState } from "react";
 
 const EditRequestGiftCard = ({
   handleEditCancel,
@@ -15,11 +17,12 @@ const EditRequestGiftCard = ({
   fetchData,
 }) => {
   console.log(record)
+  const [loader, setLoader] = useState(false);
 
   const initialValues = {
-    giftCardName: record?.giftcard?.giftCardName || '',
-    giftCardPoints: record?.giftcard?.giftCardPoints||"",
-    isActive: record?.giftcard?.isActive ? "true" : "false",
+    giftCardName: record?.Giftcard?.giftCardName || '',
+    giftCardPoints: record?.Giftcard?.giftCardPoints||"",
+    isActive: record?.Giftcard?.isActive ? "true" : "false",
   };
  
 
@@ -48,9 +51,9 @@ const EditRequestGiftCard = ({
 
     }
     console.log("Form values:", payload);
-    // setLoader(true)
+    setLoader(true)
     let res = await editRequestedGiftCard(payload)
-    // setLoader(false)
+    setLoader(false)
     if (res?.status === 200) {
       console.log(res.status)
       let fetch = fetchData()
@@ -160,7 +163,7 @@ const EditRequestGiftCard = ({
 
                     <Footer>
                       <ResetBtn onClick={resetForm}>Reset</ResetBtn>
-                      <SubmitBtn  htmlType="submit">Submit</SubmitBtn>
+                      <SubmitBtn htmlType="submit" disabled={loader} >Submit{loader ? <Loader /> : ""}</SubmitBtn>
                     </Footer>
                   </Form>
                 )}
@@ -272,11 +275,13 @@ const ResetBtn = styled(Button)`
   align-items: center !important;
   justify-content: center !important;
   border: 1px solid black !important;
+  outline:none !important;
   
   &:hover {
     background: transparent;
     color: black !important;
     border: 1px solid black  !important;
+    outline:none !important;
   }
 
   // Remove active effect
@@ -284,15 +289,18 @@ const ResetBtn = styled(Button)`
     background: transparent;
     color: black !important;
     border: 1px solid black !important;
+    outline:none !important;
   }
 
   // Remove focus effect
   &:focus {
     background: transparent;
     color: black !important;
-    border: 1px solid var(--Greyscale-1000) !important;
+    border: 1px solid black !important;
+    outline:none !important;
   }
 `;
+
 
 
 const SubmitBtn = styled(Button)`
