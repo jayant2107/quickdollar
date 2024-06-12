@@ -153,7 +153,7 @@ const RequestGiftCard = () => {
       dataIndex: "giftCardName",
       key: "giftname",
       fixed: "left",
-      render: (text, record) => record?.giftcard?.giftCardName || "NA",
+      render: (text, record) => record?.Giftcard?.giftCardName || "NA",
     },
     {
       title: (
@@ -178,7 +178,7 @@ const RequestGiftCard = () => {
       ),
       dataIndex: "giftCardPoints",
       key: "price",
-      render: (text, record) => record?.giftcard?.giftCardPoints || "NA",
+      render: (text, record) => record?.Giftcard?.giftCardPoints || "NA",
     },
     {
       title: (
@@ -209,10 +209,10 @@ const RequestGiftCard = () => {
           return str.charAt(0).toUpperCase() + str.slice(1);
         };
         const capitalizedFirstName = capitalizeFirstLetter(
-          record?.user?.firstName || ""
+          record?.User?.firstName || ""
         );
         const capitalizedLastName = capitalizeFirstLetter(
-          record?.user?.lastName || ""
+          record?.User?.lastName || ""
         );
         const fullName =
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
@@ -243,7 +243,7 @@ const RequestGiftCard = () => {
 
       dataIndex: "giftCardPoints",
       key: "price",
-      render: (text, record) => record?.user?.Points || "NA",
+      render: (text, record) => record?.User?.Points || "NA",
 
     },
     {
@@ -413,7 +413,7 @@ const RequestGiftCard = () => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-  document.title = "Requested Gift Cards - Login - quickdollarapp";
+  document.title = "Requested Gift Cards - quickdollarapp";
 
 
   return (

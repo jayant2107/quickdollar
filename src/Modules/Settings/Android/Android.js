@@ -101,7 +101,7 @@ const Android = () => {
     fetchGeoCordData();
   }, [])
 
-  document.title="Android_Settings - Login - quickdollarapp";
+  document.title="Android_Settings - quickdollarapp";
   
   return (
     <div>

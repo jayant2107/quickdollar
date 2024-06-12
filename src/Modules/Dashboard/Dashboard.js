@@ -531,7 +531,7 @@ C491.375,120.986,496,130.003,496,140.117z"
     fetchChartData();
   }, [selectedOption])
 
-  document.title="Dashboard - Login - quickdollarapp"
+  document.title="Dashboard - quickdollarapp"
 
   return (
     <DriverWrapper>

@@ -107,7 +107,7 @@ const AllGiftCards = () => {
         </div>
       ),
       
-      width: 150,
+      
       dataIndex: "giftCardName",
       key: "name",
       fixed: "left",
@@ -239,7 +239,6 @@ const AllGiftCards = () => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 150,
       render: (text, record) => (
         <TableAction
           edit={formActions.edit}
@@ -310,7 +309,7 @@ const AllGiftCards = () => {
     fetchData();
   }, [currentPage, pageSize,search,fieldName, orderMethod]);
 
-  document.title="Gift Cards - Login - quickdollarapp";
+  document.title="Gift Cards - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>

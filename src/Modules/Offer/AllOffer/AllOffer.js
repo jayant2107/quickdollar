@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
-import { Select } from "antd";
+import { Select, Tooltip } from "antd";
 import {
   activateDeactivateAllOffers,
   deleteAllOffers,
@@ -243,7 +243,12 @@ const AllOffers = () => {
       key: "link",
       width: 200,
       dataIndex: "offerLink",
-      render: (text, record) => <Link to="/">{record?.offerLink}</Link>,
+     
+      render: (text, record) => (
+        <Tooltip title={record?.offerLink || "NA"} placement="top" >
+          <TooltipContent><Link to="#">{record?.offerLink || "NA"}</Link></TooltipContent>
+        </Tooltip>
+      ),
     },
     {
       title: (
@@ -269,19 +274,28 @@ const AllOffers = () => {
 
       key: "amount",
       dataIndex: "offerPoints",
-      render: (text, record) => record?.offerPoints,
+      render: (text, record) => record?.offerPoints || "NA",
     },
     {
       title: "Offer Short Description",
       key: "description",
       dataIndex: "offerShortDescription",
-      render: (text, record) => record?.offerShortDescription || "NA",
+      render: (text, record) => (
+        <Tooltip title={record?.offerShortDescription || "NA"} placement="top" overlayStyle={{maxWidth:"400px"}} >
+          <TooltipContent>{record?.offerShortDescription || "NA"}</TooltipContent>
+        </Tooltip>
+      ),
+      
     },
     {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
-      render: (text, record) => record?.offerCountry || "NA",
+      render: (text, record) => (
+        <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"600px"}} autoAdjustOverflow={false}>
+          <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
+        </Tooltip>
+      ),
       // width:300,
     },
     {
@@ -334,9 +348,9 @@ const AllOffers = () => {
       key: "oneAndroid",
       dataIndex: "oneAndroid",
       render: (text, record) => (
-        <StyledTextApplication text={text}>
+        <StyledText text={text}>
           {text || "NA"}{" "}
-        </StyledTextApplication>
+        </StyledText>
       ),
     },
     {
@@ -344,9 +358,9 @@ const AllOffers = () => {
       key: "twoAndroid",
       dataIndex: "twoAndroid",
       render: (text, record) => (
-        <StyledTextApplication text={text}>
+        <StyledText text={text}>
           {text || "NA"}
-        </StyledTextApplication>
+        </StyledText>
       ),
     },
     {
@@ -354,9 +368,9 @@ const AllOffers = () => {
       key: "oneIos",
       dataIndex: "oneIos",
       render: (text, record) => (
-        <StyledTextApplication text={text}>
+        <StyledText text={text}>
           {text || "NA"}
-        </StyledTextApplication>
+        </StyledText>
       ),
     },
     {
@@ -364,9 +378,9 @@ const AllOffers = () => {
       key: "twoIos",
       dataIndex: "twoIos",
       render: (text, record) => (
-        <StyledTextApplication text={text}>
+        <StyledText text={text}>
           {text || "NA"}
-        </StyledTextApplication>
+        </StyledText>
       ),
     },
     {
@@ -438,7 +452,7 @@ const AllOffers = () => {
     fetchGeoCordData(); // Fetch geo codes
   }, [currentPage, pageSize, search, fieldName, orderMethod, selectedOption]);
 
-  document.title = "Offers - Login - quickdollarapp";
+  document.title = "Offers - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -455,26 +469,26 @@ const AllOffers = () => {
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>
-        <SelectField
-          showSearch // Enable searching
-          placeholder={selectedOption}
-          onChange={(value) => setSelectedOption(value)}
-          style={{ width: 300 }}
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            typeof option.children === "string" &&
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          <Option key="Select Geo Code" value="Select Geo Code">
-            Select Geo Code
-          </Option>
-          {geoCodes?.map((item, index) => (
-            <Option key={item?.country} value={item?.iso_code_2}>
-              {item?.country + " (" + item?.iso_code_2 + ")"}
+          <SelectField
+            showSearch // Enable searching
+            placeholder={selectedOption}
+            onChange={(value) => setSelectedOption(value)}
+            style={{ width: 300 }}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              typeof option.children === "string" &&
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option key="Select Geo Code" value="Select Geo Code">
+              Select Geo Code
             </Option>
-          ))}
-        </SelectField>
+            {geoCodes?.map((item, index) => (
+              <Option key={item?.country} value={item?.iso_code_2}>
+                {item?.country + " (" + item?.iso_code_2 + ")"}
+              </Option>
+            ))}
+          </SelectField>
           <button onClick={ActiveAllUser}>Active All Offers</button>
           <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }}>
             De-active All Offers
@@ -568,7 +582,7 @@ const AllUserWrapper = styled.div`
 const StyledText = styled.span`
   color: #fff;
 
-  background-color: ${({ text }) => (text == "Yes" ? "#00e633" : "red")};
+  background-color: ${({ text }) => (text === "Yes" ? "#00e633" : "red")};
 
   padding: 4px 8px;
   border-radius: 12px;
@@ -576,17 +590,11 @@ const StyledText = styled.span`
   align-items: center;
   gap: 8px;
 `;
-const StyledTextApplication = styled.span`
-  padding: 4px 8px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-`;
+
 
 const StatusStyledText = styled.span`
   color: #fff;
-  background-color: ${({ status }) => (status == "Active" ? "#00e633" : "red")};
+  background-color: ${({ status }) => (status === "Active" ? "#00e633" : "red")};
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;
@@ -638,4 +646,15 @@ const SelectField = styled(Select)`
     box-shadow: none;
     border-color: #e5e5e5 !important;
   }
+`;
+const TooltipContent = styled.div`
+  max-height: 4.5em; // Approx. three lines
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // Limit to three lines
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  white-space: normal;
+  padding: 8px;
+  margin: 8px 0px;
 `;

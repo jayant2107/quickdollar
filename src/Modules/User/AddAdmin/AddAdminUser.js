@@ -64,7 +64,7 @@ const AddAdminUser = () => {
     console.log(`checked = ${e.target.checked}`);
   };
 
-  document.title="Manage Users - Login - quickdollarapp";
+  document.title="Manage Users - quickdollarapp";
 
   return (
     <div>

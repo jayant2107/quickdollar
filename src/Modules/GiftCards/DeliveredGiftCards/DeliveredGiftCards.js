@@ -109,7 +109,7 @@ const DeliveredGift = () => {
       dataIndex: "giftCardName",
       key: "giftname",
       fixed: "left",
-      render: (text, record) => record?.giftcard?.giftCardName || "NA",
+      render: (text, record) => record?.Giftcard?.giftCardName || "NA",
     },
     {
       title: (
@@ -134,7 +134,7 @@ const DeliveredGift = () => {
       ),
       dataIndex: "giftCardPoints",
       key: "price",
-      render: (text, record) => record?.giftcard?.giftCardPoints || "NA",
+      render: (text, record) => record?.Giftcard?.giftCardPoints || "NA",
     },
     {
       title: (
@@ -165,10 +165,10 @@ const DeliveredGift = () => {
           return str.charAt(0).toUpperCase() + str.slice(1);
         };
         const capitalizedFirstName = capitalizeFirstLetter(
-          record?.user?.firstName || ""
+          record?.User?.firstName || ""
         );
         const capitalizedLastName = capitalizeFirstLetter(
-          record?.user?.lastName || ""
+          record?.User?.lastName || ""
         );
         const fullName =
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
@@ -217,7 +217,7 @@ const DeliveredGift = () => {
       key: "usertype",
       render: (text, record) => {
         let userType;
-        switch (record?.user?.userApplicationtype) {
+        switch (record?.User?.userApplicationtype) {
           case "0":
             userType = "iOS";
             break;
@@ -261,7 +261,7 @@ const DeliveredGift = () => {
       ),
       dataIndex: "giftCardCode",
       key: "cardcode",
-      render: (text, record) => record?.giftCardCode,
+      render: (text, record) => record?.giftCardCode || "NA",
     },
     {
       title: (
@@ -288,8 +288,8 @@ const DeliveredGift = () => {
       dataIndex: "updatedAt",
       key: "deliveryDate",
       render: (text, record) => {
-        if(!record?.giftcard?.updatedAt) return "NA";
-        const date = DateTime.fromISO(record?.giftcard?.updatedAt);
+        if(!record?.Giftcard?.updatedAt) return "NA";
+        const date = DateTime.fromISO(record?.Giftcard?.updatedAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
      
@@ -323,7 +323,7 @@ const DeliveredGift = () => {
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
 
-  document.title="Delivered Gift Cards - Login - quickdollarapp";
+  document.title="Delivered Gift Cards - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>

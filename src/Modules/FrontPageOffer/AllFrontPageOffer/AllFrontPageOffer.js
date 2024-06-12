@@ -10,6 +10,8 @@ import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditFrontpageModal from "../../../Components/EditFrontpageModal/EditFrontpageModal";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { deleteFrontpageOffer } from "../../../Services/Collection";
+import { Tooltip } from "antd";
+import { Link } from "react-router-dom";
 
 const AllFrontPageOffer = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -44,6 +46,7 @@ const AllFrontPageOffer = () => {
       console.log("Fetch Params:", params.toString());
       const res = await getAllFrontPage(params);
       if (res?.status === 200) {
+        console.log(res, "all frontpage");
         setUserData(res?.msg?.findUser || []);
         setTotalUsers(res?.msg?.totalUsers || 0);
       } else {
@@ -111,11 +114,14 @@ const AllFrontPageOffer = () => {
         </div>
       ),
 
-      width: 200,
       dataIndex: "frontpageofferTitle",
       key: "offertext",
       fixed: "left",
-      render: (text, record) => record?.frontpageofferTitle || "NA",
+      render: (text, record) => (
+        <Tooltip title={record?.frontpageofferTitle || "NA"} placement="top">
+          <TooltipContent>{record?.frontpageofferTitle || "NA"}</TooltipContent>
+        </Tooltip>
+      ),
     },
     {
       title: (
@@ -141,13 +147,11 @@ const AllFrontPageOffer = () => {
 
       dataIndex: "frontpageofferLink",
       key: "offerlink",
-      render: (text, record) => (
-        <TableImageWrapper>
-          <a href={record?.frontpageofferLink}>
-            {record?.frontpageofferLink || "NA"}
-          </a>
-        </TableImageWrapper>
-      ),
+      render: (text, record) =>
+        <Tooltip title={record?.frontpageofferLink || "NA"} placement="top">
+          <TooltipContent><Link to="#">{record?.frontpageofferLink || "NA"}</Link></TooltipContent>
+        </Tooltip>
+       
     },
     {
       title: (
@@ -170,7 +174,7 @@ const AllFrontPageOffer = () => {
           />
         </div>
       ),
-     
+
       dataIndex: "frontpageofferImage",
       key: "offerimage",
       render: (text, record) => (
@@ -178,7 +182,7 @@ const AllFrontPageOffer = () => {
           <img src={record?.frontpageofferImage} alt="NA" />
         </TableImageWrapper>
       ),
-       },
+    },
     {
       title: (
         <div
@@ -207,7 +211,7 @@ const AllFrontPageOffer = () => {
           <img src={record?.frontpageofferButton} alt="NA" />
         </TableImageWrapper>
       ),
-       },
+    },
     {
       title: (
         <div
@@ -230,20 +234,19 @@ const AllFrontPageOffer = () => {
         </div>
       ),
 
-     
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
-        if(!record?.createdAt) return "NA";
+        if (!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-      },
+    },
     {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 150,
+      width: 100,
       render: (text, record) => (
         <TableAction
           apply={formActions.apply}
@@ -300,14 +303,11 @@ const AllFrontPageOffer = () => {
     setSelectedRecord(null);
   };
 
- 
-
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
-  
 
-  document.title="Front Page Offers - Login - quickdollarapp";
+  document.title = "Front Page Offers";
   return (
     <AllUserWrapper byTheme={byTheme}>
       {deleteModal && (
@@ -412,4 +412,15 @@ const TableImageWrapper = styled.div`
     width: 100px;
     object-fit: contain;
   }
+`;
+const TooltipContent = styled.div`
+  max-height: 4.5em; // Approx. three lines
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // Limit to three lines
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  white-space: normal;
+  padding: 8px;
+  margin: 8px 0px;
 `;

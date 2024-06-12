@@ -17,6 +17,7 @@ import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addRecord } from "../../../Store/slices/OfferRecord";
+import { Tooltip } from "antd";
 
 
 const ViewCustomOffers = () => {
@@ -144,6 +145,31 @@ const ViewCustomOffers = () => {
     setCurrentPage(1);
   };
 
+
+  const paginationConfig = {
+    current: currentPage,
+    pageSize: pageSize,
+    total: totalUsers,
+    onChange: setCurrentPage,
+    onShowSizeChange: (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page whenever page size changes
+    },
+    showSizeChanger: true,
+    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
+    // showQuickJumper: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} of ${total} items`,
+  };
+
+  const formActions = {
+    apply: false,
+    view: false,
+    edit: true,
+    delete: true,
+  };
+
+  
   const columns = [
     {
       title: (
@@ -153,6 +179,7 @@ const ViewCustomOffers = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            
           }}
         >
           Offer Title{" "}
@@ -199,7 +226,10 @@ const ViewCustomOffers = () => {
       width: 400,
 
       render: (text, record) => (
-        <Link to="#"> {record?.offerLink || "NA"}</Link>
+        <Tooltip title={record?.offerLink || "NA"} placement="top" >
+        <TooltipContent><Link to="#"> {record?.offerLink || "NA"}</Link></TooltipContent>
+      </Tooltip>
+        
       ),
     },
     {
@@ -225,29 +255,30 @@ const ViewCustomOffers = () => {
       ),
 
       key: "amount",
-      width: 200,
       dataIndex: "offerPoints",
-      render: (text, record) => record?.offerPoints,
+      render: (text, record) => record?.offerPoints || "NA",
     },
     {
       title: "Offer Short Description",
       key: "description",
       dataIndex: "offerShortDescription",
-      width: 400,
-      render: (text, record) => record?.offerShortDescription || "NA",
+      render: (text, record) => 
+      <Tooltip title={record?.offerShortDescription || "NA"} placement="top" overlayStyle={{maxWidth:"400px",backgroundColor:"#eff2f5"}}>
+      <TooltipContent>{record?.offerShortDescription || "NA"}</TooltipContent>
+    </Tooltip>
     },
     {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
-      width: 300,
-      render: (text, record) => record?.offerCountry || "NA",
+      render: (text, record) =>  <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"600px" }} autoAdjustOverflow={false}  >
+      <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
+    </Tooltip>
     },
     {
       title: "Status",
       dataIndex: "isActive",
       key: "status",
-      width: 150,
       render: (text, record) => (
         <StatusStyledText status={record.isActive ? "Active" : "Inactive"}>
           {record.isActive ? "Active" : "Inactive"}
@@ -264,7 +295,6 @@ const ViewCustomOffers = () => {
       title: "Daily Cap Limit",
       key: "limit",
       dataIndex: "dailyCAPLimit",
-      width: 200,
       render: (text, record) => record?.dailyCAPLimit || "NA",
     },
     {
@@ -292,25 +322,26 @@ const ViewCustomOffers = () => {
       title: "APPLICATION GROUP ONE-ANDROID",
       key: "oneAndroid",
       dataIndex: "oneAndroid",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
     },
     {
       title: "APPLICATION GROUP TWO-ANDROID",
       key: "twoAndroid",
       dataIndex: "twoAndroid",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
     },
     {
       title: "APPLICATION GROUP ONE-IOS",
       key: "oneIos",
       dataIndex: "oneIos",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
     },
     {
       title: "APPLICATION GROUP TWO-IOS",
       key: "twoIos",
       dataIndex: "twoIos",
-      render: (text, record) => <StyledText text={text}>{text}</StyledText>,
+
+      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
     },
 
     {
@@ -337,7 +368,6 @@ const ViewCustomOffers = () => {
 
       dataIndex: "createdAt",
       key: "createdat",
-      width: 300,
       render: (text, record) => {
         if (!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
@@ -348,7 +378,7 @@ const ViewCustomOffers = () => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 150,
+      width: 100,
       render: (text, record) => (
         <TableAction
           apply={formActions.apply}
@@ -363,39 +393,15 @@ const ViewCustomOffers = () => {
       ),
     },
   ];
-
-  const paginationConfig = {
-    current: currentPage,
-    pageSize: pageSize,
-    total: totalUsers,
-    onChange: setCurrentPage,
-    onShowSizeChange: (current, size) => {
-      setPageSize(size);
-      setCurrentPage(1); // Reset to first page whenever page size changes
-    },
-    showSizeChanger: true,
-    pageSizeOptions: ["5", "10", "15", "20"], // Include both options: 5 and 10
-    // showQuickJumper: true,
-    showTotal: (total, range) =>
-      `Showing ${range[0]}-${range[1]} of ${total} items`,
-  };
-
-  const formActions = {
-    apply: false,
-    view: false,
-    edit: true,
-    delete: true,
-  };
-
   const scrollConfig = {
-    x: 4000, // Horizontal scrolling
+    x: 3000, // Horizontal scrolling
   };
 
   useEffect(() => {
     fetchData(); // Fetch geo codes
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-  document.title = "Custom Offers - Login - quickdollarapp";
+  document.title = "Custom Offers - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -517,4 +523,13 @@ const StatusStyledText = styled.span`
   align-items: center;
   gap: 8px;
   cursor: pointer;
+`;
+const TooltipContent = styled.div`
+  max-height: 4.5em; // Approx. three lines
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // Limit to three lines
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  white-space: normal;
 `;

@@ -387,7 +387,7 @@ const AllAbusedUsers = () => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-   document.title="Abused Users - Login - quickdollarapp"
+   document.title="Abused Users - quickdollarapp"
 
   return (
     <AllAbusedUserWrapper byTheme={byTheme}>

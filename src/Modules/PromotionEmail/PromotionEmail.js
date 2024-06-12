@@ -109,7 +109,7 @@ const PromotionEmail = () => {
         fetchGeoCordData();
     }, [])
 
-    document.title = "Promotion Email - Login - quickdollarapp";
+    document.title = "Promotion Email - quickdollarapp";
 
     return (
         <div>

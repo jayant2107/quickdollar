@@ -146,17 +146,17 @@ const CompletedOffers = () => {
       ),
       key: "name",
       dataIndex: "firstName",
-      width: 150,
+      width: 200,
       fixed: "left",
       render: (text, record) => {
         const capitalizeFirstLetter = (str) => {
           return str.charAt(0).toUpperCase() + str.slice(1);
         };
         const capitalizedFirstName = capitalizeFirstLetter(
-          record?.user?.firstName || ""
+          record?.User?.firstName || ""
         );
         const capitalizedLastName = capitalizeFirstLetter(
-          record?.user?.lastName || ""
+          record?.User?.lastName || ""
         );
         const fullName =
           `${capitalizedFirstName} ${capitalizedLastName}`.trim();
@@ -188,7 +188,7 @@ const CompletedOffers = () => {
       
       key: "email",
       dataIndex: "email",
-      render: (text, record) => record?.user?.email,
+      render: (text, record) => record?.User?.email,
       
     },
     {
@@ -214,7 +214,7 @@ const CompletedOffers = () => {
       ),
       key: "title",
       dataIndex: "offerTitle",
-      render: (text, record) => record?.offer?.offerTitle,
+      render: (text, record) => record?.Offer?.offerTitle,
     
     },
     {
@@ -240,7 +240,7 @@ const CompletedOffers = () => {
       ),
       key: "country",
       dataIndex: "countryCode",
-      render: (text, record) => record?.user?.countryCode,
+      render: (text, record) => record?.User?.countryCode,
      
     },
     {
@@ -306,7 +306,7 @@ const CompletedOffers = () => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 150,
+      width: 100,
       render: (text, record) => (
         <TableAction
           edit={formActions.edit}
@@ -330,7 +330,7 @@ const CompletedOffers = () => {
   };
 
   const scrollConfig = {
-    x: 2000, // Horizontal scrolling
+    x: 1000, // Horizontal scrolling
   };
 
 
@@ -340,7 +340,7 @@ const CompletedOffers = () => {
     fetchData();
   }, [currentPage, pageSize,search,fieldName, orderMethod]);
 
-  document.title="Completed Offers - Login - quickdollarapp";
+  document.title="Completed Offers - quickdollarapp";
   return (
     <AllUserWrapper byTheme={byTheme}>
        {deleteModal && (

@@ -97,7 +97,7 @@ const AddFrontPageOffer = () => {
         setButtonImgError(null);
     };
 
-    document.title = "Add Frontpage Offer - Login - quickdollarapp";
+    document.title = "Add Frontpage Offer - quickdollarapp";
 
     return (
         <div>

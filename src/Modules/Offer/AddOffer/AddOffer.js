@@ -217,7 +217,7 @@ const AddOffer = () => {
     fetchdropDownUsers();
   }, [])
 
-  document.title = "Add Offer - Login - quickdollarapp";
+  document.title = "Add Offer - quickdollarapp";
 
   return (
     <div>

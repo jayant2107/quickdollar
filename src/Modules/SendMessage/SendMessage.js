@@ -62,7 +62,7 @@ const SendMessage = () => {
         }
     };
 
-    document.title="Sendmessage - Login - quickdollarapp";
+    document.title="Sendmessage - quickdollarapp";
     
     return (
         <div>

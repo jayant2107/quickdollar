@@ -290,7 +290,7 @@ const EditOffer = () => {
     fetchUsers();
   }, []);
 
-  document.title = "Edit Offer - Login - quickdollarapp";
+  document.title = "Edit Offer - quickdollarapp";
 
   return (
     <div>

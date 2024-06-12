@@ -93,7 +93,7 @@ const AddGiftCard = () => {
         setGiftImgPreview(null);
     };
 
-    document.title = "Add Gift Card - Login - quickdollarapp";
+    document.title = "Add Gift Card - quickdollarapp";
 
     return (
         <div>

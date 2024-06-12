@@ -98,7 +98,7 @@ const Ios = () => {
     fetchGeoCordData();
   }, [])
 
-  document.title="IOS_Settings - Login - quickdollarapp";
+  document.title="IOS_Settings - quickdollarapp";
 
 
   return (

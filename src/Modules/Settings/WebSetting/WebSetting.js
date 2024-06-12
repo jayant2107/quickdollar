@@ -114,7 +114,7 @@ const WebSetting = () => {
         fetchGeoCordData();
     }, [])
 
-    document.title = "Web_Settings - Login - quickdollarapp";
+    document.title = "Web_Settings - quickdollarapp";
 
     return (
         <div>
