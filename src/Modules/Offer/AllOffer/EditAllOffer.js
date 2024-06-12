@@ -14,6 +14,7 @@ import {
   getAllGeoCodes,
 } from "../../../Services/Collection";
 import { toast } from "react-toastify";
+import Loader from "../../../Components/Loader/Loader";
 
 const offerLocationOptions = [
   {
@@ -52,6 +53,7 @@ const offerLocationOptions = [
 
 const EditOffer = () => {
   const [geoCodes, setGeoCodes] = useState([]);
+  const [loader, setLoader] = useState(false);
   const [page, setPage] = useState(1);
   const [userData, setUserData] = useState([]);
   const [offerImgPreview, setOfferImgPreview] = useState(null);
@@ -65,7 +67,6 @@ const EditOffer = () => {
 
   const record = useSelector((state) => state.offerRecord.record);
   const { idOffer } = useParams();
-  console.log(record, "record");
   const navigate = useNavigate();
 
   const initialValues = {
@@ -86,20 +87,16 @@ const EditOffer = () => {
     relistOffer: record?.relistOffer?.toString(),
     StaticURL: record?.StaticURL?.toString(),
     offerLocation: record?.displaylocation?.split(","),
-    // offerPlatform: record?.offerPlatform?.split(","),
+    offerPlatform: record?.offerPlatform?.toString(),
     offerCreatedFor: record?.offerCreatedFor,
     offerH1Title: record?.offerH1Title,
     SelectPlatFormForOffer: record?.SelectPlatFormForOffer?.split(","),
-    // customPostbaclParams: "",
+    customPostbackParams: record?.customPostbackParams,
     isHotOffer: record?.isHotOffer?.toString(),
-    // hotOfferFor: "hotOfferForWeb",
-    // androidApplicationGroup: false,
-    // iosApplicationGroup: false,
+    hotOfferFor: "hotOfferForWeb",
     // user: "",
     // userOfferUrl: "",
   };
-
-  console.log([record?.offerPlatform]);
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -145,15 +142,16 @@ const EditOffer = () => {
       .of(yup.string())
       .min(1, "Select at least one country"),
     dailyCAPLimit: yup
-      .number()
-      .typeError("Daily CAP limit must be a number")
-      .positive("Daily CAP limit must be a positive number")
-      .required("Daily CAP limit is required"),
-    // user: yup.string().required("User is required"),
+      .string()
+      .required("Cap Limit  is required")
+      .test(
+        "is-number",
+        "Enter number only",
+        (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
+      ),
   });
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
-    console.log("--submit");
     try {
       const formData = new FormData();
       formData.append("idOffer", idOffer);
@@ -174,11 +172,12 @@ const EditOffer = () => {
       formData.append("offerH1Title", values?.offerH1Title);
       formData.append("offerCreatedFor", values?.offerCreatedFor);
       formData.append("SelectPlatFormForOffer", values?.SelectPlatFormForOffer);
+      formData.append("customPostbackParams", values?.customPostbackParams);
       formData.append("fraudUser", values?.fraudUser);
       if (flag) {
         formData.append("offerImage", values?.offerImage);
       }
-      console.log(values);
+      setLoader(true);
       const res = await editOffers(formData);
       if (res?.status === 200) {
         toast.success("Edited Offer successfully");
@@ -187,7 +186,7 @@ const EditOffer = () => {
         resetForm();
         setH1TitleValue("");
         setLongDescriptionValue("");
-        console.log(formData, "formData");
+        setLoader(false);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -222,15 +221,12 @@ const EditOffer = () => {
   };
 
   const fetchUsers = async () => {
-    console.log("start");
-    // setLoader(true);
     const params = new URLSearchParams();
     params.append("limit", 20);
     try {
       const res = await getAllDropdownUsers();
       if (res?.status === 200) {
         setUserData(res?.data);
-        console.log(res, "users");
       } else {
         let message =
           res?.response?.data?.message ||
@@ -244,7 +240,6 @@ const EditOffer = () => {
       console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
-      // setLoader(false);
     }
   };
 
@@ -741,7 +736,31 @@ const EditOffer = () => {
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer Platform</Label>
-                  <Field name="offerPlatform">
+                  <FieldWrapper>
+                    <RdioWrapper>
+                      <div>
+                        <Field
+                          type="radio"
+                          name="offerPlatform"
+                          value="true"
+                          id="shopOffer"
+                        />
+                        <RadioLabel htmlFor="shopOffer">shopOffer</RadioLabel>
+                      </div>
+                      <div>
+                        <Field
+                          type="radio"
+                          name="offerPlatform"
+                          value="false"
+                          id="quickThoughts"
+                        />
+                        <RadioLabel htmlFor="quickThoughts">
+                          quickThoughts
+                        </RadioLabel>
+                      </div>
+                    </RdioWrapper>
+                  </FieldWrapper>
+                  {/* <Field name="offerPlatform">
                     {({ field, form: { setFieldValue } }) => (
                       <FieldContainer style={{ display: "flex" }}>
                         <Checkbox.Group
@@ -761,7 +780,7 @@ const EditOffer = () => {
                         </RequiredWrapper>
                       </FieldContainer>
                     )}
-                  </Field>
+                  </Field> */}
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer location to display</Label>
@@ -793,11 +812,17 @@ const EditOffer = () => {
                           className="checkboxGroup"
                           value={field.value}
                           options={[
-                            { label: "Android-Application Group 1", value: "1" },
+                            {
+                              label: "Android-Application Group 1",
+                              value: "1",
+                            },
                             { label: "ios-Application Group 1", value: "2" },
                           ]}
                           onChange={(selectedValues) =>
-                            setFieldValue("SelectPlatFormForOffer", selectedValues)
+                            setFieldValue(
+                              "SelectPlatFormForOffer",
+                              selectedValues
+                            )
                           }
                         />
 
@@ -836,12 +861,12 @@ const EditOffer = () => {
                     <Label>Custom Postback Params</Label>
                     <FieldContainer>
                       <InputField
-                        name="customPostbaclParams"
+                        name="customPostbackParams"
                         placeholder="custom postback params
 "
                       />
                       <RequiredWrapper>
-                        <ErrorMessage name="customPostbaclParams" />
+                        <ErrorMessage name="customPostbackParams" />
                       </RequiredWrapper>
                     </FieldContainer>
                   </FieldWrapper>
@@ -955,8 +980,8 @@ const EditOffer = () => {
                 >
                   Reset
                 </Button>
-                <SubmitBtn type="primary" htmlType="submit">
-                  Submit
+                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>
+                  Submit{loader?<Loader/>:""}
                 </SubmitBtn>
               </Footer>
             </Form>

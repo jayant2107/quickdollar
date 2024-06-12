@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Space, Menu } from "antd";
+import { Dropdown, Space, Menu, Select } from "antd";
 import { getAllGeoCodes, getDashboard, getChartData } from "../../Services/Collection";
 import {
   Chart as ChartJS,
@@ -29,6 +29,9 @@ const Dashboard = () => {
   const [cardInfo, setCardInfo] = useState([]);
   const [chartInfo, setChartInfo] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Select Geo Code...");
+
+  const { Option } = Select;
+
 
   
   // -------------API--------------
@@ -81,7 +84,7 @@ const Dashboard = () => {
   const fetchChartData = async () => {
     try {
       let params = new URLSearchParams();
-      params.append("country", selectedOption.split("- ")[1] || "US");
+      params.append("country", selectedOption || "US");
       const res = await getChartData(selectedOption != "Select Geo Code..." && params);
       if (res?.status === 200) {
         console.log(res?.msg);
@@ -106,18 +109,18 @@ const Dashboard = () => {
 
   function convertNumberToMonth(number) {
     const months = [
-      "January",
-      "February",
-      "March",
-      "April",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
       "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
     if (number >= 1 && number <= 12) {
@@ -421,74 +424,17 @@ C491.375,120.986,496,130.003,496,140.117z"
 
   const cardData = [totalUsers, activeOffers, completedOffers, giftCards];
 
-  // ------------dropdown--------------
-
-  const menuItems = geoCodes?.map((jsonData) => ({
-    key: jsonData.id,
-    label: `${jsonData?.country}- ${jsonData?.iso_code_2}`,
-  }));
-
-  const handleOptionClick = (option) => {
-    setSelectedOption(option?.label);
-  };
-
-  const items = menuItems?.map((item) => ({
-    key: item?.key,
-    label: item?.label,
-    onClick: () => handleOptionClick(item),
-  }));
 
   // ------------MainChart--------------
 
-  // const chartData = {
-  //   labels: [
-  //     "May 2024",
-  //     "",
-  //     "March 2022",
-  //     "",
-  //     "January 2022",
-  //     "",
-  //     "November 2021",
-  //     "",
-  //     "September 2021",
-  //     "",
-  //     "July 2021",
-  //     "",
-  //     "April 2021",
-  //     "",
-  //     "January 2021",
-  //     "",
-  //     "November 2020",
-  //     "",
-  //     "July 2020",
-  //     "",
-  //     "May2020",
-  //     "",
-  //     "",
-  //     "December 2018",
-  //   ],
-  //   datasets: [
-  //     {
-  //       label: "offer sales",
-  //       data: [
-  //         4, 6, 2, 2, 1, 3, 6, 6, 10, 1, 7, 9, 7, 9, 5, 2, 7, 8, 7, 13, 54, 7,
-  //         7, 250,
-  //       ],
-  //       backgroundColor: "aqua",
-  //       borderColor: "brown",
-  //       pointBorderColor: "red",
-  //       fill: true,
-  //       tension: 0.4,
-  //     },
-  //   ],
-  // };
-
   const chartData = {
-    labels:
-    chartInfo?.offerMonthYear 
-    ?.map((offer) =>
-        convertNumberToMonth(offer?.MONTHS) + " " + offer?.YEARS
-      ) || [],
+    labels:[
+      ...new Set(
+        (chartInfo?.offerMonthYear || [])?.map(
+          (offer) => convertNumberToMonth(offer?.MONTHS) + " " + offer?.YEARS
+        )
+      ),
+    ],
     datasets: [ 
             {
         label: "offer sales",
@@ -518,6 +464,7 @@ C491.375,120.986,496,130.003,496,140.117z"
         grid: {
           display: false,
         },
+
       },
     },
   };
@@ -575,33 +522,26 @@ C491.375,120.986,496,130.003,496,140.117z"
           >
             Track Offers Chart
           </p>
-          <Dropdown
-            menu={{
-              items,
-              style: {
-                maxHeight: "200px",
-                overflowY: "auto",
-              },
-            }}
-            trigger={["click"]}
-            getPopupContainer={(trigger) => trigger.parentNode}
+          <SelectField
+            showSearch 
+            placeholder={selectedOption}
+            onChange={(value) => setSelectedOption(value)}
+            style={{ width: 300 }}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              typeof option.children === "string" &&
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
-            <div
-              style={{
-                border: "1px solid #000",
-                padding: "10px",
-                width: "20rem",
-                borderRadius: "5px",
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span>{selectedOption}</span>
-              <DownOutlined />
-            </div>
-          </Dropdown>
+            <Option key="Select Geo Code" value="Select Geo Code">
+              Select Geo Code
+            </Option>
+            {geoCodes?.map((item, index) => (
+              <Option key={item?.iso_code_2} value={item?.iso_code_2}>
+                {item?.country + " (" + item?.iso_code_2 + ")"}
+              </Option>
+            ))}
+          </SelectField>
         </div>
         <Line data={chartData} options={options}></Line>
       </ChartWrapper>
@@ -770,5 +710,50 @@ const CampaignWrapper = styled.div`
   .campaign-data {
     display: flex;
     justify-content: space-between;
+  }
+`;
+
+const SelectField = styled(Select)`
+  .ant-select-selector {
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    padding: 11px 30px;
+    cursor: pointer;
+    font-family: ${({ theme }) => theme?.fontFamily};
+    min-height: 43px !important;
+    display: flex;
+    align-items: center;
+    .ant-select-selection-search {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-select-selection-placeholder {
+      color: rgb(102, 102, 102) !important;
+      text-align: start;
+    }
+
+    &:hover,
+    &:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border-color: #e5e5e5 !important;
+    }
+  }
+  .ant-select-selection-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .ant-select-arrow {
+    color: #666 !important;
+  }
+  &.ant-select-focused .ant-select-selector,
+  &.ant-select-open .ant-select-selector,
+  &.ant-select:hover .ant-select-selector {
+    outline: none;
+    box-shadow: none;
+    border-color: #e5e5e5 !important;
   }
 `;
