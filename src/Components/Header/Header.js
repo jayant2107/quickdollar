@@ -685,7 +685,7 @@ const InnerContainer = styled.div`
   color: rgb(0, 0, 0);
   position: fixed;
   transition: all 0.4s ease-out 0s;
-  overflow-y: scroll;
+  // overflow-y: scroll;
   top: 3px;
     height: 100vh;
     
@@ -711,6 +711,10 @@ const SidebarMenu = styled.div`
   flex-direction: column;
   gap: 15px;
   padding:20px;
-  
+  overflow-y: scroll;
+  height: 520px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
   
 `;

@@ -313,8 +313,8 @@ const CompletedOffers = () => {
           deleteAction={formActions.delete} 
           onEdit={() => {
             console.log("record", record?.offer);
-            dispatch(addRecord(record?.offer));
-            navigate(`/quickdollar/offer/editOffer/${record?.offer?.idOffer}`);
+            dispatch(addRecord(record?.Offer));
+            navigate(`/quickdollar/offer/editOffer/${record?.Offer?.idOffer}`);
           }}
           onDelete={() => showDeleteModal(record)}
         />

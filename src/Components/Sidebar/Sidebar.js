@@ -386,7 +386,7 @@ const SidebarContainer = styled.div`
   color: #000;
   position: fixed;
   transition: all ease-out 0.8s;
-  overflow-y: scroll;
+  // overflow-y: scroll;
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -426,6 +426,11 @@ const SidebarMenu = styled.ul`
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow-y: scroll;
+  height: 520px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 // const SidebarMenuItem = styled.li`
 //   display: flex;
