@@ -183,7 +183,7 @@ const AddFrontPageOffer = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit{loader ? <Loader /> : ""}</SubmitBtn>
                                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
                         </Form>

@@ -722,10 +722,10 @@ const AddOffer = () => {
 
               </InputWrapper>
               <Footer>
-                <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
-                <SubmitBtn type="primary" htmlType="submit">
+                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>
                   Submit{loader ? <Loader /> : ""}
                 </SubmitBtn>
+                <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
               </Footer>
             </Form>
           )}

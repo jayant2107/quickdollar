@@ -7,8 +7,10 @@ import { Checkbox } from 'antd';
 import { getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
 import { addAndroidSetting } from '../../../Services/Collection';
+import Loader from '../../../Components/Loader/Loader';
 
 const Android = () => {
+  const [loader, setLoader] = useState(false);
 
   const initialValues = {
     appTitle: 'Welcome to iPeor',
@@ -47,12 +49,15 @@ const Android = () => {
   });
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
+    
     try {
       let payload = {
         ...values,
         cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
       }
+      setLoader(true);
       let res = await addAndroidSetting(payload);
+      setLoader(false)
       if (res?.status === 200) {
         toast.success("Android Setting added Successfully");
         resetForm();
@@ -101,7 +106,7 @@ const Android = () => {
     fetchGeoCordData();
   }, [])
 
-  document.title="Android_Settings - quickdollarapp";
+  document.title="Android Settings - quickdollarapp";
   
   return (
     <div>
@@ -471,7 +476,7 @@ const Android = () => {
 
               </InputWrapper>
               <Footer>
-                <SubmitBtn type="primary" htmlType="submit">Submit</SubmitBtn>
+                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit {loader ? <Loader /> : ""}</SubmitBtn>
                 <Button type="primary" danger onClick={resetForm}>Reset</Button>
               </Footer>
             </Form>

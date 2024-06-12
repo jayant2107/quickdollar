@@ -45,7 +45,7 @@ const AddGiftCard = () => {
             const res = await addGiftCard(formData);
             setLoader(false);
             if (res?.status === 200) {
-                toast.success("Add Offer successfully");
+                toast.success("Gift card added successfully");
                 resetForm();
                 setFieldValue('giftCardNotes', '')
                 setGiftImgPreview(null);
@@ -205,7 +205,7 @@ const AddGiftCard = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit{loader ? <Loader /> : ""}</SubmitBtn>
                                 <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
                             </Footer>
 

@@ -122,7 +122,7 @@ const Announcement = () => {
                             </InputWrapper>
 
                             <Footer>
-                                <SubmitBtn type="primary" htmlType="submit">Send{loader?<Loader/>:""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Send{loader?<Loader/>:""}</SubmitBtn>
                             </Footer>
                         </Form>
                     )}

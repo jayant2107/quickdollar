@@ -30,7 +30,7 @@ const EditGiftCardModal = ({
     giftCardName: record?.giftCardName || '',
     frontpageofferImage: '',
     giftCardPoints: record?.giftCardPoints || '',
-    giftCardNote: record?.giftCardNote || '',
+    giftCardNotes: record?.giftCardNotes || '',
     isActive: record?.isActive ? "true" : "false",
   };
   const offerImgInputRef = useRef(null);
@@ -51,7 +51,7 @@ const EditGiftCardModal = ({
     formData.append('giftCardName', values.giftCardName);
     formData.append('id', record.idGiftCard);
     formData.append('giftCardPoints', values.giftCardPoints);
-    formData.append('giftCardNote', values.giftCardNote);
+    formData.append('giftCardNotes', values.giftCardNotes);
     formData.append('isActive', values.isActive);
     if (flag) {
       formData.append('frontpageofferImage', values.frontpageofferImage);
@@ -199,14 +199,14 @@ const EditGiftCardModal = ({
                         <Label>Gift Card Notes</Label>
                         <FieldContainer>
                           <TextAreaField
-                            name="giftCardNote"
+                            name="giftCardNotes"
                             placeholder="Gift Card Notes"
                             rows={3}
-                            onChange={(e) => setFieldValue('giftCardNote', e.target.value)}
-                            value={values.giftCardNote}
+                            onChange={(e) => setFieldValue('giftCardNotes', e.target.value)}
+                            value={values.giftCardNotes}
                           />
                           <RequiredWrapper>
-                            <ErrorMessage name="giftCardNote" />
+                            <ErrorMessage name="giftCardNotes" />
                           </RequiredWrapper>
                         </FieldContainer>
                       </FieldWrapper>
@@ -247,8 +247,8 @@ const EditGiftCardModal = ({
                     </InputWrapper>
 
                     <Footer>
-                      <ResetBtn type="primary"  onClick={resetForm}>Reset</ResetBtn>
-                      <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
+                      <ResetBtn  onClick={resetForm}>Reset</ResetBtn>
+                      <SubmitBtn htmlType="submit" disabled={loader} >Submit{loader ? <Loader /> : ""}</SubmitBtn>
                     </Footer>
                   </Form>
                 )}
@@ -398,11 +398,13 @@ const ResetBtn = styled(Button)`
   align-items: center !important;
   justify-content: center !important;
   border: 1px solid black !important;
+  outline:none !important;
   
   &:hover {
     background: transparent;
     color: black !important;
     border: 1px solid black  !important;
+    outline:none !important;
   }
 
   // Remove active effect
@@ -410,13 +412,15 @@ const ResetBtn = styled(Button)`
     background: transparent;
     color: black !important;
     border: 1px solid black !important;
+    outline:none !important;
   }
 
   // Remove focus effect
   &:focus {
     background: transparent;
     color: black !important;
-    border: 1px solid var(--Greyscale-1000) !important;
+    border: 1px solid black !important;
+    outline:none !important;
   }
 `;
 

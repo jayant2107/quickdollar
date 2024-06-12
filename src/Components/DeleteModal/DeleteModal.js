@@ -1,12 +1,17 @@
 import { Button, Modal } from "antd";
 import styled from "styled-components";
 import { toast } from "react-toastify";
+import Loader from "../Loader/Loader";
+import { useState } from "react";
 
 const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
+  const [loader,setLoader]=useState(false);
   console.log(id, "recorddd delete");
   const handleDeletes = async () => {
+    setLoader(true)
     let res = await handleDelete({ id: id });
-    if (res?.status === 200) {
+    setLoader(false)
+    if (res?.status === 200) {  
       toast.success("Delete Successfully");
       handleCancel();
     } else {
@@ -42,7 +47,7 @@ const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
 
             <div className="buttons">
               <CancelBtn onClick={handleCancel}>Cancel</CancelBtn>
-              <DeleteBtn onClick={handleDeletes}>Delete</DeleteBtn>
+              <DeleteBtn onClick={handleDeletes} disabled={loader}>Delete {loader?<Loader/>:""} </DeleteBtn>
             </div>
           </div>
         </ServiceModalWrapper>
@@ -159,7 +164,7 @@ const CancelBtn = styled(Button)`
   &:focus {
     background: transparent;
     color: black !important;
-    border: 1px solid var(--Greyscale-1000) !important;
+    border: 1px solid black !important;
   }
 `;
 const DeleteBtn = styled(Button)`

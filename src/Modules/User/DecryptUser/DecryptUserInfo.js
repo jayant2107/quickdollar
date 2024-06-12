@@ -3,11 +3,14 @@ import '../../../Style/global.css';
 import { Modal, Button } from "antd";
 import { Field, ErrorMessage, Form, Formik } from "formik";
 import * as yup from "yup";
+import Loader from "../../../Components/Loader/Loader";
+import { useState } from "react";
 
 const DecryptUserInfo = ({
   triggerModal,
   setTriggerModal,
 }) => {
+  const [loader, setLoader] = useState(false);
   const initialValues = {
     decryptKey: ''
   };
@@ -17,8 +20,11 @@ const DecryptUserInfo = ({
   });
 
   const handleSubmit = (values, { resetForm }) => {
+    setLoader(true)
     console.log("Form values:", values);
+
     resetForm();
+    setLoader(false)
   };
 
   const handleCancel = () => {
@@ -60,11 +66,11 @@ const DecryptUserInfo = ({
               </InputWrapper>
 
               <Footer>
-                <ResetBtn type="primary" onClick={handleCancel}>
+                <CancelBtn  onClick={handleCancel}>
                   Cancel
-                </ResetBtn>
-                <SubmitBtn type="primary" htmlType="submit">
-                  Save
+                </CancelBtn>
+                <SubmitBtn  htmlType="submit" disabled={loader}>
+                  Save{loader?<Loader/>:""}
                 </SubmitBtn>
               </Footer>
             </Form>
@@ -131,27 +137,79 @@ const RequiredWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const SubmitBtn = styled(Button)`
+const CancelBtn = styled(Button)`
+  width: 208px;
+  color: black;
+  display: flex;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  margin: 5px 10px;
+  cursor: pointer;
+  background: transparent;
+  height: 48px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid black !important;
+  
+  &:hover {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black  !important;
+  }
 
-color: ${({ theme }) => theme?.primaryColor};
-background-color: black !important;
-border: none;
-width: 100%;
-height: 48px;
-font-family: Poppins;
+  // Remove active effect
+  &:active {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background: transparent;
+    color: black !important;
+    border: 1px solid black !important;
+  }
 `;
-const ResetBtn = styled(Button)`
-color: black;
-background: white;
-width: 100%;
-height: 48px;
-border: 1px solid black;
-font-family: Poppins;
-&:hover {
-  color: black !important;
-  background: white !important;
-  border: 1px solid black;
-}
+
+
+const SubmitBtn = styled(Button)`
+  width: 208px;
+  color: white;
+  border-radius: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 17px;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 5px 10px;
+  cursor: pointer;
+  border: none;
+  height: 48px !important;
+   background-color: black !important;
+
+  // Remove hover effect
+  &:hover {
+    background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove active effect
+  &:active {
+   background-color: black !important;
+    color: white !important;
+  }
+
+  // Remove focus effect
+  &:focus {
+    background-color: black !important;
+    color: white !important;
+  }
 `;
 
 const Asterisk = styled.span`

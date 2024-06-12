@@ -17,7 +17,7 @@ const DeliveredGift = () => {
   const [pageSize, setPageSize] = useState(5);
   const [totalUsers, setTotalUsers] = useState(5);
   const [search, setSearch] = useState("");
-  const [fieldName, setFieldName] = useState("createdAt");
+  const [fieldName, setFieldName] = useState("updatedAt");
   const [orderMethod, setorderMethod] = useState("desc");
   const [orderType, setOrderType] = useState("3");
 

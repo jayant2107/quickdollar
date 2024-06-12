@@ -271,7 +271,7 @@ const PromotionEmail = () => {
                             </InputWrapper>
                             <Footer>
                                 <ResetButton type="button" onClick={() => handlePreview(values)}>Preview</ResetButton>
-                                <SubmitBtn type="primary" htmlType="submit">Submit{loader ? <Loader /> : ""}</SubmitBtn>
+                                <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit{loader ? <Loader /> : ""}</SubmitBtn>
                             </Footer>
                         </Form>
                     )}
