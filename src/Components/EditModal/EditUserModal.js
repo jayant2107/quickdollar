@@ -22,7 +22,7 @@ const EditUserModal = ({
   fetchData,
 }) => {
   const [loader,setLoader]=useState(false);
-  console.log(record, "Recordddd")
+  // console.log(record, "Recordddd")
   const initialValues = {
     firstName: record?.firstName||"",
     lastName: record?.lastName||"",
@@ -81,14 +81,14 @@ const EditUserModal = ({
       is_suspended: suspendAccount,
 
     }
-    console.log("Form values:", payload);
+    // console.log("Form values:", payload);
     setLoader(true)
     let res = await EditAllUser(payload)
     setLoader(false)
     if (res?.status === 200) {
-      console.log(res.status)
-      let fetch = fetchData()
-      console.log(fetch, "fetchhhh")
+      // console.log(res.status)
+       await fetchData()
+      // console.log(fetch, "fetchhhh")
       toast.success("Edit Successfully");
       resetForm();
       handleEditCancel();

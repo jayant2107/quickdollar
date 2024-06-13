@@ -15,7 +15,7 @@ const EditFrontpageModal = ({
   fetchData,
 }) => {
   const [loader, setLoader] = useState(false);
-  console.log(record)
+  // console.log(record)
   const [offerImgPreview, setOfferImgPreview] = useState(record?.frontpageofferImage);
   const [buttonImgPreview, setButtonImgPreview] = useState(record?.frontpageofferButton);
   const [flag, setFlag] = useState(false)
@@ -72,9 +72,7 @@ const EditFrontpageModal = ({
       formData.append('frontpageofferImage', values.offerImg);
       formData.append('frontpageofferButton', values.buttonImg);
     }
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+    
     try {
       setLoader(true)
       const res = await editFrontpageOffer(formData);
@@ -97,7 +95,7 @@ const EditFrontpageModal = ({
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
 

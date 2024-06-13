@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const DeleteModal = ({ handleCancel, deleteModal, id, handleDelete }) => {
   const [loader,setLoader]=useState(false);
-  console.log(id, "recorddd delete");
+  // console.log(id, "recorddd delete");
   const handleDeletes = async () => {
     setLoader(true)
     let res = await handleDelete({ id: id });
