@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addRecord } from "../../../Store/slices/OfferRecord";
 import Loader from "../../../Components/Loader/Loader";
+import { CircularProgress } from "@mui/material";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -36,6 +37,9 @@ const AllOffers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const [activeLoading, setActiveLoading] = useState(false);
+  const [deactiveLoading, setDeactiveLoading] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -121,42 +125,53 @@ const AllOffers = () => {
       setLoader(false);
     }
   };
+
+
   const ActiveAllUser = async () => {
-    setLoader(true)
-    let res = await activateDeactivateAllOffers({ isActive: "1" });
-    setLoader(false)
-    if (res?.status === 200) {
-      // console.log(res.status);
-      fetchData();
-      // console.log(fetch, "fetchhhh");
-      toast.success("All Offers Activate Successfully");
-    } else {
-      let message =
-        res?.response?.data?.message ||
-        res?.message ||
-        res?.error ||
-        "Something went wrong";
-      setUserData([]);
-      toast.error(message);
+    try {
+      setActiveLoading(true); // Show loader and disable button
+      setButtonsDisabled(true); 
+      let res = await activateDeactivateAllOffers({ isActive: "1" });
+      if (res?.status === 200) {
+        fetchData();
+        toast.success("All Offers Activate Successfully");
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setActiveLoading(false); // Hide loader and enable button
+      setButtonsDisabled(false);
     }
   };
+
   const DeactiveAllUser = async () => {
-    setLoader(true)
-    let res = await activateDeactivateAllOffers({ isActive: "0" });
-    setLoader(false)
-    // console.log(res);
-    if (res?.status === 200) {
-      // console.log(res.status);
-      fetchData();
-      // console.log(fetch, "fetchhhh");
-      toast.success("All Offers Deactivate Successfully");
-    } else {
-      let message =
-        res?.response?.data?.message ||
-        res?.message ||
-        res?.error ||
-        "Something went wrong";
-      toast.error(message);
+    try {
+      setDeactiveLoading(true); // Show loader and disable button
+      setButtonsDisabled(true); 
+      let res = await activateDeactivateAllOffers({ isActive: "0" });
+      if (res?.status === 200) {
+        fetchData();
+        toast.success("All Offers Deactivate Successfully");
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setDeactiveLoading(false); // Hide loader and enable button
+      setButtonsDisabled(false);
     }
   };
 
@@ -247,10 +262,12 @@ const AllOffers = () => {
       key: "link",
       width: 200,
       dataIndex: "offerLink",
-     
+
       render: (text, record) => (
-        <Tooltip title={record?.offerLink || "NA"} placement="top" >
-          <TooltipContent><Link to="#">{record?.offerLink || "NA"}</Link></TooltipContent>
+        <Tooltip title={record?.offerLink || "NA"} placement="top">
+          <TooltipContent>
+            <Link to="#">{record?.offerLink || "NA"}</Link>
+          </TooltipContent>
         </Tooltip>
       ),
     },
@@ -285,18 +302,28 @@ const AllOffers = () => {
       key: "description",
       dataIndex: "offerShortDescription",
       render: (text, record) => (
-        <Tooltip title={record?.offerShortDescription || "NA"} placement="top" overlayStyle={{maxWidth:"400px"}} >
-          <TooltipContent>{record?.offerShortDescription || "NA"}</TooltipContent>
+        <Tooltip
+          title={record?.offerShortDescription || "NA"}
+          placement="top"
+          overlayStyle={{ maxWidth: "400px" }}
+        >
+          <TooltipContent>
+            {record?.offerShortDescription || "NA"}
+          </TooltipContent>
         </Tooltip>
       ),
-      
     },
     {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
       render: (text, record) => (
-        <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"400px"}} autoAdjustOverflow={false}>
+        <Tooltip
+          title={record?.offerCountry || "NA"}
+          placement="top"
+          overlayStyle={{ maxWidth: "400px" }}
+          autoAdjustOverflow={false}
+        >
           <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
         </Tooltip>
       ),
@@ -352,9 +379,7 @@ const AllOffers = () => {
       key: "oneAndroid",
       dataIndex: "oneAndroid",
       render: (text, record) => (
-        <StyledText text={text}>
-          {text || "NA"}{" "}
-        </StyledText>
+        <StyledText text={text}>{text || "NA"} </StyledText>
       ),
     },
     {
@@ -362,9 +387,7 @@ const AllOffers = () => {
       key: "twoAndroid",
       dataIndex: "twoAndroid",
       render: (text, record) => (
-        <StyledText text={text}>
-          {text || "NA"}
-        </StyledText>
+        <StyledText text={text}>{text || "NA"}</StyledText>
       ),
     },
     {
@@ -372,9 +395,7 @@ const AllOffers = () => {
       key: "oneIos",
       dataIndex: "oneIos",
       render: (text, record) => (
-        <StyledText text={text}>
-          {text || "NA"}
-        </StyledText>
+        <StyledText text={text}>{text || "NA"}</StyledText>
       ),
     },
     {
@@ -382,9 +403,7 @@ const AllOffers = () => {
       key: "twoIos",
       dataIndex: "twoIos",
       render: (text, record) => (
-        <StyledText text={text}>
-          {text || "NA"}
-        </StyledText>
+        <StyledText text={text}>{text || "NA"}</StyledText>
       ),
     },
     {
@@ -487,15 +506,25 @@ const AllOffers = () => {
             <Option key="Select Geo Code" value="Select Geo Code">
               Select Geo Code
             </Option>
-            {geoCodes && geoCodes.map((item, index) => (
-              <Option key={item?.country} value={item?.iso_code_2}>
-                {item?.country + " (" + item?.iso_code_2 + ")"}
-              </Option>
-            ))}
+            {geoCodes &&
+              geoCodes.map((item, index) => (
+                <Option key={item?.country} value={item?.iso_code_2}>
+                  {item?.country + " (" + item?.iso_code_2 + ")"}
+                </Option>
+              ))}
           </SelectField>
-          <button onClick={ActiveAllUser} disabled={loader}>Active All Offers {loader ? <Loader /> : ""}</button>
-          <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }} disabled={loader}>
-            De-active All Offers{loader ? <Loader /> : ""}
+          <button onClick={ActiveAllUser} disabled={buttonsDisabled}>
+            {activeLoading ?<>
+             <CircularProgress color="inherit" size={10} /> Active All Offers  </>: "Active All Offers"}
+          </button>
+          <button
+            onClick={DeactiveAllUser}
+            disabled={buttonsDisabled}
+            style={{ background: "#ff0e0e" }}
+          >
+            {deactiveLoading ? <>
+              <CircularProgress color="inherit" size={10} /> De-active All Offers
+            </>: "De-active All Offers"}
           </button>
         </div>
       </div>
@@ -595,10 +624,10 @@ const StyledText = styled.span`
   gap: 8px;
 `;
 
-
 const StatusStyledText = styled.span`
   color: #fff;
-  background-color: ${({ status }) => (status === "Active" ? "#00e633" : "red")};
+  background-color: ${({ status }) =>
+    status === "Active" ? "#00e633" : "red"};
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-flex;

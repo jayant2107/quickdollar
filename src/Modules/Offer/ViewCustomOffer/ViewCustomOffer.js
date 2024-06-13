@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { addRecord } from "../../../Store/slices/OfferRecord";
 import { Tooltip } from "antd";
 import Loader from "../../../Components/Loader/Loader";
+import { CircularProgress } from "@mui/material";
 
 const ViewCustomOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -32,6 +33,9 @@ const ViewCustomOffers = () => {
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const [activeLoading, setActiveLoading] = useState(false);
+  const [deactiveLoading, setDeactiveLoading] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -93,41 +97,57 @@ const ViewCustomOffers = () => {
   };
 
   const ActiveAllUser = async () => {
-    setLoader(true)
-    let res = await activateDeactivateAllOffers({ isActive: "1" });
-    setLoader(false)
-    if (res?.status === 200) {
-      // console.log(res.status);
-       fetchData();
-      // console.log(fetch, "fetchhhh");
-      toast.success("All Offers Activate Successfully");
-    } else {
-      let message =
-        res?.response?.data?.message ||
-        res?.message ||
-        res?.error ||
-        "Something went wrong";
-      toast.error(message);
+    try {
+      setActiveLoading(true);
+      setButtonsDisabled(true); 
+      let res = await activateDeactivateAllOffers({ isActive: "1" });
+      setLoader(false);
+      if (res?.status === 200) {
+        // console.log(res.status);
+        fetchData();
+        // console.log(fetch, "fetchhhh");
+        toast.success("All Offers Activate Successfully");
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setActiveLoading(false); // Set loading state to false
+      setButtonsDisabled(false);
     }
   };
 
   const DeactiveAllUser = async () => {
-  setLoader(true)
-    let res = await activateDeactivateAllOffers({ isActive: "0" });
-    setLoader(false)
-    // console.log(res);
-    if (res?.status === 200) {
-      // console.log(res.status);
-      fetchData();
-      // console.log(fetch, "fetchhhh");
-      toast.success("All Offers Deactivate Successfully");
-    } else {
-      let message =
-        res?.response?.data?.message ||
-        res?.message ||
-        res?.error ||
-        "Something went wrong";
-      toast.error(message);
+    try {
+      setDeactiveLoading(true);
+      setButtonsDisabled(true); 
+      let res = await activateDeactivateAllOffers({ isActive: "0" });
+      setLoader(false);
+      // console.log(res);
+      if (res?.status === 200) {
+        // console.log(res.status);
+        fetchData();
+        // console.log(fetch, "fetchhhh");
+        toast.success("All Offers Deactivate Successfully");
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    } finally {
+      setDeactiveLoading(false); // Set loading state to false
+      setButtonsDisabled(false);
     }
   };
 
@@ -442,9 +462,14 @@ const ViewCustomOffers = () => {
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>
-          <button onClick={ActiveAllUser}>Active All Offers{loader ? <Loader /> : ""}</button>
-          <button onClick={DeactiveAllUser} style={{ background: "red" }}>
-            De-active All Offers{loader ? <Loader /> : ""}
+          <button onClick={ActiveAllUser} disabled={buttonsDisabled}>
+          {activeLoading ?<>
+            <CircularProgress color="inherit" size={10} /> Active All Offers  </>: "Active All Offers"}
+          </button>
+          <button onClick={DeactiveAllUser} style={{ background: "red" }}  disabled={buttonsDisabled}>
+          {deactiveLoading ? <>
+              <CircularProgress color="inherit" size={10} /> De-active All Offers
+            </>: "De-active All Offers"}
           </button>
         </div>
       </div>
