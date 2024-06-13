@@ -40,8 +40,8 @@ const Dashboard = () => {
     try {
       const res = await getAllGeoCodes();
       if (res?.status === 200) {
-        console.log(res?.msg);
-        setGeoCodes(res?.msg);
+        // console.log(res?.msg);
+        setGeoCodes(res?.data);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -51,7 +51,7 @@ const Dashboard = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       // setLoader(false);
@@ -62,8 +62,8 @@ const Dashboard = () => {
     try {
       const res = await getDashboard();
       if (res?.status === 200) {
-        console.log(res?.msg);
-        setCardInfo(res?.msg);
+        // console.log(res?.msg);
+        setCardInfo(res?.data);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -73,7 +73,7 @@ const Dashboard = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       // setLoader(false);
@@ -87,8 +87,8 @@ const Dashboard = () => {
       params.append("country", selectedOption || "US");
       const res = await getChartData(selectedOption != "Select Geo Code..." && params);
       if (res?.status === 200) {
-        console.log(res?.msg);
-        setChartInfo(res?.msg);
+        // console.log(res?.msg);
+        setChartInfo(res?.data);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -98,7 +98,7 @@ const Dashboard = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       // setLoader(false);
@@ -487,7 +487,7 @@ C491.375,120.986,496,130.003,496,140.117z"
           <h1 className="driverHeading">Dashboard</h1>
         </div>
         <CardWrapper>
-          {cardData.map((card, index) => {
+          {cardData?.map((card, index) => {
             return (
               <CardContainer
                 key={index}

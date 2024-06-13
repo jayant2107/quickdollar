@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addRecord } from "../../../Store/slices/OfferRecord";
+import Loader from "../../../Components/Loader/Loader";
 
 const AllOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -31,11 +32,10 @@ const AllOffers = () => {
   const [search, setSearch] = useState("");
   const [geoCodes, setGeoCodes] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Select Geo Code");
-  const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
-  const [orderMethod, setorderMethod] = useState("asc");
+  const [orderMethod, setorderMethod] = useState("desc");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -77,12 +77,12 @@ const AllOffers = () => {
       if (selectedOption !== "Select Geo Code") {
         params.append("country", selectedOption);
       }
-      console.log("Fetch Params:", params.toString()); // Log params sent to backend
+      // console.log("Fetch Params:", params.toString()); // Log params sent to backend
 
       const res = await getAllOffers(params);
-      console.log("Response from Backend:", res); // Log response from backend
+      // console.log("Response from Backend:", res); // Log response from backend
       if (res?.status === 200) {
-        console.log(res.data.findOffers, "alloffer");
+        // console.log(res.data.findOffers, "alloffer");
         setUserData(res?.data?.findOffers);
         setTotalUsers(res?.data?.totalOffers);
       } else {
@@ -94,7 +94,7 @@ const AllOffers = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       setLoader(false);
@@ -105,7 +105,7 @@ const AllOffers = () => {
     try {
       const res = await getAllGeoCodes();
       if (res?.status === 200) {
-        setGeoCodes(res?.msg);
+        setGeoCodes(res?.data);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -115,18 +115,20 @@ const AllOffers = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       setLoader(false);
     }
   };
   const ActiveAllUser = async () => {
+    setLoader(true)
     let res = await activateDeactivateAllOffers({ isActive: "1" });
+    setLoader(false)
     if (res?.status === 200) {
-      console.log(res.status);
-      let fetch = fetchData();
-      console.log(fetch, "fetchhhh");
+      // console.log(res.status);
+      fetchData();
+      // console.log(fetch, "fetchhhh");
       toast.success("All Offers Activate Successfully");
     } else {
       let message =
@@ -139,12 +141,14 @@ const AllOffers = () => {
     }
   };
   const DeactiveAllUser = async () => {
+    setLoader(true)
     let res = await activateDeactivateAllOffers({ isActive: "0" });
-    console.log(res);
+    setLoader(false)
+    // console.log(res);
     if (res?.status === 200) {
-      console.log(res.status);
-      let fetch = fetchData();
-      console.log(fetch, "fetchhhh");
+      // console.log(res.status);
+      fetchData();
+      // console.log(fetch, "fetchhhh");
       toast.success("All Offers Deactivate Successfully");
     } else {
       let message =
@@ -183,8 +187,8 @@ const AllOffers = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);
@@ -426,7 +430,7 @@ const AllOffers = () => {
           deleteAction={formActions.delete}
           // onSend={() => showSendModal(record)}
           onEdit={() => {
-            console.log("Record:", record);
+            // console.log("Record:", record);
             dispatch(addRecord(record));
             navigate(`/quickdollar/offer/editOffer/${record?.idOffer}`);
           }}
@@ -483,15 +487,15 @@ const AllOffers = () => {
             <Option key="Select Geo Code" value="Select Geo Code">
               Select Geo Code
             </Option>
-            {geoCodes?.map((item, index) => (
+            {geoCodes && geoCodes.map((item, index) => (
               <Option key={item?.country} value={item?.iso_code_2}>
                 {item?.country + " (" + item?.iso_code_2 + ")"}
               </Option>
             ))}
           </SelectField>
-          <button onClick={ActiveAllUser}>Active All Offers</button>
-          <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }}>
-            De-active All Offers
+          <button onClick={ActiveAllUser} disabled={loader}>Active All Offers {loader ? <Loader /> : ""}</button>
+          <button onClick={DeactiveAllUser} style={{ background: "#ff0e0e" }} disabled={loader}>
+            De-active All Offers{loader ? <Loader /> : ""}
           </button>
         </div>
       </div>

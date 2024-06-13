@@ -57,7 +57,7 @@ const SendMessage = () => {
                 toast.error(message);
             }
         } catch (error) {
-            console.log(error, "error");
+            // console.log(error, "error");
             toast.error(error?.message || "Something went wrong");
         }
     };

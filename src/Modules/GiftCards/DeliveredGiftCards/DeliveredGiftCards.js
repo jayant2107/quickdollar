@@ -40,10 +40,10 @@ const DeliveredGift = () => {
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
       params.append("orderType", orderType);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getDeliveredGiftCard(params);
       if (res?.status === 200) {
-        console.log(res?.data?.findDeliveredGiftCards);
+        // console.log(res?.data?.findDeliveredGiftCards);
         setUserData(res?.data?.findDeliveredGiftCards || []);
         setTotalUsers(res?.data?.totalDeliveredGiftCards || 0);
       } else {
@@ -74,9 +74,9 @@ const DeliveredGift = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
-    console.log(type)
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
+    // console.log(type)
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setOrderType(type)

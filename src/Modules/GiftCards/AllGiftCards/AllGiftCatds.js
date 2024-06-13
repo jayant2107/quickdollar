@@ -42,10 +42,10 @@ const AllGiftCards = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getAllGiftCard(params);
       if (res?.status === 200) {
-        console.log(res?.data?.findGiftCards);
+        // console.log(res?.data?.findGiftCards);
         setUserData(res?.data?.findGiftCards || []);
         setTotalUsers(res?.data?.totalGiftCards || 0);
       } else {
@@ -76,8 +76,8 @@ const AllGiftCards = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);
@@ -194,9 +194,9 @@ const AllGiftCards = () => {
       dataIndex: "isActive",
       key: "status",
       render: (text, record) => (
-        <StatusStyledText status={record.isActive ? "Active" : "Inactive"}>
-          {record.isActive ? "Active" : "Inactive"}
-          {record.isActive ? (
+        <StatusStyledText status={record?.isActive ? "Active" : "Inactive"}>
+          {record?.isActive ? "Active" : "Inactive"}
+          {record?.isActive ? (
             <IoCheckmarkOutline style={{ color: "white", fontSize: "20px" }} />
           ) : (
             <RxCross2 style={{ color: "white", fontSize: "20px" }} />

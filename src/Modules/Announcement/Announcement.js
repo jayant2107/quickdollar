@@ -28,10 +28,10 @@ const Announcement = () => {
             setLoader(true);
             let res= await announcement(values)
             setLoader(false)
-            console.log('Form values:', values);
+            // console.log('Form values:', values);
     
             if (res?.status === 200) {
-                console.log(res.status)
+                // console.log(res.status)
                 toast.success("Notification Sent Successfully");
                 resetForm();
                 setFieldValue('message', '');
@@ -45,12 +45,12 @@ const Announcement = () => {
                 toast.error(message);
               }  
         }catch (error) {
-            console.log(error, "error");
+            // console.log(error, "error");
             toast.error(error?.message || "Something went wrong");
         }
            };
 
-           document.title="Announcement - Login - quickdollarapp";
+           document.title="Announcement - quickdollarapp";
 
     return (
         <div>

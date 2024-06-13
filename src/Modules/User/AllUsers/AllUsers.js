@@ -48,7 +48,7 @@ const AllUsers = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getAllUser(params);
       if (res?.status === 200) {
         setUserData(res?.data?.findUsers);
@@ -63,7 +63,7 @@ const AllUsers = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       setLoader(false);
@@ -96,8 +96,8 @@ const AllUsers = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);
@@ -412,8 +412,8 @@ const AllUsers = () => {
       // If a new column is clicked, set the sorting order to ascending by default
       order = "asc";
     }
-    console.log("Sorter Field:", sorter.field);
-    console.log("Sort Order:", order);
+    // console.log("Sorter Field:", sorter.field);
+    // console.log("Sort Order:", order);
     setFieldName(sorter.field);
     setorderMethod(order);
     setCurrentPage(pagination.current);

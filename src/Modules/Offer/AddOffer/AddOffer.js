@@ -156,7 +156,7 @@ const AddOffer = () => {
     try {
       const res = await getAllGeoCodes();
       if (res?.status === 200) {
-        setGeoCodes(res?.msg);
+        setGeoCodes(res?.data);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -202,12 +202,12 @@ const AddOffer = () => {
     setOfferImgPreview(null);
   };
 
-  const options = geoCodes.map(jsonData => ({
+  const options = geoCodes && geoCodes?.map(jsonData => ({
     label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
     value: `${jsonData?.iso_code_2}`,
   }));
   console.log(allDropdownUsers, "allDropdownUsers")
-  const userOptions = allDropdownUsers.map((data) => ({
+  const userOptions = allDropdownUsers?.map((data) => ({
     label: `${data?.firstName} ${data?.lastName}`,
     value: `${data?.idUser}`,
   }))
@@ -668,7 +668,7 @@ const AddOffer = () => {
                         onChange={(e) => {
                           const { checked } = e.target;
                           setSelectAll(checked);
-                          const offerCountry = options.map(
+                          const offerCountry = options?.map(
                             (option) => option.value
                           );
                           setFieldValue(

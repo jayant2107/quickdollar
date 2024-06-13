@@ -23,7 +23,7 @@ const CompletedOffers = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
-  const [orderMethod, setorderMethod] = useState("asc");
+  const [orderMethod, setorderMethod] = useState("desc");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -65,11 +65,11 @@ const CompletedOffers = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
-      console.log("Fetch Params:", params.toString()); 
+      // console.log("Fetch Params:", params.toString()); 
       const res = await getCompletedoffers(params);
-      console.log(res,"completed offers")
+      // console.log(res,"completed offers")
       if (res?.status === 200) {
-        console.log(res?.data?.findCompletedOffers, "completdOffer");
+        // console.log(res?.data?.findCompletedOffers, "completdOffer");
         setUserData(res?.data?.findCompletedOffers || []);
         setTotalUsers(res?.data?.totalCompletedOffers || 0);
       } else {
@@ -115,8 +115,8 @@ const CompletedOffers = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);
@@ -312,7 +312,7 @@ const CompletedOffers = () => {
           edit={formActions.edit}
           deleteAction={formActions.delete} 
           onEdit={() => {
-            console.log("record", record?.offer);
+            // console.log("record", record?.offer);
             dispatch(addRecord(record?.Offer));
             navigate(`/quickdollar/offer/editOffer/${record?.Offer?.idOffer}`);
           }}

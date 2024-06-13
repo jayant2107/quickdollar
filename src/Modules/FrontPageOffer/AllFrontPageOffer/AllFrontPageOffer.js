@@ -43,12 +43,12 @@ const AllFrontPageOffer = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getAllFrontPage(params);
       if (res?.status === 200) {
-        console.log(res, "all frontpage");
-        setUserData(res?.msg?.findUser || []);
-        setTotalUsers(res?.msg?.totalUsers || 0);
+        // console.log(res, "all frontpage");
+        setUserData(res?.data?.findUser || []);
+        setTotalUsers(res?.data?.totalUsers || 0);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -59,7 +59,7 @@ const AllFrontPageOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error(error?.message || "Something went wrong");
     } finally {
       setLoader(false);
@@ -84,8 +84,8 @@ const AllFrontPageOffer = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);

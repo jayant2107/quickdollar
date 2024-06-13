@@ -48,7 +48,7 @@ const AllAbusedUsers = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getAllAbusedUser(params);
       if (res?.status === 200) {
         // console.log(res.data)
@@ -64,14 +64,14 @@ const AllAbusedUsers = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
       setLoader(false);
     }
   };
 
-  console.log(userData, "daataaaaaaaaa");
+  // console.log(userData, "daataaaaaaaaa");
 
   const handleSort = (columnKey) => {
     let newOrder;
@@ -84,8 +84,8 @@ const AllAbusedUsers = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);
@@ -375,7 +375,7 @@ const AllAbusedUsers = () => {
     setSelectedRecord(null);
   };
   const handleDelete = async (id) => {
-    console.log(id, "abused userrr");
+    // console.log(id, "abused userrr");
     let res = await deleteUser(id);
     if (res?.status === 200) {
       await fetchData();

@@ -70,7 +70,7 @@ const PromotionEmail = () => {
     };
 
     const handleSubmit = (values, { resetForm, setFieldValue }) => {
-        console.log('Form values:', values);
+        // console.log('Form values:', values);
         resetForm();
         setFieldValue('additionalText', '');
         setValue('');
@@ -85,7 +85,7 @@ const PromotionEmail = () => {
             
             const res = await getAllGeoCodes();
             if (res?.status === 200) {
-                setGeoCodes(res?.msg);
+                setGeoCodes(res?.data);
             } else {
                 let message =
                     res?.response?.data?.message ||
@@ -95,12 +95,12 @@ const PromotionEmail = () => {
                 toast.error(message);
             }
         } catch (error) {
-            console.log(error, "error");
+            // console.log(error, "error");
             toast.error(error?.message || "Something went wrong");
         }
     };
 
-    const options = geoCodes.map(jsonData => ({
+    const options = geoCodes?.map(jsonData => ({
         label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
         value: `${jsonData?.iso_code_2}`,
     }));
@@ -257,7 +257,7 @@ const PromotionEmail = () => {
                                             <Checkbox checked={selectAll} onChange={(e) => {
                                                 const { checked } = e.target;
                                                 setSelectAll(checked);
-                                                const allCountries = options.map(option => option.value);
+                                                const allCountries = options?.map(option => option.value);
                                                 setFieldValue('countries', checked ? allCountries : []);
                                             }}>
                                                 Select all country

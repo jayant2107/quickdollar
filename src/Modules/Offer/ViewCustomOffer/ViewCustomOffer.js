@@ -18,7 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addRecord } from "../../../Store/slices/OfferRecord";
 import { Tooltip } from "antd";
-
+import Loader from "../../../Components/Loader/Loader";
 
 const ViewCustomOffers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -31,7 +31,7 @@ const ViewCustomOffers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
-  const [orderMethod, setorderMethod] = useState("asc");
+  const [orderMethod, setorderMethod] = useState("desc");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -69,10 +69,10 @@ const ViewCustomOffers = () => {
       params.append("limit", pageSize);
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getViewCustomOffers(params);
       if (res?.status === 200) {
-        console.log(res.data.findCustomOffers, "resview");
+        // console.log(res.data.findCustomOffers, "resview");
         setUserData(res?.data?.findCustomOffers || []);
         setTotalUsers(res?.data?.totalCustomOffers || 0);
       } else {
@@ -93,11 +93,13 @@ const ViewCustomOffers = () => {
   };
 
   const ActiveAllUser = async () => {
+    setLoader(true)
     let res = await activateDeactivateAllOffers({ isActive: "1" });
+    setLoader(false)
     if (res?.status === 200) {
-      console.log(res.status);
-      let fetch = fetchData();
-      console.log(fetch, "fetchhhh");
+      // console.log(res.status);
+       fetchData();
+      // console.log(fetch, "fetchhhh");
       toast.success("All Offers Activate Successfully");
     } else {
       let message =
@@ -110,12 +112,14 @@ const ViewCustomOffers = () => {
   };
 
   const DeactiveAllUser = async () => {
+  setLoader(true)
     let res = await activateDeactivateAllOffers({ isActive: "0" });
-    console.log(res);
+    setLoader(false)
+    // console.log(res);
     if (res?.status === 200) {
-      console.log(res.status);
-      let fetch = fetchData();
-      console.log(fetch, "fetchhhh");
+      // console.log(res.status);
+      fetchData();
+      // console.log(fetch, "fetchhhh");
       toast.success("All Offers Deactivate Successfully");
     } else {
       let message =
@@ -138,13 +142,12 @@ const ViewCustomOffers = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setCurrentPage(1);
   };
-
 
   const paginationConfig = {
     current: currentPage,
@@ -169,7 +172,6 @@ const ViewCustomOffers = () => {
     delete: true,
   };
 
-  
   const columns = [
     {
       title: (
@@ -179,7 +181,6 @@ const ViewCustomOffers = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            
           }}
         >
           Offer Title{" "}
@@ -226,10 +227,11 @@ const ViewCustomOffers = () => {
       width: 400,
 
       render: (text, record) => (
-        <Tooltip title={record?.offerLink || "NA"} placement="top" >
-        <TooltipContent><Link to="#"> {record?.offerLink || "NA"}</Link></TooltipContent>
-      </Tooltip>
-        
+        <Tooltip title={record?.offerLink || "NA"} placement="top">
+          <TooltipContent>
+            <Link to="#"> {record?.offerLink || "NA"}</Link>
+          </TooltipContent>
+        </Tooltip>
       ),
     },
     {
@@ -262,18 +264,32 @@ const ViewCustomOffers = () => {
       title: "Offer Short Description",
       key: "description",
       dataIndex: "offerShortDescription",
-      render: (text, record) => 
-      <Tooltip title={record?.offerShortDescription || "NA"} placement="top" overlayStyle={{maxWidth:"400px",backgroundColor:"#eff2f5"}}>
-      <TooltipContent>{record?.offerShortDescription || "NA"}</TooltipContent>
-    </Tooltip>
+      render: (text, record) => (
+        <Tooltip
+          title={record?.offerShortDescription || "NA"}
+          placement="top"
+          overlayStyle={{ maxWidth: "400px", backgroundColor: "#eff2f5" }}
+        >
+          <TooltipContent>
+            {record?.offerShortDescription || "NA"}
+          </TooltipContent>
+        </Tooltip>
+      ),
     },
     {
       title: "Geo Code",
       key: "code",
       dataIndex: "offerCountry",
-      render: (text, record) =>  <Tooltip title={record?.offerCountry || "NA"} placement="top" overlayStyle={{maxWidth:"400px" }} autoAdjustOverflow={false}  >
-      <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
-    </Tooltip>
+      render: (text, record) => (
+        <Tooltip
+          title={record?.offerCountry || "NA"}
+          placement="top"
+          overlayStyle={{ maxWidth: "400px" }}
+          autoAdjustOverflow={false}
+        >
+          <TooltipContent>{record?.offerCountry || "NA"}</TooltipContent>
+        </Tooltip>
+      ),
     },
     {
       title: "Status",
@@ -322,26 +338,34 @@ const ViewCustomOffers = () => {
       title: "APPLICATION GROUP ONE-ANDROID",
       key: "oneAndroid",
       dataIndex: "oneAndroid",
-      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
+      render: (text, record) => (
+        <StyledText text={text}>{text || "NA"}</StyledText>
+      ),
     },
     {
       title: "APPLICATION GROUP TWO-ANDROID",
       key: "twoAndroid",
       dataIndex: "twoAndroid",
-      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
+      render: (text, record) => (
+        <StyledText text={text}>{text || "NA"}</StyledText>
+      ),
     },
     {
       title: "APPLICATION GROUP ONE-IOS",
       key: "oneIos",
       dataIndex: "oneIos",
-      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
+      render: (text, record) => (
+        <StyledText text={text}>{text || "NA"}</StyledText>
+      ),
     },
     {
       title: "APPLICATION GROUP TWO-IOS",
       key: "twoIos",
       dataIndex: "twoIos",
 
-      render: (text, record) => <StyledText text={text}>{text || "NA"}</StyledText>,
+      render: (text, record) => (
+        <StyledText text={text}>{text || "NA"}</StyledText>
+      ),
     },
 
     {
@@ -418,9 +442,9 @@ const ViewCustomOffers = () => {
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
         <div style={{ display: "flex", gap: "20px" }}>
-          <button onClick={ActiveAllUser}>Active All Offers</button>
+          <button onClick={ActiveAllUser}>Active All Offers{loader ? <Loader /> : ""}</button>
           <button onClick={DeactiveAllUser} style={{ background: "red" }}>
-            De-active All Offers
+            De-active All Offers{loader ? <Loader /> : ""}
           </button>
         </div>
       </div>

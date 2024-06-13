@@ -13,7 +13,7 @@ const PreviewPromotionEmail = ({ triggerModal, setTriggerModal, previewData }) =
     const handleCancel = () => {
         setTriggerModal(false);
     };
-    console.log(previewData, "preview")
+    // console.log(previewData, "preview")
     return (
         <Modal
             style={{ display: 'flex', width: "100%", justifyContent: 'center', alignItems: 'center' }}

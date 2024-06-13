@@ -82,7 +82,7 @@ const WebSetting = () => {
                 toast.error(message);
             }
         } catch (error) {
-            console.log(error, "error");
+            // console.log(error, "error");
             toast.error(error?.message || "Something went wrong");
         }
     };
@@ -93,7 +93,7 @@ const WebSetting = () => {
         try {
             const res = await getAllGeoCodes();
             if (res?.status === 200) {
-                setGeoCodes(res?.msg);
+                setGeoCodes(res?.data);
             } else {
                 let message =
                     res?.response?.data?.message ||
@@ -103,12 +103,12 @@ const WebSetting = () => {
                 toast.error(message);
             }
         } catch (error) {
-            console.log(error, "error");
+            // console.log(error, "error");
             toast.error(error?.message || "Something went wrong");
         }
     };
 
-    const options = geoCodes.map(jsonData => ({
+    const options = geoCodes?.map(jsonData => ({
         label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
         value: `${jsonData?.iso_code_2}`,
     }));

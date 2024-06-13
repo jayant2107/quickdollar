@@ -52,10 +52,10 @@ const RequestGiftCard = () => {
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
       params.append("orderType", orderType);
-      console.log("Fetch Params:", params.toString());
+      // console.log("Fetch Params:", params.toString());
       const res = await getRequestedGiftCard(params);
       if (res?.status === 200) {
-        console.log(res?.data?.findRequestedGiftCards, "dfghjk ");
+        // console.log(res?.data?.findRequestedGiftCards, "dfghjk ");
         setUserData(res?.data?.findRequestedGiftCards || []);
         setTotalUsers(res?.data?.totalRequestedGiftCards || 0);
       } else {
@@ -86,8 +86,8 @@ const RequestGiftCard = () => {
       // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    console.log("Sort Field:", columnKey);
-    console.log("Sort Order:", newOrder);
+    // console.log("Sort Field:", columnKey);
+    // console.log("Sort Order:", newOrder);
     setFieldName(columnKey);
     setorderMethod(newOrder);
     setOrderType(type)
@@ -96,10 +96,10 @@ const RequestGiftCard = () => {
 
 
   const handleSendReward = async(recordId) => {
-    console.log(`Send reward button clicked for record ID: ${recordId}`);
+    // console.log(`Send reward button clicked for record ID: ${recordId}`);
     setSentRewards((prevStatus) => {
       const newStatus = { ...prevStatus, [recordId]: true };
-      console.log("Updated sendStatus:", newStatus);
+      // console.log("Updated sendStatus:", newStatus);
       return newStatus;
     });
     const payload={
@@ -122,7 +122,7 @@ const RequestGiftCard = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };

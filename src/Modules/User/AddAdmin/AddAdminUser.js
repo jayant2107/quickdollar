@@ -41,7 +41,7 @@ const AddAdminUser = () => {
       setLoader(true);
       let res = await addAdminUser(payload);
       setLoader(false);
-      console.log(res, "res");
+      // console.log(res, "res");
       if (res?.status === 200) {
         toast.success("User Added Successfully");
         resetForm();
@@ -54,13 +54,9 @@ const AddAdminUser = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
-  };
-
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
   };
 
   document.title="Manage Users - quickdollarapp";
@@ -135,17 +131,7 @@ const AddAdminUser = () => {
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
-                {/* <FieldWrapper>
-                  <Label>Is Admin</Label>
-                  <FieldContainer>
-                    <CheckboxWrapper>
-                      <Checkbox onChange={onChange} name="isAdmin" checked>Yes</Checkbox>
-                    </CheckboxWrapper>
-                  </FieldContainer>
-                </FieldWrapper> */}
-
               </InputWrapper>
-
               <Footer>
                 <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit{loader ? <Loader /> : ""}</SubmitBtn>
                 <ResetBtn type="primary" danger onClick={resetForm}>Reset</ResetBtn>
