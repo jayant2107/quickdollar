@@ -34,7 +34,6 @@ const SendModal = ({
     try {
       let res = await sendUserMessage(values);
       setLoader(false)
-      console.log(res, "res");
       if (res?.status === 200) {
         toast.success("Message send Successfully");
         handleSendCancel();
@@ -48,7 +47,6 @@ const SendModal = ({
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };

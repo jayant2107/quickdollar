@@ -13,21 +13,21 @@ const AddOffer = () => {
 
   const initialValues = {
     offerTitle: "",
-    h1Title: "",
+    offerH1Title: "",
     offerImage: null,
     offerLink: '',
     offerPoints: "",
     offerText: "",
     offerShortDescription: '',
     offerLongDescription: '',
-    offerPlatform: '',
+    OfferCreatedFor: '',
     offerCountry: [],
     fraudUser: [],
     dailyCAPLimit: "",
     customPostbaclParams: '',
     isActive: "false",
     isHotOffer: "false",
-    hotOfferFor: 'hotOfferForWeb',
+    HotOfFerFor: '1',
     app_install: 'false',
     conversionCallback: 'false',
     isDailyOffer: 'false',
@@ -55,7 +55,7 @@ const AddOffer = () => {
 
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
-    h1Title: yup.string().required('H1 title is required'),
+    offerH1Title: yup.string().required('H1 title is required'),
     offerImage: yup.mixed().required('Offer image is required'),
     offerLink: yup.string().required('Offer Link is required'),
     offerPoints: yup.string().required('Offer amount is required').test(
@@ -66,7 +66,7 @@ const AddOffer = () => {
     offerText: yup.string().required('Offer Text is required'),
     offerShortDescription: yup.string().required('Offer Short Description is required'),
     offerLongDescription: yup.string().required('Offer Long Description is required'),
-    offerPlatform: yup.string().required('Offer Created is required'),
+    OfferCreatedFor: yup.string().required('Offer Created is required'),
     customPostbaclParams: yup.string(),
     offerCountry: yup.array().min(1, 'Countries are required').required('Countries are required'),
     dailyCAPLimit: yup.string().required('Cap Limit  is required').test(
@@ -105,14 +105,14 @@ const AddOffer = () => {
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
     const formData = new FormData();
     formData.append("offerTitle", values?.offerTitle);
-    formData.append("h1Title", values?.h1Title);
+    formData.append("offerH1Title", values?.offerH1Title);
     formData.append("offerImage", values?.offerImage);
     formData.append("offerLink", values?.offerLink);
     formData.append("offerPoints", values?.offerPoints);
     formData.append("offerText", values?.offerText);
     formData.append("offerShortDescription", values?.offerShortDescription);
     formData.append("offerLongDescription", values?.offerLongDescription);
-    formData.append("offerPlatform", values?.offerPlatform);
+    formData.append("OfferCreatedFor", values?.OfferCreatedFor);
     formData.append("offerCountry", values?.offerCountry);
     // formData.append("offerCountry", values.offerCountry);
     formData.append("fraudUser", values?.fraudUser);
@@ -120,7 +120,7 @@ const AddOffer = () => {
     formData.append("customPostbaclParams", values?.customPostbaclParams);
     formData.append("isActive", values?.isActive);
     formData.append("isHotOffer", values?.isHotOffer);
-    formData.append("hotOfferFor", values?.hotOfferFor);
+    formData.append("HotOfFerFor", values?.HotOfFerFor);
     formData.append("app_install", values?.app_install);
     formData.append("conversionCallback", values?.conversionCallback);
     formData.append("isDailyOffer", values?.isDailyOffer);
@@ -253,21 +253,21 @@ const AddOffer = () => {
                       value={h1TitleValue}
                       onChange={(content) => {
                         setH1TitleValue(content);
-                        setFieldValue("h1Title", content);
+                        setFieldValue("offerH1Title", content);
                         setIsEmpty(content === "<p><br></p>");
                       }}
                       modules={{ toolbar: toolbarOptions }}
                       tooltip={true}
                       onBlur={() => {
-                        setFieldTouched("h1Title", true);
+                        setFieldTouched("offerH1Title", true);
                         if (isEmpty) {
-                          setFieldValue("h1Title", "");
+                          setFieldValue("offerH1Title", "");
                         }
                       }}
                     />
                     <RequiredWrapper>
-                      {touched.h1Title && errors.h1Title && (
-                        <ErrorMessage name="h1Title" />
+                      {touched.offerH1Title && errors.offerH1Title && (
+                        <ErrorMessage name="offerH1Title" />
                       )}
                     </RequiredWrapper>
                   </QuillFieldContainer>
@@ -446,34 +446,34 @@ const AddOffer = () => {
                         <div>
                           <Field
                             type="radio"
-                            name="hotOfferFor"
-                            value="hotOfferForWeb"
-                            id="hotOfferForWeb"
+                            name="HotOfFerFor"
+                            value="1"
+                            id="1"
                           />
                           <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="hotOfferFor"
-                            value="hotOfferForMobile"
-                            id="hotOfferForMobile"
+                            name="HotOfFerFor"
+                            value="2"
+                            id="2"
                           />
                           <RadioLabel htmlFor="hotOfferForMobile">Mobile</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="hotOfferFor"
-                            value="hotOfferForBoth"
-                            id="hotOfferForBoth"
+                            name="HotOfFerFor"
+                            value="3"
+                            id="3"
                           />
                           <RadioLabel htmlFor="hotOfferForBoth">Both</RadioLabel>
                         </div>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
-                      <ErrorMessage name="hotOfferFor" />
+                      <ErrorMessage name="HotOfFerFor" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -593,13 +593,13 @@ const AddOffer = () => {
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select users"
-                      defaultValue={initialValues.offerPlatform}
+                      defaultValue={initialValues.OfferCreatedFor}
                       style={{
                         width: "100%",
                         marginBottom: "3px",
                       }}
-                      value={values.offerPlatform || null}
-                      onChange={(value) => setFieldValue('offerPlatform', value)}
+                      value={values.OfferCreatedFor || null}
+                      onChange={(value) => setFieldValue('OfferCreatedFor', value)}
                       options={[
                         {
                           value: '0',
@@ -616,7 +616,7 @@ const AddOffer = () => {
                       ]}
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="offerPlatform" />
+                      <ErrorMessage name="OfferCreatedFor" />
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>

@@ -89,12 +89,12 @@ const EditOffer = () => {
     StaticURL: record?.StaticURL?.toString(),
     offerLocation: record?.displaylocation?.split(","),
     offerPlatform: record?.offerPlatform?.toString(),
-    offerCreatedFor: record?.offerCreatedFor,
+    OfferCreatedFor: record?.OfferCreatedFor,
     offerH1Title: record?.offerH1Title,
     SelectPlatFormForOffer: record?.SelectPlatFormForOffer?.split(","),
     customPostbackParams: record?.customPostbackParams,
     isHotOffer: record?.isHotOffer?.toString(),
-    hotOfferFor: "hotOfferForWeb",
+    HotOfFerFor: record?.HotOfFerFor?.toString(),
     // user: "",
     // userOfferUrl: "",
   };
@@ -122,7 +122,7 @@ const EditOffer = () => {
     offerLongDescription: yup
       .string()
       .required("Offer Long Description is required"),
-    offerCreatedFor: yup.string().required("Offer Created is required"),
+      OfferCreatedFor: yup.string().required("Offer Created is required"),
     offerCountry: yup
       .array()
       .of(yup.string())
@@ -156,10 +156,12 @@ const EditOffer = () => {
       formData.append("offerPlatform", values?.offerPlatform);
       formData.append("offerLongDescription", values?.offerLongDescription);
       formData.append("offerH1Title", values?.offerH1Title);
-      formData.append("offerCreatedFor", values?.offerCreatedFor);
+      formData.append("OfferCreatedFor", values?.OfferCreatedFor);
       formData.append("SelectPlatFormForOffer", values?.SelectPlatFormForOffer);
       formData.append("customPostbackParams", values?.customPostbackParams);
       formData.append("fraudUser", values?.fraudUser);
+      formData.append("isHotOffer", values?.isHotOffer);
+      formData.append("HotOfFerFor", values?.HotOfFerFor);
       if (flag) {
         formData.append("offerImage", values?.offerImage);
       }
@@ -505,7 +507,7 @@ const EditOffer = () => {
                           <Field
                             type="radio"
                             name="isHotOffer"
-                            value="true"
+                            value="1"
                             id="isHotOfferYes"
                           />
                           <RadioLabel htmlFor="isHotOfferYes">Yes</RadioLabel>
@@ -514,7 +516,7 @@ const EditOffer = () => {
                           <Field
                             type="radio"
                             name="isHotOffer"
-                            value="false"
+                            value="0"
                             id="isHotOfferNo"
                           />
                           <RadioLabel htmlFor="isHotOfferNo">No</RadioLabel>
@@ -540,18 +542,18 @@ const EditOffer = () => {
                         <div>
                           <Field
                             type="radio"
-                            name="hotOfferFor"
-                            value="hotOfferForWeb"
-                            id="hotOfferForWeb"
+                            name="HotOfFerFor"
+                            value="1"
+                            id="1"
                           />
                           <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
                         </div>
                         <div>
                           <Field
                             type="radio"
-                            name="hotOfferFor"
-                            value="hotOfferForMobile"
-                            id="hotOfferForMobile"
+                            name="HotOfFerFor"
+                            value="2"
+                            id="2"
                           />
                           <RadioLabel htmlFor="hotOfferForMobile">
                             Mobile
@@ -560,9 +562,9 @@ const EditOffer = () => {
                         <div>
                           <Field
                             type="radio"
-                            name="hotOfferFor"
-                            value="hotOfferForBoth"
-                            id="hotOfferForBoth"
+                            name="HotOfFerFor"
+                            value="3"
+                            id="3"
                           />
                           <RadioLabel htmlFor="hotOfferForBoth">
                             Both
@@ -571,7 +573,7 @@ const EditOffer = () => {
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
-                      <ErrorMessage name="hotOfferFor" />
+                      <ErrorMessage name="HotOfFerFor" />
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
@@ -704,14 +706,14 @@ const EditOffer = () => {
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select user"
-                      defaultValue={initialValues.offerCreatedFor}
+                      defaultValue={initialValues.OfferCreatedFor}
                       style={{
                         width: "100%",
                         marginBottom: "3px",
                       }}
-                      value={values.offerCreatedFor || null}
+                      value={values.OfferCreatedFor || null}
                       onChange={(value) =>
-                        setFieldValue("offerCreatedFor", value)
+                        setFieldValue("OfferCreatedFor", value)
                       }
                       options={[
                         {
@@ -729,7 +731,7 @@ const EditOffer = () => {
                       ]}
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="offerCreatedFor" />
+                      <ErrorMessage name="OfferCreatedFor" />
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>

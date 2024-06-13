@@ -206,7 +206,7 @@ const AllUsers = () => {
 
         switch (record?.userRoleID) {
           case 1:
-            roleName = "SuperAdmin";
+            roleName = "SuperUser";
             roleIcon = (
               <RiAdminFill style={{ color: "white", fontSize: "20px" }} />
             );

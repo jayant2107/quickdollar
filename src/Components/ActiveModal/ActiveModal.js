@@ -6,9 +6,7 @@ import Loader from '../Loader/Loader';
 import { useState } from "react";
 
 const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
-  // console.log(record)
   const [loader, setLoader] = useState(false);
-
 
   const confirmMessage = record?.isActive === true
     ? "Are you sure you want to deactivate?"
@@ -18,17 +16,13 @@ const ActiveModal = ({ handleCancel, record, fetchData, activeModal }) => {
     const payload = {
       idUser: record.idUser,
       isActive: !record.isActive
-
     }
-    console.log(payload)
+
     setLoader(true)
     let res = await userActiveModal(payload);
     setLoader(false)
-    console.log(res)
     if (res?.status === 200) {
-      console.log(res.status)
       await fetchData()
-      
       toast.success(payload?.isActive === true?"Active Successfully":"Deactive Successfully");
       handleCancel();
     }
