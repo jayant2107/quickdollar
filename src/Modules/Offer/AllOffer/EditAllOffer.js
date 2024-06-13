@@ -56,7 +56,6 @@ const EditOffer = () => {
   const [loader, setLoader] = useState(false);
   const [page, setPage] = useState(1);
   const [userData, setUserData] = useState([]);
-  const [offerImgPreview, setOfferImgPreview] = useState(null);
   const offerImgInputRef = useRef(null);
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -68,6 +67,8 @@ const EditOffer = () => {
   const record = useSelector((state) => state.offerRecord.record);
   const { idOffer } = useParams();
   const navigate = useNavigate();
+  const [offerImgPreview, setOfferImgPreview] = useState(record?.offerImage);
+  const [offerImgError, setOfferImgError] = useState(null);
 
   const initialValues = {
     offerTitle: record?.offerTitle,
@@ -112,21 +113,6 @@ const EditOffer = () => {
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
     offerH1Title: yup.string().required("H1 title is required"),
-    offerImage: yup
-      .mixed()
-      .required("Offer image is required")
-      .test("fileType", "Only image files are allowed", (value) => {
-        if (value) {
-          return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-        }
-        return true;
-      })
-      .test("fileSize", "File size must be less than 2MB", (value) => {
-        if (value) {
-          return value.size <= 2 * 1024 * 1024;
-        }
-        return true;
-      }),
     offerLink: yup.string().required("Offer Link is required"),
     offerPoints: yup.string().required("Offer amount is required"),
     offerText: yup.string().required("Offer Text is required"),
@@ -179,6 +165,7 @@ const EditOffer = () => {
       }
       setLoader(true);
       const res = await editOffers(formData);
+      setLoader(false);
       if (res?.status === 200) {
         toast.success("Edited Offer successfully");
         navigate("/quickdollar/offer/alloffers");
@@ -186,7 +173,6 @@ const EditOffer = () => {
         resetForm();
         setH1TitleValue("");
         setLongDescriptionValue("");
-        setLoader(false);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -196,7 +182,7 @@ const EditOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };
@@ -205,7 +191,7 @@ const EditOffer = () => {
     try {
       const res = await getAllGeoCodes();
       if (res?.status === 200) {
-        setGeoCodes(res?.msg);
+        setGeoCodes(res?.data);
       } else {
         let message =
           res?.response?.data?.message ||
@@ -215,7 +201,7 @@ const EditOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };
@@ -237,10 +223,13 @@ const EditOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
+      setLoader(false)
     }
+
+
   };
 
   const handleReset = (resetForm) => {
@@ -250,25 +239,39 @@ const EditOffer = () => {
     setOfferImgPreview(null);
   };
 
+  const validateFile = (file) => {
+    if (!file) return 'File is required';
+    if (file.size > 2000000) return 'File too large';
+    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    return null;
+  };
+
   const handleFileChange = (e, setFieldValue, setPreview) => {
     const file = e.target.files[0];
-    if (file) {
+    const error = validateFile(file);
+    if (error) {
+      setOfferImgError(error);
+      setOfferImgPreview(null);
+    } else {
+      setOfferImgError(null);
       setFieldValue(e.target.name, file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
-        setFlag(true);
+        setFlag(true)
       };
       reader.readAsDataURL(file);
     }
+    // Reset the input value to allow the same file to be selected again
+    offerImgInputRef.current.value = null;
   };
 
-  const options = geoCodes.map((jsonData) => ({
+  const options = geoCodes?.map((jsonData) => ({
     label: `${jsonData?.country}- ${jsonData?.iso_code_2}`,
     value: `${jsonData?.iso_code_2}`,
   }));
 
-  const userOptions = userData.map((data) => ({
+  const userOptions = userData?.map((data) => ({
     label: `${data?.firstName} ${data?.lastName}`,
     value: `${data?.idUser}`,
   }));
@@ -340,7 +343,7 @@ const EditOffer = () => {
                       }}
                     />
                     <RequiredWrapper>
-                      {touched.h1Title && errors.h1Title && (
+                      {touched.offerH1Title && errors.offerH1Title && (
                         <ErrorMessage name="offerH1Title" />
                       )}
                     </RequiredWrapper>
@@ -367,13 +370,9 @@ const EditOffer = () => {
                       <UploadInstruction>
                         Max size 2MB and resolution is 150x150 px
                       </UploadInstruction>
-                      {offerImgPreview && (
-                        <Image src={offerImgPreview} alt="Offer Preview" />
-                      )}
+                      {offerImgPreview && (<Image src={offerImgPreview} alt="Offer Preview" />)}
+                      {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
                     </ChooseContainer>
-                    <RequiredWrapper>
-                      <ErrorMessage name="offerImage" />
-                    </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
 
@@ -891,7 +890,7 @@ const EditOffer = () => {
                         onChange={(e) => {
                           const { checked } = e.target;
                           setSelectAll(checked);
-                          const offerCountry = options.map(
+                          const offerCountry = options?.map(
                             (option) => option.value
                           );
                           setFieldValue(
@@ -981,7 +980,7 @@ const EditOffer = () => {
                   Reset
                 </Button>
                 <SubmitBtn type="primary" htmlType="submit" disabled={loader}>
-                  Submit{loader?<Loader/>:""}
+                  Submit{loader ? <Loader /> : ""}
                 </SubmitBtn>
               </Footer>
             </Form>
@@ -1183,6 +1182,7 @@ const RequiredWrapper = styled.div`
   color: red;
   text-align: left;
   margin-bottom: 1rem;
+  font-family: Poppins;
 `;
 
 const FieldContainer = styled.div`
@@ -1252,4 +1252,11 @@ const Image = styled.img`
   width: 120px;
   height: 120px;
   object-fit: contain;
+  margin-bottom:5px
+`;
+
+const ErrorText = styled.div`
+color: red;
+margin-top: 5px;
+margin-bottom: 5px;
 `;
