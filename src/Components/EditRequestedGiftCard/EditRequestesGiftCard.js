@@ -16,7 +16,7 @@ const EditRequestGiftCard = ({
   record,
   fetchData,
 }) => {
-  console.log(record)
+  // console.log(record)
   const [loader, setLoader] = useState(false);
 
   const initialValues = {
@@ -38,10 +38,10 @@ const EditRequestGiftCard = ({
   });
 
   const handleSubmit =async (values, { resetForm }) => {
-    console.log('Form values:', values);
+    // console.log('Form values:', values);
    
 
-    const {  isActive , giftCardName,giftCardPoints, sendRewards} = values;
+    const {  isActive , giftCardName,giftCardPoints} = values;
     const payload = {
       id: record.idRequestedGiftCard,
       giftCardName:giftCardName,
@@ -50,14 +50,14 @@ const EditRequestGiftCard = ({
 
 
     }
-    console.log("Form values:", payload);
+    // console.log("Form values:", payload);
     setLoader(true)
     let res = await editRequestedGiftCard(payload)
     setLoader(false)
     if (res?.status === 200) {
-      console.log(res.status)
-      let fetch = fetchData()
-      console.log(fetch, "fetchhhh")
+      // console.log(res.status)
+       fetchData()
+      // console.log(fetch, "fetchhhh")
       toast.success("Edit Successfully");
       resetForm();
       handleEditCancel();

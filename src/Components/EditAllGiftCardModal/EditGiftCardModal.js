@@ -20,7 +20,7 @@ const EditGiftCardModal = ({
   fetchData,
 }) => {
   const [loader, setLoader] = useState(false);
-  console.log(record, "recorddd")
+  // console.log(record, "recorddd")
   const [offerImgPreview, setOfferImgPreview] = useState(record.giftCardImage);
   const [flag, setFlag] = useState(false);
   const navigate = useNavigate()
@@ -57,9 +57,7 @@ const EditGiftCardModal = ({
       formData.append('frontpageofferImage', values.frontpageofferImage);
     }
 
-    for (const pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
+   
     try {
       setLoader(true)
       const res = await editGiftCard(formData);
@@ -79,7 +77,7 @@ const EditGiftCardModal = ({
         toast.error(message);
       }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };

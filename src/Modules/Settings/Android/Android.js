@@ -13,9 +13,9 @@ const Android = () => {
   const [loader, setLoader] = useState(false);
 
   const initialValues = {
-    appTitle: 'Welcome to iPeor',
-    appSubTitle: 'Share your Opinion',
-    headerText: 'QD',
+    appTitle: '',
+    appSubTitle: '',
+    headerText: '',
     currencySign: '$',
     cubeOfferCountryCode: 
      [ "US"]
@@ -133,7 +133,7 @@ const Android = () => {
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Application Sub-Title</Label>
                   <FieldContainer>
-                    <InputField name="appSubTitle" placeholder="Application sub-title" readOnly/>
+                    <InputField name="appSubTitle" placeholder="Application sub-title" />
                     <RequiredWrapper>
                       <ErrorMessage name="appSubTitle" />
                     </RequiredWrapper>
