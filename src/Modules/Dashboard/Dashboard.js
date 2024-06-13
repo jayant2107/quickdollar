@@ -5,7 +5,11 @@ import { toast } from "react-toastify";
 import { Line } from "react-chartjs-2";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Menu, Select } from "antd";
-import { getAllGeoCodes, getDashboard, getChartData } from "../../Services/Collection";
+import {
+  getAllGeoCodes,
+  getDashboard,
+  getChartData,
+} from "../../Services/Collection";
 import {
   Chart as ChartJS,
   LineElement,
@@ -15,6 +19,7 @@ import {
   Tooltip,
   Ticks,
 } from "chart.js";
+import Loader from "../../Components/Loader";
 
 ChartJS.register(
   LineElement,
@@ -29,14 +34,14 @@ const Dashboard = () => {
   const [cardInfo, setCardInfo] = useState([]);
   const [chartInfo, setChartInfo] = useState([]);
   const [selectedOption, setSelectedOption] = useState("Select Geo Code...");
+  const [loader, setLoader] = useState(false);
 
   const { Option } = Select;
 
-
-  
   // -------------API--------------
 
   const fetchData = async () => {
+    setLoader(true);
     try {
       const res = await getAllGeoCodes();
       if (res?.status === 200) {
@@ -54,11 +59,12 @@ const Dashboard = () => {
       // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
-      // setLoader(false);
+      setLoader(false);
     }
   };
 
   const fetchDashboard = async () => {
+    setLoader(true);
     try {
       const res = await getDashboard();
       if (res?.status === 200) {
@@ -76,16 +82,18 @@ const Dashboard = () => {
       // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
-      // setLoader(false);
+      setLoader(false);
     }
   };
 
-
   const fetchChartData = async () => {
+    setLoader(true);
     try {
       let params = new URLSearchParams();
       params.append("country", selectedOption || "US");
-      const res = await getChartData(selectedOption != "Select Geo Code..." && params);
+      const res = await getChartData(
+        selectedOption != "Select Geo Code..." && params
+      );
       if (res?.status === 200) {
         // console.log(res?.msg);
         setChartInfo(res?.data);
@@ -101,7 +109,7 @@ const Dashboard = () => {
       // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     } finally {
-      // setLoader(false);
+      setLoader(false);
     }
   };
 
@@ -424,19 +432,18 @@ C491.375,120.986,496,130.003,496,140.117z"
 
   const cardData = [totalUsers, activeOffers, completedOffers, giftCards];
 
-
   // ------------MainChart--------------
 
   const chartData = {
-    labels:[
+    labels: [
       ...new Set(
         (chartInfo?.offerMonthYear || [])?.map(
           (offer) => convertNumberToMonth(offer?.MONTHS) + " " + offer?.YEARS
         )
       ),
     ],
-    datasets: [ 
-            {
+    datasets: [
+      {
         label: "offer sales",
         data: chartInfo?.offerMonthYear?.map((offer) => offer?.OFFERS) || [],
         backgroundColor: "aqua",
@@ -464,7 +471,6 @@ C491.375,120.986,496,130.003,496,140.117z"
         grid: {
           display: false,
         },
-
       },
     },
   };
@@ -476,122 +482,143 @@ C491.375,120.986,496,130.003,496,140.117z"
 
   useEffect(() => {
     fetchChartData();
-  }, [selectedOption])
+  }, [selectedOption]);
 
-  document.title="Dashboard - quickdollarapp"
+  document.title = "Dashboard - quickdollarapp";
 
   return (
     <DriverWrapper>
-      <div>
+      <>
         <div className="allOfferHeader">
           <h1 className="driverHeading">Dashboard</h1>
         </div>
-        <CardWrapper>
-          {cardData?.map((card, index) => {
-            return (
-              <CardContainer
-                key={index}
+        {loader ? (
+          <Loader size={25} />
+        ) : (
+          <div>
+            <CardWrapper>
+              {cardData?.map((card, index) => {
+                return (
+                  <CardContainer
+                    key={index}
+                    style={{
+                      backgroundImage: `${card.backgroundImage}`,
+                    }}
+                  >
+                    <CardHeader>{card.svg}</CardHeader>
+                    <CardContent>
+                      <p style={{ fontSize: "36px", margin: "0" }}>
+                        {card.count}
+                      </p>
+                      <p style={{ fontSize: "18px" }}>{card.name}</p>
+                    </CardContent>
+                    <div
+                      style={{ width: "80%", height: "101px", margin: "auto" }}
+                    >
+                      <Line data={card.cardOneData} options={cardOptions} />
+                    </div>
+                  </CardContainer>
+                );
+              })}
+            </CardWrapper>
+
+            <ChartWrapper>
+              <div
                 style={{
-                  backgroundImage: `${card.backgroundImage}`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <CardHeader>{card.svg}</CardHeader>
-                <CardContent>
-                  <p style={{ fontSize: "36px", margin: "0" }}>{card.count}</p>
-                  <p style={{ fontSize: "18px" }}>{card.name}</p>
-                </CardContent>
-                <div style={{ width: "80%", height: "101px", margin: "auto" }}>
-                  <Line data={card.cardOneData} options={cardOptions} />
-                </div>
-              </CardContainer>
-            );
-          })}
-        </CardWrapper>
-      </div>
+                <p
+                  style={{
+                    textAlign: "start",
+                    fontSize: "30px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Track Offers Chart
+                </p>
+                <SelectField
+                  showSearch
+                  placeholder={selectedOption}
+                  onChange={(value) => setSelectedOption(value)}
+                  style={{ width: 300 }}
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    typeof option.children === "string" &&
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Option key="Select Geo Code" value="Select Geo Code">
+                    Select Geo Code
+                  </Option>
+                  {geoCodes?.map((item, index) => (
+                    <Option key={item?.iso_code_2} value={item?.iso_code_2}>
+                      {item?.country + " (" + item?.iso_code_2 + ")"}
+                    </Option>
+                  ))}
+                </SelectField>
+              </div>
+              <Line data={chartData} options={options}></Line>
+            </ChartWrapper>
 
-      <ChartWrapper>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <p
-            style={{ textAlign: "start", fontSize: "30px", fontWeight: "500" }}
-          >
-            Track Offers Chart
-          </p>
-          <SelectField
-            showSearch 
-            placeholder={selectedOption}
-            onChange={(value) => setSelectedOption(value)}
-            style={{ width: 300 }}
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              typeof option.children === "string" &&
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option key="Select Geo Code" value="Select Geo Code">
-              Select Geo Code
-            </Option>
-            {geoCodes?.map((item, index) => (
-              <Option key={item?.iso_code_2} value={item?.iso_code_2}>
-                {item?.country + " (" + item?.iso_code_2 + ")"}
-              </Option>
-            ))}
-          </SelectField>
-        </div>
-        <Line data={chartData} options={options}></Line>
-      </ChartWrapper>
-
-      <CampaignWrapper>
-        <div>
-          <p
-            style={{ fontSize: "24px", fontWeight: "400", textAlign: "start" }}
-          >
-            Top Campaigns
-          </p>
-          <div
-            style={{
-              width: "full",
-              height: "0px",
-              border: "1px solid gray",
-              opacity: "0.2",
-            }}
-          ></div>
-        </div>
-        <div>
-          <div className="campaign-header">
-            <p>Country</p>
-            <p>Total Users</p>
-          </div>
-          {cardInfo?.getUserLocationwise?.map((campaigns, index) => {
-            return (
-              <div key={index}>
-                <div className="campaign-data">
-                  <p>
-                    {index + 1}.
-                    {geoCodes.find(
-                      (code) => code?.iso_code_2 == campaigns?.countryCode
-                    )?.country ?? campaigns?.countryCode}
-                  </p>
-                  <p>{campaigns?.users}</p>
-                </div>
+            <CampaignWrapper>
+              <div>
+                <p
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "400",
+                    textAlign: "start",
+                  }}
+                >
+                  Top Campaigns
+                </p>
                 <div
                   style={{
                     width: "full",
                     height: "0px",
-                    border: "0.5px solid gray",
+                    border: "1px solid gray",
                     opacity: "0.2",
                   }}
                 ></div>
               </div>
-            );
-          })}
-        </div>
-      </CampaignWrapper>
+              <div>
+                <div className="campaign-header">
+                  <p>Country</p>
+                  <p>Total Users</p>
+                </div>
+                {cardInfo?.getUserLocationwise?.map((campaigns, index) => {
+                  return (
+                    <div key={index}>
+                      <div className="campaign-data">
+                        <p>
+                          {index + 1}.
+                          {geoCodes?.find(
+                            (code) =>
+                              code?.iso_code_2 === campaigns?.countryCode
+                          )?.country ?? campaigns?.countryCode}
+                        </p>
+                        <p>{campaigns?.users}</p>
+                      </div>
+                      <div
+                        style={{
+                          width: "full",
+                          height: "0px",
+                          border: "0.5px solid gray",
+                          opacity: "0.2",
+                        }}
+                      ></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CampaignWrapper>
+          </div>
+        )}
+      </>
     </DriverWrapper>
   );
 };
@@ -689,7 +716,7 @@ const ChartWrapper = styled.div`
     width: 20rem;
     background-color: #fff;
     box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
-   
+
     border-radius: 10px;
     border: none !important;
     padding: 11px 30px;

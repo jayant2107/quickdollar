@@ -222,7 +222,7 @@ const RequestGiftCard = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints", "3")}
+          onClick={() => handleSort("Points", "1")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -231,7 +231,7 @@ const RequestGiftCard = () => {
         >
           User Total Amount{" "}
           <img
-            src={srcSortImage("giftCardPoints", {
+            src={srcSortImage("Points", {
               sortBasis: fieldName,
               sortType: orderMethod,
             })}
@@ -241,7 +241,7 @@ const RequestGiftCard = () => {
         </div>
       ),
 
-      dataIndex: "giftCardPoints",
+      dataIndex: "Points",
       key: "price",
       render: (text, record) => record?.User?.Points || "NA",
 
@@ -293,11 +293,11 @@ const RequestGiftCard = () => {
             <SentButton disabled={true}>Sent</SentButton>
           ) : (
             <SendButton
-              sent={sentRewards[record.idRequestedGiftCard]}
-              onClick={() => handleSendReward(record.idRequestedGiftCard)}
-              disabled={sentRewards[record.idRequestedGiftCard]}
+              sent={sentRewards[record?.idRequestedGiftCard]}
+              onClick={() => handleSendReward(record?.idRequestedGiftCard)}
+              disabled={sentRewards[record?.idRequestedGiftCard]}
             >
-              {sentRewards[record.idRequestedGiftCard] ? "Sent" : "Send"}
+              {sentRewards[record?.idRequestedGiftCard] ? "Sent" : "Send"}
             </SendButton>
           )}
         </>
