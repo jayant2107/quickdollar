@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .ant-modal-content {
   /* background: #f4f4f4 !important; */
   font-family: Poppins !important;
@@ -223,3 +227,7 @@ Header {
   }
 }
 /* 360 to 550 media end here*/
+
+input {
+  width: 100% !important;
+}
