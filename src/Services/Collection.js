@@ -16,6 +16,7 @@ const Active_User = "deactivateAndActivateUser";
 const SEND_USER_MESSAGE = "sendUserMessgae";
 const ADD_ADMIN_USER = "addManagerUser";
 const Get_All_Abused_USER = "abusedusers";
+const EXPORT_USER = "exportUsersToCSV";
 
 const Get_All_Offers = "getAllOffers";
 const ADD_OFFER = "addOffer";
@@ -80,6 +81,8 @@ export const sendUserMessage = (payload) => postApi(SEND_USER_MESSAGE, payload);
 export const addAdminUser = (payload) => postApi(ADD_ADMIN_USER, payload);
 
 export const getAllAbusedUser = (query) => getApi(`${Get_All_Abused_USER}?${query}`);
+
+export const getAllExportUser = () => getApi(EXPORT_USER);
 
 //// offers ////
 export const getAllOffers = (query) => getApi(`${Get_All_Offers}?${query}`);

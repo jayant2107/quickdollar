@@ -15,6 +15,7 @@ import { deleteUser, getAllUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { getAllExportUser } from "../../../Services/Collection";
 
 const AllUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -69,6 +70,23 @@ const AllUsers = () => {
       setLoader(false);
     }
   };
+
+  const handleExport = async () => {
+    try {
+      const res = await getAllExportUser();
+      if (res?.status === 200) {
+        window.open(res.message.downloadUrl, "_blank");
+      } else {
+        let message =
+          res?.response?.data||
+          res?.error ||
+          "Something went wrong";
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+    }
+  }
 
   const paginationConfig = {
     current: currentPage,
@@ -196,7 +214,8 @@ const AllUsers = () => {
       width: 150,
       render: (text, record) => record?.Points || "0",
     },
-    { title:"Role",
+    {
+      title: "Role",
       dataIndex: "userRoleID",
       key: "role",
       width: 150,
@@ -271,7 +290,7 @@ const AllUsers = () => {
     },
 
     {
-      title:"User Type",
+      title: "User Type",
       dataIndex: "userApplicationtype",
       key: "usertype",
       width: 150,
@@ -464,7 +483,7 @@ const AllUsers = () => {
       )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Users</h1>
-        <button>Export User Details</button>
+        <button onClick={handleExport}>Export User Details</button>
       </div>
 
       <div className="tableDiv">
