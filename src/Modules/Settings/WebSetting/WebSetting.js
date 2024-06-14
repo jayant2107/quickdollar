@@ -347,6 +347,9 @@ const WebSetting = () => {
                                                 value={values.cubeOfferCountryCode}
                                                 onChange={(value) => setFieldValue('cubeOfferCountryCode', value)}
                                                 options={options}
+                                                filterOption={(input, option) =>
+                                                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                  }
                                                 onBlur={() => setFieldTouched('cubeOfferCountryCode', true)}
                                             />
                                             <RequiredWrapper>

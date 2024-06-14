@@ -82,7 +82,7 @@ const PromotionEmail = () => {
 
     const fetchGeoCordData = async () => {
         try {
-            
+
             const res = await getAllGeoCodes();
             if (res?.status === 200) {
                 setGeoCodes(res?.data);
@@ -252,6 +252,9 @@ const PromotionEmail = () => {
                                                 value={values.countries}
                                                 onChange={(value) => setFieldValue('countries', value)}
                                                 options={options}
+                                                filterOption={(input, option) =>
+                                                    option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                }
                                                 onBlur={() => setFieldTouched('countries', true)}
                                             />
                                             <Checkbox checked={selectAll} onChange={(e) => {

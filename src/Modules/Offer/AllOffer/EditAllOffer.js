@@ -884,6 +884,9 @@ const EditOffer = () => {
                           setFieldValue("offerCountry", value)
                         }
                         options={options}
+                        filterOption={(input, option) =>
+                          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       />
                       <Checkbox
                         checked={selectAll}
