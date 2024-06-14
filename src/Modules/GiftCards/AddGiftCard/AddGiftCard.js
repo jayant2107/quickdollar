@@ -178,7 +178,7 @@ const AddGiftCard = () => {
                                     <Label><Asterisk>*</Asterisk>Is Active</Label>
                                     <FieldContainer>
                                         <FieldWrapper>
-                                            <div>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="isActive"
@@ -186,8 +186,8 @@ const AddGiftCard = () => {
                                                     id="isActiveYes"
                                                 />
                                                 <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
-                                            </div>
-                                            <div>
+                                            </RadioWrapper>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="isActive"
@@ -195,7 +195,7 @@ const AddGiftCard = () => {
                                                     id="isActiveNo"
                                                 />
                                                 <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
-                                            </div>
+                                            </RadioWrapper>
                                         </FieldWrapper>
                                         <RequiredWrapper>
                                             <ErrorMessage name="isActive" />
@@ -383,3 +383,9 @@ const ErrorText = styled.div`
 color: red;
 margin-top: 5px;
 `;
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+`

@@ -237,7 +237,7 @@ const EditUserModal = ({
                     <div>
                       <Label>Is Admin</Label>
                       <FieldWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isAdmin"
@@ -245,9 +245,9 @@ const EditUserModal = ({
                             id="isAdminYes"
                           />
                           <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
-                        </div>
+                        </RadioWrapper>
 
-                    <div>
+                    <RadioWrapper>
                       <Field
                         type="radio"
                         name="isAdmin"
@@ -255,7 +255,7 @@ const EditUserModal = ({
                         id="suspendAccountNo"
                       />
                       <RadioLabel htmlFor="suspendAccountNo">No</RadioLabel>
-                    </div>
+                    </RadioWrapper>
                       </FieldWrapper>
                       <RequiredWrapper>
                         <ErrorMessage name="isAdmin" />
@@ -264,7 +264,7 @@ const EditUserModal = ({
                     <div>
                       <Label>Suspend Account</Label>
                       <FieldWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="suspendAccount"
@@ -274,8 +274,8 @@ const EditUserModal = ({
                           <RadioLabel htmlFor="suspendAccountYes">
                             Yes
                           </RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="suspendAccount"
@@ -283,7 +283,7 @@ const EditUserModal = ({
                             id="suspendAccountNo"
                           />
                           <RadioLabel htmlFor="suspendAccountNo">No</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </FieldWrapper>
                       <RequiredWrapper>
                         <ErrorMessage name="suspendAccount" />
@@ -487,4 +487,8 @@ const SubmitBtn = styled(Button)`
     color: red
   `
   
-  
+  const RadioWrapper = styled.div`
+    display: flex;
+    align-items: center;
+   justify-content: center;
+  `

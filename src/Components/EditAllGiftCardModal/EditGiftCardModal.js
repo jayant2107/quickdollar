@@ -215,7 +215,7 @@ const EditGiftCardModal = ({
                           <FieldWrapper>
                             <Radio>
 
-                              <div>
+                              <RadioWrapper>
                                 <Field
                                   type="radio"
                                   name="isActive"
@@ -223,8 +223,8 @@ const EditGiftCardModal = ({
                                   id="isAdminYes"
                                 />
                                 <RadioLabel htmlFor="isAdminYes">Yes</RadioLabel>
-                              </div>
-                              <div>
+                              </RadioWrapper>
+                              <RadioWrapper>
                                 <Field
                                   type="radio"
                                   name="isActive"
@@ -232,7 +232,7 @@ const EditGiftCardModal = ({
                                   id="isAdminNo"
                                 />
                                 <RadioLabel htmlFor="isAdminNo">No</RadioLabel>
-                              </div>
+                              </RadioWrapper>
                             </Radio>
                           </FieldWrapper>
                           <RequiredWrapper>
@@ -502,3 +502,9 @@ const ErrorText = styled.div`
 color: red;
 margin-top: 5px;
 `;
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+`

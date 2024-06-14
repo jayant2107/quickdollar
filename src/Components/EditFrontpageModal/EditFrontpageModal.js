@@ -108,6 +108,12 @@ const EditFrontpageModal = ({
     }
   }, [editModal, record]);
 
+  const handleCancel = () => {
+    handleEditCancel(); 
+    setOfferImgError(null);
+    setButtonImgError(null); 
+  };
+
   return (
     <>
       <Modal
@@ -199,7 +205,7 @@ const EditFrontpageModal = ({
                   </InputWrapper>
 
                   <Footer>
-                    <CancelBtn  onClick={handleEditCancel}>
+                    <CancelBtn  onClick={handleCancel}>
                       Cancel
                     </CancelBtn>
                     <SubmitBtn  htmlType="submit" disabled={loader}>

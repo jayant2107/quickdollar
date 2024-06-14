@@ -163,7 +163,7 @@ const Ios = () => {
                   <Label>Show redeem button</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showRedeembutton"
@@ -171,8 +171,8 @@ const Ios = () => {
                           id="showRedeembuttonNo"
                         />
                         <RadioLabel htmlFor="showRedeembuttonNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showRedeembutton"
@@ -182,7 +182,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="showRedeembuttonYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -192,7 +192,7 @@ const Ios = () => {
                   <Label>Show User balance</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showUserBalance"
@@ -200,8 +200,8 @@ const Ios = () => {
                           id="showUserBalanceNo"
                         />
                         <RadioLabel htmlFor="showUserBalanceNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showUserBalance"
@@ -211,7 +211,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="showUserBalanceYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -221,7 +221,7 @@ const Ios = () => {
                   <Label>Show Bonus Button</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusButton"
@@ -229,8 +229,8 @@ const Ios = () => {
                           id="showBonusButtonNo"
                         />
                         <RadioLabel htmlFor="showBonusButtonNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusButton"
@@ -240,7 +240,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="showBonusButtonYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -250,7 +250,7 @@ const Ios = () => {
                   <Label>Show Bonus Balance</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusBalance"
@@ -258,8 +258,8 @@ const Ios = () => {
                           id="showBonusBalanceNo"
                         />
                         <RadioLabel htmlFor="showBonusBalanceNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusBalance"
@@ -269,7 +269,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="showBonusBalanceYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -307,7 +307,7 @@ const Ios = () => {
                   <Label>Pause All Offers</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="pauseAllOffers"
@@ -315,8 +315,8 @@ const Ios = () => {
                           id="pauseAllOffersrNo"
                         />
                         <RadioLabel htmlFor="pauseAllOffersNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="pauseAllOffers"
@@ -326,7 +326,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="pauseAllOffersYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -337,7 +337,7 @@ const Ios = () => {
                   <Label>Location Service</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="locationService"
@@ -345,8 +345,8 @@ const Ios = () => {
                           id="locationServiceNo"
                         />
                         <RadioLabel htmlFor="locationServiceNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="locationService"
@@ -356,7 +356,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="locationServiceYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -367,7 +367,7 @@ const Ios = () => {
                   <Label>Completed Offers</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="completedOffers"
@@ -375,8 +375,8 @@ const Ios = () => {
                           id="completedOffersNo"
                         />
                         <RadioLabel htmlFor="completedOffersNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="completedOffers"
@@ -386,7 +386,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="completedOffersYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -397,7 +397,7 @@ const Ios = () => {
                   <Label>Payment</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="payment"
@@ -405,8 +405,8 @@ const Ios = () => {
                           id="paymentNo"
                         />
                         <RadioLabel htmlFor="paymentNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="payment"
@@ -416,7 +416,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="paymentYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -447,7 +447,7 @@ const Ios = () => {
                   <Label>Invite Module</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="inviteModule"
@@ -455,8 +455,8 @@ const Ios = () => {
                           id="inviteModuleNo"
                         />
                         <RadioLabel htmlFor="inviteModuleNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="inviteModule"
@@ -466,7 +466,7 @@ const Ios = () => {
                         <RadioLabel htmlFor="inviteModuleYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -638,4 +638,10 @@ margin-bottom: 15px;
 `
 const Asterisk = styled.span`
 color: red
+`
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
 `

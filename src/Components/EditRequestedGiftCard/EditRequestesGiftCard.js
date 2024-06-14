@@ -131,7 +131,7 @@ const EditRequestGiftCard = ({
                           <FieldWrapper>
                             <Radio>
 
-                              <div>
+                              <RadioWrapper>
                                 <Field
                                   type="radio"
                                   name="isActive"
@@ -139,8 +139,8 @@ const EditRequestGiftCard = ({
                                   id="isActiveYes"
                                 />
                                 <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
-                              </div>
-                              <div>
+                              </RadioWrapper>
+                              <RadioWrapper>
                                 <Field
                                   type="radio"
                                   name="isActive"
@@ -148,7 +148,7 @@ const EditRequestGiftCard = ({
                                   id="isActiveNo"
                                 />
                                 <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
-                              </div>
+                              </RadioWrapper>
                             </Radio>
                           </FieldWrapper>
                           <RequiredWrapper>
@@ -345,4 +345,10 @@ const RadioLabel = styled.label`
 
 const Asterisk = styled.span`
 color: red
+`
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
 `

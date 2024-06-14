@@ -177,7 +177,7 @@ const WebSetting = () => {
                                     <Label>Show redeem button</Label>
                                     <FieldWrapper>
                                         <RdioWrapper >
-                                            <div>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showRedeembutton"
@@ -185,8 +185,8 @@ const WebSetting = () => {
                                                     id="showRedeembuttonNo"
                                                 />
                                                 <RadioLabel htmlFor="showRedeembuttonNo">No</RadioLabel>
-                                            </div>
-                                            <div>
+                                            </RadioWrapper>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showRedeembutton"
@@ -196,7 +196,7 @@ const WebSetting = () => {
                                                 <RadioLabel htmlFor="showRedeembuttonYes">
                                                     Yes
                                                 </RadioLabel>
-                                            </div>
+                                            </RadioWrapper>
 
                                         </RdioWrapper>
                                     </FieldWrapper>
@@ -206,7 +206,7 @@ const WebSetting = () => {
                                     <Label>Show User balance</Label>
                                     <FieldWrapper>
                                         <RdioWrapper >
-                                            <div>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showUserBalance"
@@ -214,8 +214,8 @@ const WebSetting = () => {
                                                     id="showUserBalanceNo"
                                                 />
                                                 <RadioLabel htmlFor="showUserBalanceNo">No</RadioLabel>
-                                            </div>
-                                            <div>
+                                            </RadioWrapper>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showUserBalance"
@@ -225,7 +225,7 @@ const WebSetting = () => {
                                                 <RadioLabel htmlFor="showUserBalanceYes">
                                                     Yes
                                                 </RadioLabel>
-                                            </div>
+                                            </RadioWrapper>
 
                                         </RdioWrapper>
                                     </FieldWrapper>
@@ -235,7 +235,7 @@ const WebSetting = () => {
                                     <Label>Show Bonus Button</Label>
                                     <FieldWrapper>
                                         <RdioWrapper >
-                                            <div>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showBonusButton"
@@ -243,8 +243,8 @@ const WebSetting = () => {
                                                     id="showBonusButtonNo"
                                                 />
                                                 <RadioLabel htmlFor="showBonusButtonNo">No</RadioLabel>
-                                            </div>
-                                            <div>
+                                            </RadioWrapper>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showBonusButton"
@@ -254,7 +254,7 @@ const WebSetting = () => {
                                                 <RadioLabel htmlFor="showBonusButtonYes">
                                                     Yes
                                                 </RadioLabel>
-                                            </div>
+                                            </RadioWrapper>
 
                                         </RdioWrapper>
                                     </FieldWrapper>
@@ -264,7 +264,7 @@ const WebSetting = () => {
                                     <Label>Show Bonus Balance</Label>
                                     <FieldWrapper>
                                         <RdioWrapper >
-                                            <div>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showBonusBalance"
@@ -272,8 +272,8 @@ const WebSetting = () => {
                                                     id="showBonusBalanceNo"
                                                 />
                                                 <RadioLabel htmlFor="showBonusBalanceNo">No</RadioLabel>
-                                            </div>
-                                            <div>
+                                            </RadioWrapper>
+                                            <RadioWrapper>
                                                 <Field
                                                     type="radio"
                                                     name="showBonusBalance"
@@ -283,7 +283,7 @@ const WebSetting = () => {
                                                 <RadioLabel htmlFor="showBonusBalanceYes">
                                                     Yes
                                                 </RadioLabel>
-                                            </div>
+                                            </RadioWrapper>
 
                                         </RdioWrapper>
                                     </FieldWrapper>
@@ -546,4 +546,10 @@ margin-bottom: 15px;
 `
 const Asterisk = styled.span`
 color: red
+`
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
 `

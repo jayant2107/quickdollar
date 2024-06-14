@@ -165,7 +165,7 @@ const Android = () => {
                   <Label>Show redeem button</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showRedeembutton"
@@ -173,8 +173,8 @@ const Android = () => {
                           id="showRedeembuttonNo"
                         />
                         <RadioLabel htmlFor="showRedeembuttonNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showRedeembutton"
@@ -184,7 +184,7 @@ const Android = () => {
                         <RadioLabel htmlFor="showRedeembuttonYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -194,7 +194,7 @@ const Android = () => {
                   <Label>Show User balance</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showUserBalance"
@@ -202,8 +202,8 @@ const Android = () => {
                           id="showUserBalanceNo"
                         />
                         <RadioLabel htmlFor="showUserBalanceNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showUserBalance"
@@ -213,7 +213,7 @@ const Android = () => {
                         <RadioLabel htmlFor="showUserBalanceYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -223,7 +223,7 @@ const Android = () => {
                   <Label>Show Bonus Button</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusButton"
@@ -231,8 +231,8 @@ const Android = () => {
                           id="showBonusButtonNo"
                         />
                         <RadioLabel htmlFor="showBonusButtonNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusButton"
@@ -242,7 +242,7 @@ const Android = () => {
                         <RadioLabel htmlFor="showBonusButtonYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -252,7 +252,7 @@ const Android = () => {
                   <Label>Show Bonus Balance</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusBalance"
@@ -260,8 +260,8 @@ const Android = () => {
                           id="showBonusBalanceNo"
                         />
                         <RadioLabel htmlFor="showBonusBalanceNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="showBonusBalance"
@@ -271,7 +271,7 @@ const Android = () => {
                         <RadioLabel htmlFor="showBonusBalanceYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -309,7 +309,7 @@ const Android = () => {
                   <Label>Pause All Offers</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="pauseAllOffers"
@@ -317,8 +317,8 @@ const Android = () => {
                           id="pauseAllOffersNo"
                         />
                         <RadioLabel htmlFor="pauseAllOffersNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="pauseAllOffers"
@@ -328,7 +328,7 @@ const Android = () => {
                         <RadioLabel htmlFor="pauseAllOffersYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -339,7 +339,7 @@ const Android = () => {
                   <Label>Location Service</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="locationService"
@@ -347,8 +347,8 @@ const Android = () => {
                           id="locationServiceNo"
                         />
                         <RadioLabel htmlFor="locationServiceNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="locationService"
@@ -358,7 +358,7 @@ const Android = () => {
                         <RadioLabel htmlFor="locationServiceYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -369,7 +369,7 @@ const Android = () => {
                   <Label>Completed Offers</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="completedOffers"
@@ -377,8 +377,8 @@ const Android = () => {
                           id="completedOffersNo"
                         />
                         <RadioLabel htmlFor="completedOffersNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="completedOffers"
@@ -388,7 +388,7 @@ const Android = () => {
                         <RadioLabel htmlFor="completedOffersYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -399,7 +399,7 @@ const Android = () => {
                   <Label>Payment</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="payment"
@@ -407,8 +407,8 @@ const Android = () => {
                           id="paymentNo"
                         />
                         <RadioLabel htmlFor="paymentNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="payment"
@@ -418,7 +418,7 @@ const Android = () => {
                         <RadioLabel htmlFor="paymentYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -449,7 +449,7 @@ const Android = () => {
                   <Label>Invite Module</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="inviteModule"
@@ -457,8 +457,8 @@ const Android = () => {
                           id="inviteModuleNo"
                         />
                         <RadioLabel htmlFor="inviteModuleNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="inviteModule"
@@ -468,7 +468,7 @@ const Android = () => {
                         <RadioLabel htmlFor="inviteModuleYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -640,4 +640,10 @@ margin-bottom: 15px;
 `
 const Asterisk = styled.span`
 color: red
+`
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
 `

@@ -230,6 +230,7 @@ const AddOffer = () => {
         >
           {({ values, setFieldValue, touched, errors, setFieldTouched, resetForm }) => (
             <Form>
+              {console.log(errors, "errors")}
               <InputWrapper>
                 <FieldWrapper>
                   <Label><Asterisk>*</Asterisk>Offer Title</Label>
@@ -381,7 +382,7 @@ const AddOffer = () => {
                   <FieldContainer>
                     <FieldWrapper >
                       <RdioWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isActive"
@@ -389,8 +390,8 @@ const AddOffer = () => {
                             id="isActiveYes"
                           />
                           <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isActive"
@@ -398,7 +399,7 @@ const AddOffer = () => {
                             id="isActiveNo"
                           />
                           <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -412,7 +413,7 @@ const AddOffer = () => {
                   <FieldContainer>
                     <FieldWrapper >
                       <RdioWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isHotOffer"
@@ -420,8 +421,8 @@ const AddOffer = () => {
                             id="isHotOfferYes"
                           />
                           <RadioLabel htmlFor="isHotOfferYes">Yes</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isHotOffer"
@@ -429,7 +430,7 @@ const AddOffer = () => {
                             id="isHotOfferNo"
                           />
                           <RadioLabel htmlFor="isHotOfferNo">No</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -443,7 +444,7 @@ const AddOffer = () => {
                   <FieldContainer>
                     <FieldWrapper >
                       <RdioWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="HotOfFerFor"
@@ -451,8 +452,8 @@ const AddOffer = () => {
                             id="1"
                           />
                           <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="HotOfFerFor"
@@ -460,8 +461,8 @@ const AddOffer = () => {
                             id="2"
                           />
                           <RadioLabel htmlFor="hotOfferForMobile">Mobile</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="HotOfFerFor"
@@ -469,7 +470,7 @@ const AddOffer = () => {
                             id="3"
                           />
                           <RadioLabel htmlFor="hotOfferForBoth">Both</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -483,7 +484,7 @@ const AddOffer = () => {
                   <FieldContainer>
                     <FieldWrapper >
                       <RdioWrapper >
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="app_install"
@@ -491,8 +492,8 @@ const AddOffer = () => {
                             id="app_installNo"
                           />
                           <RadioLabel htmlFor="app_installNo">No</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="app_install"
@@ -502,7 +503,7 @@ const AddOffer = () => {
                           <RadioLabel htmlFor="app_installYes">
                             Yes
                           </RadioLabel>
-                        </div>
+                        </RadioWrapper>
 
                       </RdioWrapper>
                     </FieldWrapper>
@@ -517,24 +518,25 @@ const AddOffer = () => {
                   <FieldContainer>
                     <FieldWrapper >
                       <RdioWrapper>
-                        <div>
-                          <Field
+                        <RadioWrapper>
+                          <RadioStyle
                             type="radio"
                             name="conversionCallback"
                             value="false"
                             id="conversionCallbackYes"
+                           
                           />
                           <RadioLabel htmlFor="conversionCallbackYes">Remove from dashboard without conversion</RadioLabel>
-                        </div>
-                        <div>
-                          <Field
+                        </RadioWrapper>
+                        <RadioWrapper>
+                          <RadioStyle
                             type="radio"
                             name="conversionCallback"
                             value="true"
                             id="conversionCallbackNo"
                           />
                           <RadioLabel htmlFor="conversionCallbackNo">Remove from dashboard with conversion</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -547,7 +549,7 @@ const AddOffer = () => {
                   <Label>Daily repeated offer</Label>
                   <FieldWrapper>
                     <RdioWrapper >
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="isDailyOffer"
@@ -555,8 +557,8 @@ const AddOffer = () => {
                           id="isDailyOfferNo"
                         />
                         <RadioLabel htmlFor="isDailyOfferNo">No</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="isDailyOffer"
@@ -566,7 +568,7 @@ const AddOffer = () => {
                         <RadioLabel htmlFor="isDailyOfferYes">
                           Yes
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
 
                     </RdioWrapper>
                   </FieldWrapper>
@@ -948,12 +950,15 @@ const QuillFieldContainer = styled.div`
 
 const RadioLabel = styled.label`
   margin: 0;
+  width: 100% !important;
+  text-align: left;
 `;
 
 const RdioWrapper = styled.div`
 display: flex;
 flex-direction: column;
 gap: 7px;
+justify-content: flex-start;
 margin-bottom: 15px;
 align-items: flex-start;
 @media only screen and (min-width: 320px) and (max-width: 480px) {
@@ -996,3 +1001,14 @@ const ErrorText = styled.div`
 color: red;
 margin-top: 5px;
 `;
+
+const RadioWrapper = styled.div`
+display: flex;
+// flex-direction: column;
+align-items: center;
+justify-content: center;
+`
+
+const RadioStyle = styled(Field)`
+width: 4% !important;
+`

@@ -467,16 +467,16 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
-                        <div>
-                          <Field
+                        <RadioWrapper>
+                          <RadioStyle
                             type="radio"
                             name="isActive"
                             value="true"
                             id="isActiveYes"
                           />
                           <RadioLabel htmlFor="isActiveYes">Yes</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isActive"
@@ -484,7 +484,7 @@ const EditOffer = () => {
                             id="isActiveNo"
                           />
                           <RadioLabel htmlFor="isActiveNo">No</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -503,7 +503,7 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isHotOffer"
@@ -511,8 +511,8 @@ const EditOffer = () => {
                             id="isHotOfferYes"
                           />
                           <RadioLabel htmlFor="isHotOfferYes">Yes</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="isHotOffer"
@@ -520,7 +520,7 @@ const EditOffer = () => {
                             id="isHotOfferNo"
                           />
                           <RadioLabel htmlFor="isHotOfferNo">No</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -539,7 +539,7 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="HotOfFerFor"
@@ -547,8 +547,8 @@ const EditOffer = () => {
                             id="1"
                           />
                           <RadioLabel htmlFor="hotOfferForWeb">Web</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="HotOfFerFor"
@@ -558,8 +558,8 @@ const EditOffer = () => {
                           <RadioLabel htmlFor="hotOfferForMobile">
                             Mobile
                           </RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="HotOfFerFor"
@@ -569,7 +569,7 @@ const EditOffer = () => {
                           <RadioLabel htmlFor="hotOfferForBoth">
                             Both
                           </RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -588,7 +588,7 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
-                        <div>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="app_install"
@@ -596,8 +596,8 @@ const EditOffer = () => {
                             id="app_installYes"
                           />
                           <RadioLabel htmlFor="app_installYes">Yes</RadioLabel>
-                        </div>
-                        <div>
+                        </RadioWrapper>
+                        <RadioWrapper>
                           <Field
                             type="radio"
                             name="app_install"
@@ -605,7 +605,7 @@ const EditOffer = () => {
                             id="app_installNo"
                           />
                           <RadioLabel htmlFor="app_installNo">No</RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -624,8 +624,8 @@ const EditOffer = () => {
                       }}
                     >
                       <RdioWrapper>
-                        <div>
-                          <Field
+                        <RadioWrapper>
+                          <RadioStyle
                             type="radio"
                             name="conversionCallback"
                             value="true"
@@ -634,9 +634,9 @@ const EditOffer = () => {
                           <RadioLabel htmlFor="conversionCallbackNo">
                             Remove from dashboard with conversion
                           </RadioLabel>
-                        </div>
-                        <div>
-                          <Field
+                        </RadioWrapper>
+                        <RadioWrapper>
+                          <RadioStyle
                             type="radio"
                             name="conversionCallback"
                             value="false"
@@ -645,7 +645,7 @@ const EditOffer = () => {
                           <RadioLabel htmlFor="conversionCallbackYes">
                             Remove from dashboard without conversion
                           </RadioLabel>
-                        </div>
+                        </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -657,7 +657,7 @@ const EditOffer = () => {
                   <Label>Daily repeated offer</Label>
                   <FieldWrapper>
                     <RdioWrapper>
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="isDailyOffer"
@@ -665,8 +665,8 @@ const EditOffer = () => {
                           id="isDailyOfferYes"
                         />
                         <RadioLabel htmlFor="isDailyOfferYes">Yes</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="isDailyOffer"
@@ -674,7 +674,7 @@ const EditOffer = () => {
                           id="isDailyOfferNo"
                         />
                         <RadioLabel htmlFor="isDailyOfferNo">No</RadioLabel>
-                      </div>
+                      </RadioWrapper>
                     </RdioWrapper>
                   </FieldWrapper>
                 </FieldWrapper>
@@ -739,7 +739,7 @@ const EditOffer = () => {
                   <Label>Offer Platform</Label>
                   <FieldWrapper>
                     <RdioWrapper>
-                      <div>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="offerPlatform"
@@ -747,8 +747,8 @@ const EditOffer = () => {
                           id="shopOffer"
                         />
                         <RadioLabel htmlFor="shopOffer">shopOffer</RadioLabel>
-                      </div>
-                      <div>
+                      </RadioWrapper>
+                      <RadioWrapper>
                         <Field
                           type="radio"
                           name="offerPlatform"
@@ -758,7 +758,7 @@ const EditOffer = () => {
                         <RadioLabel htmlFor="quickThoughts">
                           quickThoughts
                         </RadioLabel>
-                      </div>
+                      </RadioWrapper>
                     </RdioWrapper>
                   </FieldWrapper>
                   {/* <Field name="offerPlatform">
@@ -1223,6 +1223,8 @@ const QuillFieldContainer = styled.div`
 
 const RadioLabel = styled.label`
   margin: 0;
+  width: 100%;
+  text-align: left;
 `;
 
 const RdioWrapper = styled.div`
@@ -1262,3 +1264,12 @@ color: red;
 margin-top: 5px;
 margin-bottom: 5px;
 `;
+
+const RadioWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+`
+const RadioStyle = styled(Field)`
+width: 4% !important;
+`
