@@ -495,7 +495,7 @@ C491.375,120.986,496,130.003,496,140.117z"
         {loader ? (
           <Loader size={25} />
         ) : (
-          <div>
+          <div className="dashboardWrapper">
             <CardWrapper>
               {cardData?.map((card, index) => {
                 return (
@@ -662,6 +662,11 @@ const DriverWrapper = styled.div`
       font-size: 20px;
       margin-bottom: 20px;
     }
+  }
+  .dashboardWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
   }
 `;
 
