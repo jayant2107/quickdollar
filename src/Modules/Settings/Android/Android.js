@@ -13,12 +13,12 @@ const Android = () => {
   const [loader, setLoader] = useState(false);
 
   const initialValues = {
-    appTitle: '',
-    appSubTitle: '',
-    headerText: '',
+    appTitle: 'Welcome to iPeor',
+    appSubTitle: 'Share your Opinion',
+    headerText: 'QD',
     currencySign: '$',
-    cubeOfferCountryCode: 
-     [ "US"]
+    cubeOfferCountryCode:
+      ["US"]
     ,
     showRedeembutton: 'true',
     showUserBalance: 'true',
@@ -49,7 +49,7 @@ const Android = () => {
   });
 
   const handleSubmit = async (values, { resetForm, setFieldValue }) => {
-    
+
     try {
       let payload = {
         ...values,
@@ -106,8 +106,8 @@ const Android = () => {
     fetchGeoCordData();
   }, [])
 
-  document.title="Android Settings - quickdollarapp";
-  
+  document.title = "Android Settings - quickdollarapp";
+
   return (
     <div>
       <Header>Android Settings</Header>

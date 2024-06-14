@@ -87,7 +87,7 @@ const EditOffer = () => {
     isDailyOffer: record?.isDailyOffer?.toString(),
     relistOffer: record?.relistOffer?.toString(),
     StaticURL: record?.StaticURL?.toString(),
-    offerLocation: record?.displaylocation?.split(","),
+    displaylocation: record?.displaylocation?.split(","),
     offerPlatform: record?.offerPlatform?.toString(),
     OfferCreatedFor: record?.OfferCreatedFor,
     offerH1Title: record?.offerH1Title,
@@ -114,9 +114,9 @@ const EditOffer = () => {
     offerTitle: yup.string().required("Title is Required"),
     offerH1Title: yup.string().required("H1 title is required"),
     offerLink: yup.string().required("Offer Link is required"),
-    offerPoints: yup.string().required("Offer amount is required"),
-    offerText: yup.string().required("Offer Text is required"),
-    offerShortDescription: yup
+    offerPoints: yup.number().nullable(),
+    offerText: yup.string().nullable(),
+        offerShortDescription: yup
       .string()
       .required("Offer Short Description is required"),
     offerLongDescription: yup
@@ -137,8 +137,11 @@ const EditOffer = () => {
       ),
   });
 
-  const handleSubmit = async (values, { resetForm, setFieldValue }) => {
+  const handleSubmit = async (values, { resetForm, setFieldValue,setErrors }) => {
     try {
+      if (!values?.offerPoints && !values?.offerText) {
+        setErrors({ offerText: "Offer Text is required" });
+      } else {
       const formData = new FormData();
       formData.append("idOffer", idOffer);
       formData.append("offerTitle", values?.offerTitle);
@@ -152,7 +155,7 @@ const EditOffer = () => {
       formData.append("offerCountry", values?.offerCountry);
       formData.append("isDailyOffer", values?.isDailyOffer);
       formData.append("StaticURL", values?.StaticURL);
-      formData.append("offerLocation", values?.offerLocation);
+      formData.append("displaylocation", values?.displaylocation);
       formData.append("offerPlatform", values?.offerPlatform);
       formData.append("offerLongDescription", values?.offerLongDescription);
       formData.append("offerH1Title", values?.offerH1Title);
@@ -162,9 +165,11 @@ const EditOffer = () => {
       formData.append("fraudUser", values?.fraudUser);
       formData.append("isHotOffer", values?.isHotOffer);
       formData.append("HotOfFerFor", values?.HotOfFerFor);
+      formData.append("offerText", values?.offerText);
       if (flag) {
         formData.append("offerImage", values?.offerImage);
       }
+    
       setLoader(true);
       const res = await editOffers(formData);
       setLoader(false);
@@ -183,10 +188,11 @@ const EditOffer = () => {
           "Something went wrong";
         toast.error(message);
       }
-    } catch (error) {
+    }} catch (error) {
       // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
+  
   };
 
   const fetchGeoCordData = async () => {
@@ -785,7 +791,7 @@ const EditOffer = () => {
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer location to display</Label>
-                  <Field name="offerLocation">
+                  <Field name="displaylocation">
                     {({ field, form: { setFieldValue } }) => (
                       <FieldContainer style={{ display: "flex" }}>
                         <Checkbox.Group
@@ -793,12 +799,12 @@ const EditOffer = () => {
                           value={field.value}
                           options={offerLocationOptions}
                           onChange={(selectedValues) =>
-                            setFieldValue("offerLocation", selectedValues)
+                            setFieldValue("displaylocation", selectedValues)
                           }
                         />
 
                         <RequiredWrapper>
-                          <ErrorMessage name="offerLocation" />
+                          <ErrorMessage name="displaylocation" />
                         </RequiredWrapper>
                       </FieldContainer>
                     )}
