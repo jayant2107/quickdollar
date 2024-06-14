@@ -46,6 +46,8 @@ const Edit_Frontpage_Offer = "editFrontPageOffer";
 
 const Announcement = "sendNotification";
 
+const PROMOTION_EMAIL = "promoEmail";
+
 const WEB_SETTING = "webSettings";
 const ANDROID_SETTING = "androidSettings";
 const IOS_SETTING = "iOSSettings";
@@ -134,6 +136,9 @@ export const editFrontpageOffer = (payload) => patchApi(Edit_Frontpage_Offer, pa
 
 //// announcement ///
 export const announcement = (payload) => postApi(Announcement, payload);
+
+//// promotions ///
+export const promotionEmail = (payload) => postApi(PROMOTION_EMAIL, payload);
 
 //// settings //
 export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);

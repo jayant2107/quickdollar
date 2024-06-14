@@ -10,22 +10,22 @@ import 'react-quill/dist/quill.snow.css';
 import { getAllGeoCodes } from '../../Services/Collection';
 import { toast } from "react-toastify";
 import Loader from '../../Components/Loader/Loader';
-
+import { promotionEmail } from '../../Services/Collection';
 const PromotionEmail = () => {
     const [loader, setLoader] = useState(false);
     const [triggerModal, setTriggerModal] = useState(false);
     const [previewData, setPreviewData] = useState({});
 
     const initialValues = {
-        subject: '',
-        heading: '',
+        emailSubject: '',
+        emailHeading: '',
         additionalText: '',
-        countries: [],
+        offerCountryCode: [],
         offerText: '',
-        offerAmount: '',
-        offerId: '',
+        offerAmountinDollar: '',
+        offerID: '',
         offerLink: '',
-        customPostbackParm: '',
+        customPostbackParams: '',
         offerDescription: ""
     };
 
@@ -44,23 +44,23 @@ const PromotionEmail = () => {
     const [geoCodes, setGeoCodes] = useState([]);
 
     const validationSchema = yup.object().shape({
-        subject: yup.string().required('Subject is required'),
-        heading: yup.string().required('Heading is required'),
-        additionalText: yup.string().required('Additional text is required'),
-        countries: yup.array().min(1, 'Countries are required').required('Countries are required'),
+        emailSubject: yup.string().required('Subject is required'),
+        emailHeading: yup.string().required('Heading is required'),
+        // additionalText: yup.string().required('Additional text is required'),
+        offerCountryCode: yup.array().min(1, 'Countries are required').required('Countries are required'),
         offerText: yup.string().required('Offer text is required'),
-        offerAmount: yup.string().required('Offer amount is required').test(
+        offerAmountinDollar: yup.string().required('Offer amount is required').test(
             'is-number',
             'Enter number only',
             value => !isNaN(value) && Number.isInteger(parseFloat(value))
         ),
-        offerId: yup.string().required('Offer ID is required').test(
+        offerID: yup.string().required('Offer ID is required').test(
             'is-number',
             'Enter number only',
             value => !isNaN(value) && Number.isInteger(parseFloat(value))
         ),
         offerLink: yup.string().required('Offer link is required'),
-        customPostbackParm: yup.string().required('Custom postback parameter is required'),
+        customPostbackParams: yup.string().required('Custom postback parameter is required'),
         offerDescription: yup.string().required('Offer description is required'),
     });
 
@@ -69,16 +69,35 @@ const PromotionEmail = () => {
         setTriggerModal(true);
     };
 
-    const handleSubmit = (values, { resetForm, setFieldValue }) => {
-        // console.log('Form values:', values);
-        resetForm();
-        setFieldValue('additionalText', '');
-        setValue('');
+    const handleSubmit = async (values, { resetForm, setFieldValue }) => {
+        try {
+            let payload = {
+                ...values,
+                offerCountryCode: values.offerCountryCode.join(','),
+              }
+            setLoader(true)
+            let res = await promotionEmail(payload );
+            setLoader(false)
+            if (res?.status === 200) {
+                toast.success("Promotion email send Successfully");
+                resetForm();
+                setFieldValue('additionalText', '');
+                setValue('');
+            } else {
+                let message =
+                    res?.response?.data?.message ||
+                    res?.message ||
+                    res?.error ||
+                    "Something went wrong";
+                toast.error(message);
+            }
+        } catch (error) {
+            toast.error(error?.message || "Something went wrong");
+        }
     };
 
     const [selectAll, setSelectAll] = useState(false);
     const [isEmpty, setIsEmpty] = useState(false);
-
 
     const fetchGeoCordData = async () => {
         try {
@@ -95,7 +114,6 @@ const PromotionEmail = () => {
                 toast.error(message);
             }
         } catch (error) {
-            // console.log(error, "error");
             toast.error(error?.message || "Something went wrong");
         }
     };
@@ -126,9 +144,9 @@ const PromotionEmail = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Email Subject</Label>
                                     <FieldContainer>
-                                        <InputField name="subject" placeholder="Email subject" />
+                                        <InputField name="emailSubject" placeholder="Email subject" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="subject" />
+                                            <ErrorMessage name="emailSubject" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -136,9 +154,9 @@ const PromotionEmail = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Email Heading</Label>
                                     <FieldContainer>
-                                        <InputField name="heading" placeholder="Email heading" />
+                                        <InputField name="emailHeading" placeholder="Email heading" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="heading" />
+                                            <ErrorMessage name="emailHeading" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -172,7 +190,7 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label><Asterisk>*</Asterisk>Additional Text</Label>
+                                    <Label>Additional Text</Label>
                                     <FieldContainer>
                                         <TextAreaField
                                             name="additionalText"
@@ -203,9 +221,9 @@ const PromotionEmail = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Offer Amount in $</Label>
                                     <FieldContainer>
-                                        <InputField name="offerAmount" placeholder="Offer amount" />
+                                        <InputField name="offerAmountinDollar" placeholder="Offer amount" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="offerAmount" />
+                                            <ErrorMessage name="offerAmountinDollar" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -213,9 +231,9 @@ const PromotionEmail = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Offer ID</Label>
                                     <FieldContainer>
-                                        <InputField name="offerId" placeholder="1" />
+                                        <InputField name="offerID" placeholder="1" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="offerId" />
+                                            <ErrorMessage name="offerID" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -233,9 +251,9 @@ const PromotionEmail = () => {
                                 <FieldWrapper>
                                     <Label><Asterisk>*</Asterisk>Custom Postback Params</Label>
                                     <FieldContainer>
-                                        <InputField name="customPostbackParm" placeholder="Custom postback params" />
+                                        <InputField name="customPostbackParams" placeholder="Custom postback params" />
                                         <RequiredWrapper>
-                                            <ErrorMessage name="customPostbackParm" />
+                                            <ErrorMessage name="customPostbackParams" />
                                         </RequiredWrapper>
                                     </FieldContainer>
                                 </FieldWrapper>
@@ -249,24 +267,24 @@ const PromotionEmail = () => {
                                                 allowClear
                                                 style={{ width: '100%' }}
                                                 placeholder="Please select"
-                                                value={values.countries}
-                                                onChange={(value) => setFieldValue('countries', value)}
+                                                value={values.offerCountryCode}
+                                                onChange={(value) => setFieldValue('offerCountryCode', value)}
                                                 options={options}
                                                 filterOption={(input, option) =>
                                                     option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                 }
-                                                onBlur={() => setFieldTouched('countries', true)}
+                                                onBlur={() => setFieldTouched('offerCountryCode', true)}
                                             />
                                             <Checkbox checked={selectAll} onChange={(e) => {
                                                 const { checked } = e.target;
                                                 setSelectAll(checked);
                                                 const allCountries = options?.map(option => option.value);
-                                                setFieldValue('countries', checked ? allCountries : []);
+                                                setFieldValue('offerCountryCode', checked ? allCountries : []);
                                             }}>
                                                 Select all country
                                             </Checkbox>
                                             <RequiredWrapper>
-                                                <ErrorMessage name="countries" />
+                                                <ErrorMessage name="offerCountryCode" />
                                             </RequiredWrapper>
                                         </ChooseCountry>
                                     </FieldContainer>
