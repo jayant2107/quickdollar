@@ -343,7 +343,7 @@ const AddOffer = () => {
 
                 <FieldWrapper>
                   <Label>
-                    <Asterisk>*</Asterisk>Offer Amount in $
+                    Offer Amount in $
                   </Label>
                   <FieldContainer>
                     <InputField name="offerPoints" placeholder="Offer amount" />
@@ -355,7 +355,7 @@ const AddOffer = () => {
 
                 <FieldWrapper>
                   <Label>
-                    <Asterisk>*</Asterisk>Offer Text
+                    Offer Text
                   </Label>
                   <FieldContainer>
                     <InputField name="offerText" placeholder="Offer text" />
@@ -763,7 +763,7 @@ const AddOffer = () => {
 
                 <FieldWrapper>
                   <Label>
-                    <Asterisk>*</Asterisk>Daily CAP limit for offer
+                    Daily CAP limit for offer
                   </Label>
                   <FieldContainer>
                     <InputField
@@ -790,9 +790,6 @@ const AddOffer = () => {
                         onChange={(value) => setFieldValue("fraudUser", value)}
                         options={userOptions}
                       />
-                      <RequiredWrapper>
-                        <ErrorMessage name="offerCountry" />
-                      </RequiredWrapper>
                     </ChooseCountry>
                   </FieldContainer>
                 </FieldWrapper>

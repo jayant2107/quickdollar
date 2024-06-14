@@ -127,14 +127,6 @@ const EditOffer = () => {
       .array()
       .of(yup.string())
       .min(1, "Select at least one country"),
-    dailyCAPLimit: yup
-      .string()
-      .required("Cap Limit  is required")
-      .test(
-        "is-number",
-        "Enter number only",
-        (value) => !isNaN(value) && Number.isInteger(parseFloat(value))
-      ),
   });
 
   const handleSubmit = async (values, { resetForm, setFieldValue,setErrors }) => {
@@ -318,7 +310,7 @@ const EditOffer = () => {
             <Form>
               <InputWrapper>
                 <FieldWrapper>
-                  <Label>Offer Title</Label>
+               <Label> <Asterisk>*</Asterisk>Offer Title</Label>
                   <FieldContainer>
                     <InputField
                       name="offerTitle"
@@ -331,7 +323,7 @@ const EditOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Offer H1 Title</Label>
+                  <Label> <Asterisk>*</Asterisk>Offer H1 Title</Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -385,7 +377,7 @@ const EditOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>Offer Link</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Link</Label>
                   <FieldContainer>
                     <InputField name="offerLink" placeholder="Offer link" />
                     <RequiredWrapper>
@@ -412,7 +404,7 @@ const EditOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Offer Short Description</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Short Description</Label>
                   <FieldContainer>
                     <TextAreaField
                       name="offerShortDescription"
@@ -435,7 +427,7 @@ const EditOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label>Offer Long Description</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Long Description</Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -879,7 +871,7 @@ const EditOffer = () => {
                   </FieldWrapper>
                 )}
                 <FieldWrapper>
-                  <Label>Offer Country Code</Label>
+                  <Label><Asterisk>*</Asterisk>Offer Country Code</Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
@@ -1279,3 +1271,7 @@ justify-content: center;
 const RadioStyle = styled(Field)`
 width: 4% !important;
 `
+
+const Asterisk = styled.span`
+  color: red;
+`;
