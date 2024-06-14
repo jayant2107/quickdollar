@@ -272,7 +272,7 @@ const PromotionEmail = () => {
                                                 options={options}
                                                 filterOption={(input, option) =>
                                                     option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                }
+                                                } 
                                                 onBlur={() => setFieldTouched('offerCountryCode', true)}
                                             />
                                             <Checkbox checked={selectAll} onChange={(e) => {
