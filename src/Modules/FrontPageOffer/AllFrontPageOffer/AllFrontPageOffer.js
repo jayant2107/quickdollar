@@ -414,13 +414,11 @@ const TableImageWrapper = styled.div`
   }
 `;
 const TooltipContent = styled.div`
-  max-height: 4em; // Approx. three lines
+  max-height: 4.5em; // Approx. three lines
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2; // Limit to three lines
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   white-space: normal;
-  padding: 8px;
-  margin: 8px 0px;
 `;
