@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
 import { getAllExportUser } from "../../../Services/Collection";
+import { CircularProgress } from "@mui/material";
 
 const AllUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -32,6 +33,7 @@ const AllUsers = () => {
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const [exportLoading, setExportLoading] = useState(false);
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -73,20 +75,28 @@ const AllUsers = () => {
 
   const handleExport = async () => {
     try {
+      setExportLoading(true);
       const res = await getAllExportUser();
       if (res?.status === 200) {
-        window.open(res.message.downloadUrl, "_blank");
+        const url = res.message.downloadUrl;
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "users.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setExportLoading(false);
       } else {
         let message =
-          res?.response?.data||
-          res?.error ||
-          "Something went wrong";
+          res?.response?.data || res?.error || "Something went wrong";
         toast.error(message);
+        setExportLoading(false);
       }
     } catch (error) {
+      setExportLoading(false);
       toast.error(error?.message || "Something went wrong");
     }
-  }
+  };
 
   const paginationConfig = {
     current: currentPage,
@@ -483,7 +493,10 @@ const AllUsers = () => {
       )}
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Users</h1>
-        <button onClick={handleExport}>Export User Details</button>
+        <button onClick={!exportLoading && handleExport}>
+          {exportLoading && <CircularProgress color="inherit" size={10} />}{" "}
+          Export User Details
+        </button>
       </div>
 
       <div className="tableDiv">
