@@ -6,31 +6,34 @@ import TextArea from "antd/es/input/TextArea";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { addOffer, getAllGeoCodes, getAllDropdownUsers } from '../../../Services/Collection';
+import {
+  addOffer,
+  getAllGeoCodes,
+  getAllDropdownUsers,
+} from "../../../Services/Collection";
 import { toast } from "react-toastify";
-import Loader from '../../../Components/Loader/Loader'
+import Loader from "../../../Components/Loader/Loader";
 const AddOffer = () => {
-
   const initialValues = {
     offerTitle: "",
     offerH1Title: "",
     offerImage: null,
-    offerLink: '',
+    offerLink: "",
     offerPoints: "",
     offerText: "",
-    offerShortDescription: '',
-    offerLongDescription: '',
-    OfferCreatedFor: '',
+    offerShortDescription: "",
+    offerLongDescription: "",
+    OfferCreatedFor: "",
     offerCountry: [],
     fraudUser: [],
     dailyCAPLimit: "",
-    customPostbaclParams: '',
+    customPostbaclParams: "",
     isActive: "false",
     isHotOffer: "false",
-    HotOfFerFor: '1',
-    app_install: 'false',
-    conversionCallback: 'false',
-    isDailyOffer: 'false',
+    HotOfFerFor: "1",
+    app_install: "false",
+    conversionCallback: "false",
+    isDailyOffer: "false",
     relistOffer: false,
     StaticURL: false,
   };
@@ -55,31 +58,30 @@ const AddOffer = () => {
 
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
-    offerH1Title: yup.string().required('H1 title is required'),
-    offerImage: yup.mixed().required('Offer image is required'),
-    offerLink: yup.string().required('Offer Link is required'),
-    offerPoints: yup.string().required('Offer amount is required').test(
-      'is-number',
-      'Enter number only',
-      value => !isNaN(value) && Number.isInteger(parseFloat(value))
-    ),
-    offerText: yup.string().required('Offer Text is required'),
-    offerShortDescription: yup.string().required('Offer Short Description is required'),
-    offerLongDescription: yup.string().required('Offer Long Description is required'),
-    OfferCreatedFor: yup.string().required('Offer Created is required'),
+    offerH1Title: yup.string().required("H1 title is required"),
+    offerImage: yup.mixed().required("Offer image is required"),
+    offerLink: yup.string().required("Offer Link is required"),
+    offerPoints: yup.number().nullable(),
+    offerText: yup.string().nullable(),
+    offerShortDescription: yup
+      .string()
+      .required("Offer Short Description is required"),
+    offerLongDescription: yup
+      .string()
+      .required("Offer Long Description is required"),
+    OfferCreatedFor: yup.string().required("Offer Created is required"),
     customPostbaclParams: yup.string(),
-    offerCountry: yup.array().min(1, 'Countries are required').required('Countries are required'),
-    dailyCAPLimit: yup.string().required('Cap Limit  is required').test(
-      'is-number',
-      'Enter number only',
-      value => !isNaN(value) && Number.isInteger(parseFloat(value))
-    ),
+    offerCountry: yup
+      .array()
+      .min(1, "Countries are required")
+      .required("Countries are required"),
   });
 
   const validateFile = (file) => {
-    if (!file) return 'File is required';
-    if (file.size > 2000000) return 'File too large';
-    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    if (!file) return "File is required";
+    if (file.size > 2000000) return "File too large";
+    if (!["image/jpg", "image/jpeg", "image/png"].includes(file.type))
+      return "Unsupported format, only jpg, jpeg and png are supported";
     return null;
   };
 
@@ -102,54 +104,60 @@ const AddOffer = () => {
     offerImgInputRef.current.value = null;
   };
 
-  const handleSubmit = async (values, { resetForm, setFieldValue }) => {
-    const formData = new FormData();
-    formData.append("offerTitle", values?.offerTitle);
-    formData.append("offerH1Title", values?.offerH1Title);
-    formData.append("offerImage", values?.offerImage);
-    formData.append("offerLink", values?.offerLink);
-    formData.append("offerPoints", values?.offerPoints);
-    formData.append("offerText", values?.offerText);
-    formData.append("offerShortDescription", values?.offerShortDescription);
-    formData.append("offerLongDescription", values?.offerLongDescription);
-    formData.append("OfferCreatedFor", values?.OfferCreatedFor);
-    formData.append("offerCountry", values?.offerCountry);
-    // formData.append("offerCountry", values.offerCountry);
-    formData.append("fraudUser", values?.fraudUser);
-    formData.append("dailyCAPLimit", values?.dailyCAPLimit);
-    formData.append("customPostbaclParams", values?.customPostbaclParams);
-    formData.append("isActive", values?.isActive);
-    formData.append("isHotOffer", values?.isHotOffer);
-    formData.append("HotOfFerFor", values?.HotOfFerFor);
-    formData.append("app_install", values?.app_install);
-    formData.append("conversionCallback", values?.conversionCallback);
-    formData.append("isDailyOffer", values?.isDailyOffer);
-    formData.append("relistOffer", values?.relistOffer ? "true" : "false");
-    formData.append("StaticURL", values?.StaticURL ? "true" : "false");
-    try {
-      setLoader(true)
-      const res = await addOffer(formData);
-      setLoader(false)
-      if (res?.status === 200) {
-        toast.success("Add Offer successfully");
-        setFieldValue("additionalText", "");
-        resetForm();
-        setOfferImgPreview(null);
-        setH1TitleValue("");
-        setLongDescriptionValue("")
-      } else {
-        let message =
-          res?.response?.data?.message ||
-          res?.message ||
-          res?.error ||
-          "Something went wrong";
-        toast.error(message);
+  const handleSubmit = async (
+    values,
+    { resetForm, setFieldValue, setErrors }
+  ) => {
+    if (!values?.offerPoints && !values?.offerText) {
+      setErrors({ offerText: "Offer Text is required" });
+    } else {
+      const formData = new FormData();
+      formData.append("offerTitle", values?.offerTitle);
+      formData.append("offerH1Title", values?.offerH1Title);
+      formData.append("offerImage", values?.offerImage);
+      formData.append("offerLink", values?.offerLink);
+      formData.append("offerPoints", values?.offerPoints);
+      formData.append("offerText", values?.offerText);
+      formData.append("offerShortDescription", values?.offerShortDescription);
+      formData.append("offerLongDescription", values?.offerLongDescription);
+      formData.append("OfferCreatedFor", values?.OfferCreatedFor);
+      formData.append("offerCountry", values?.offerCountry);
+      // formData.append("offerCountry", values.offerCountry);
+      formData.append("fraudUser", values?.fraudUser);
+      formData.append("dailyCAPLimit", values?.dailyCAPLimit);
+      formData.append("customPostbaclParams", values?.customPostbaclParams);
+      formData.append("isActive", values?.isActive);
+      formData.append("isHotOffer", values?.isHotOffer);
+      formData.append("HotOfFerFor", values?.HotOfFerFor);
+      formData.append("app_install", values?.app_install);
+      formData.append("conversionCallback", values?.conversionCallback);
+      formData.append("isDailyOffer", values?.isDailyOffer);
+      formData.append("relistOffer", values?.relistOffer ? "true" : "false");
+      formData.append("StaticURL", values?.StaticURL ? "true" : "false");
+      try {
+        setLoader(true);
+        const res = await addOffer(formData);
+        setLoader(false);
+        if (res?.status === 200) {
+          toast.success("Add Offer successfully");
+          setFieldValue("additionalText", "");
+          resetForm();
+          setOfferImgPreview(null);
+          setH1TitleValue("");
+          setLongDescriptionValue("");
+        } else {
+          let message =
+            res?.response?.data?.message ||
+            res?.message ||
+            res?.error ||
+            "Something went wrong";
+          toast.error(message);
+        }
+      } catch (error) {
+        // console.log(error, "error");
+        toast.error(error?.message || "Something went wrong");
       }
-    } catch (error) {
-      // console.log(error, "error");
-      toast.error(error?.message || "Something went wrong");
     }
-
   };
 
   const fetchGeoCordData = async () => {
@@ -202,20 +210,22 @@ const AddOffer = () => {
     setOfferImgPreview(null);
   };
 
-  const options = geoCodes && geoCodes?.map(jsonData => ({
-    label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
-    value: `${jsonData?.iso_code_2}`,
-  }));
+  const options =
+    geoCodes &&
+    geoCodes?.map((jsonData) => ({
+      label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
+      value: `${jsonData?.iso_code_2}`,
+    }));
   // console.log(allDropdownUsers, "allDropdownUsers")
   const userOptions = allDropdownUsers?.map((data) => ({
     label: `${data?.firstName} ${data?.lastName}`,
     value: `${data?.idUser}`,
-  }))
+  }));
 
   useEffect(() => {
     fetchGeoCordData();
     fetchdropDownUsers();
-  }, [])
+  }, []);
 
   document.title = "Add Offer - quickdollarapp";
 
@@ -228,12 +238,21 @@ const AddOffer = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ values, setFieldValue, touched, errors, setFieldTouched, resetForm }) => (
+          {({
+            values,
+            setFieldValue,
+            touched,
+            errors,
+            setFieldTouched,
+            resetForm,
+          }) => (
             <Form>
               {console.log(errors, "errors")}
               <InputWrapper>
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Title</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Title
+                  </Label>
                   <FieldContainer>
                     <InputField
                       name="offerTitle"
@@ -247,7 +266,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer H1 Title</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer H1 Title
+                  </Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -275,10 +296,16 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Image</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Image
+                  </Label>
                   <FieldContainer>
                     <ChooseContainer>
-                      <UploadButton onClick={() => offerImgInputRef.current.click()}>Upload</UploadButton>
+                      <UploadButton
+                        onClick={() => offerImgInputRef.current.click()}
+                      >
+                        Upload
+                      </UploadButton>
                       <input
                         ref={offerImgInputRef}
                         name="offerImage"
@@ -288,8 +315,12 @@ const AddOffer = () => {
                         }
                         style={{ display: "none" }}
                       />
-                      <UploadInstruction>Max size 2MB and resolution is 150x150 px</UploadInstruction>
-                      {offerImgPreview && <Image src={offerImgPreview} alt="Offer Preview" />}
+                      <UploadInstruction>
+                        Max size 2MB and resolution is 150x150 px
+                      </UploadInstruction>
+                      {offerImgPreview && (
+                        <Image src={offerImgPreview} alt="Offer Preview" />
+                      )}
                       {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
                     </ChooseContainer>
                     <RequiredWrapper>
@@ -299,7 +330,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Link</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Link
+                  </Label>
                   <FieldContainer>
                     <InputField name="offerLink" placeholder="Offer link" />
                     <RequiredWrapper>
@@ -309,7 +342,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Amount in $</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Amount in $
+                  </Label>
                   <FieldContainer>
                     <InputField name="offerPoints" placeholder="Offer amount" />
                     <RequiredWrapper>
@@ -319,7 +354,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Text</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Text
+                  </Label>
                   <FieldContainer>
                     <InputField name="offerText" placeholder="Offer text" />
                     <RequiredWrapper>
@@ -329,7 +366,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Short Description</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Short Description
+                  </Label>
                   <FieldContainer>
                     <TextAreaField
                       name="offerShortDescription"
@@ -338,19 +377,24 @@ const AddOffer = () => {
                       onChange={(e) =>
                         setFieldValue("offerShortDescription", e.target.value)
                       }
-                      onBlur={() => setFieldTouched("offerShortDescription", true)}
+                      onBlur={() =>
+                        setFieldTouched("offerShortDescription", true)
+                      }
                       value={values.offerShortDescription}
                     />
                     <RequiredWrapper>
-                      {touched.offerShortDescription && errors.offerShortDescription && (
-                        <ErrorMessage name="offerShortDescription" />
-                      )}
+                      {touched.offerShortDescription &&
+                        errors.offerShortDescription && (
+                          <ErrorMessage name="offerShortDescription" />
+                        )}
                     </RequiredWrapper>
                   </FieldContainer>
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Long Description</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Long Description
+                  </Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -370,9 +414,10 @@ const AddOffer = () => {
                       }}
                     />
                     <RequiredWrapper>
-                      {touched.offerLongDescription && errors.offerLongDescription && (
-                        <ErrorMessage name="offerLongDescription" />
-                      )}
+                      {touched.offerLongDescription &&
+                        errors.offerLongDescription && (
+                          <ErrorMessage name="offerLongDescription" />
+                        )}
                     </RequiredWrapper>
                   </QuillFieldContainer>
                 </FieldWrapper>
@@ -380,7 +425,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Is Active</Label>
                   <FieldContainer>
-                    <FieldWrapper >
+                    <FieldWrapper>
                       <RdioWrapper>
                         <RadioWrapper>
                           <Field
@@ -411,7 +456,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Is Hot Offer</Label>
                   <FieldContainer>
-                    <FieldWrapper >
+                    <FieldWrapper>
                       <RdioWrapper>
                         <RadioWrapper>
                           <Field
@@ -442,7 +487,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Hot Offer For</Label>
                   <FieldContainer>
-                    <FieldWrapper >
+                    <FieldWrapper>
                       <RdioWrapper>
                         <RadioWrapper>
                           <Field
@@ -460,7 +505,9 @@ const AddOffer = () => {
                             value="2"
                             id="2"
                           />
-                          <RadioLabel htmlFor="hotOfferForMobile">Mobile</RadioLabel>
+                          <RadioLabel htmlFor="hotOfferForMobile">
+                            Mobile
+                          </RadioLabel>
                         </RadioWrapper>
                         <RadioWrapper>
                           <Field
@@ -469,7 +516,9 @@ const AddOffer = () => {
                             value="3"
                             id="3"
                           />
-                          <RadioLabel htmlFor="hotOfferForBoth">Both</RadioLabel>
+                          <RadioLabel htmlFor="hotOfferForBoth">
+                            Both
+                          </RadioLabel>
                         </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
@@ -482,8 +531,8 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>App Installation</Label>
                   <FieldContainer>
-                    <FieldWrapper >
-                      <RdioWrapper >
+                    <FieldWrapper>
+                      <RdioWrapper>
                         <RadioWrapper>
                           <Field
                             type="radio"
@@ -500,11 +549,8 @@ const AddOffer = () => {
                             value="true"
                             id="app_installYes"
                           />
-                          <RadioLabel htmlFor="app_installYes">
-                            Yes
-                          </RadioLabel>
+                          <RadioLabel htmlFor="app_installYes">Yes</RadioLabel>
                         </RadioWrapper>
-
                       </RdioWrapper>
                     </FieldWrapper>
                     <RequiredWrapper>
@@ -516,7 +562,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Conversion Callback Type</Label>
                   <FieldContainer>
-                    <FieldWrapper >
+                    <FieldWrapper>
                       <RdioWrapper>
                         <RadioWrapper>
                           <RadioStyle
@@ -524,9 +570,10 @@ const AddOffer = () => {
                             name="conversionCallback"
                             value="false"
                             id="conversionCallbackYes"
-                           
                           />
-                          <RadioLabel htmlFor="conversionCallbackYes">Remove from dashboard without conversion</RadioLabel>
+                          <RadioLabel htmlFor="conversionCallbackYes">
+                            Remove from dashboard without conversion
+                          </RadioLabel>
                         </RadioWrapper>
                         <RadioWrapper>
                           <RadioStyle
@@ -535,7 +582,9 @@ const AddOffer = () => {
                             value="true"
                             id="conversionCallbackNo"
                           />
-                          <RadioLabel htmlFor="conversionCallbackNo">Remove from dashboard with conversion</RadioLabel>
+                          <RadioLabel htmlFor="conversionCallbackNo">
+                            Remove from dashboard with conversion
+                          </RadioLabel>
                         </RadioWrapper>
                       </RdioWrapper>
                     </FieldWrapper>
@@ -548,7 +597,7 @@ const AddOffer = () => {
                 <FieldWrapper>
                   <Label>Daily repeated offer</Label>
                   <FieldWrapper>
-                    <RdioWrapper >
+                    <RdioWrapper>
                       <RadioWrapper>
                         <Field
                           type="radio"
@@ -565,22 +614,27 @@ const AddOffer = () => {
                           value="true"
                           id="isDailyOfferYes"
                         />
-                        <RadioLabel htmlFor="isDailyOfferYes">
-                          Yes
-                        </RadioLabel>
+                        <RadioLabel htmlFor="isDailyOfferYes">Yes</RadioLabel>
                       </RadioWrapper>
-
                     </RdioWrapper>
                   </FieldWrapper>
                 </FieldWrapper>
 
                 <FieldWrapper>
                   <Label>Relist Offer</Label>
-                  <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
+                  <FieldContainer
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "start",
+                    }}
+                  >
                     <Checkbox
                       name="relistOffer"
                       checked={values.relistOffer}
-                      onChange={(e) => setFieldValue("relistOffer", e.target.checked)}
+                      onChange={(e) =>
+                        setFieldValue("relistOffer", e.target.checked)
+                      }
                     >
                       Relist Offer
                     </Checkbox>
@@ -591,7 +645,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer created for</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer created for
+                  </Label>
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select users"
@@ -601,19 +657,21 @@ const AddOffer = () => {
                         marginBottom: "3px",
                       }}
                       value={values.OfferCreatedFor || null}
-                      onChange={(value) => setFieldValue('OfferCreatedFor', value)}
+                      onChange={(value) =>
+                        setFieldValue("OfferCreatedFor", value)
+                      }
                       options={[
                         {
-                          value: '0',
-                          label: 'IOS',
+                          value: "0",
+                          label: "IOS",
                         },
                         {
-                          value: '1',
-                          label: 'Android',
+                          value: "1",
+                          label: "Android",
                         },
                         {
-                          value: '2',
-                          label: 'All Users',
+                          value: "2",
+                          label: "All Users",
                         },
                       ]}
                     />
@@ -625,10 +683,19 @@ const AddOffer = () => {
 
                 <FieldWrapper>
                   <Label>Select offer url type</Label>
-                  <FieldContainer style={{ display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "center" }}>
+                  <FieldContainer
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "start",
+                      justifyContent: "center",
+                    }}
+                  >
                     <Checkbox
                       checked={values.StaticURL}
-                      onChange={(e) => setFieldValue("StaticURL", e.target.checked)}
+                      onChange={(e) =>
+                        setFieldValue("StaticURL", e.target.checked)
+                      }
                     >
                       is static URL
                     </Checkbox>
@@ -638,22 +705,26 @@ const AddOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
 
-                {!values.StaticURL && (<FieldWrapper>
-                  <Label>Custom Postback Params</Label>
-                  <FieldContainer>
-                    <InputField
-                      name="customPostbaclParams"
-                      placeholder="custom postback params
+                {!values.StaticURL && (
+                  <FieldWrapper>
+                    <Label>Custom Postback Params</Label>
+                    <FieldContainer>
+                      <InputField
+                        name="customPostbaclParams"
+                        placeholder="custom postback params
 "
-                    />
-                    <RequiredWrapper>
-                      <ErrorMessage name="customPostbaclParams" />
-                    </RequiredWrapper>
-                  </FieldContainer>
-                </FieldWrapper>)}
+                      />
+                      <RequiredWrapper>
+                        <ErrorMessage name="customPostbaclParams" />
+                      </RequiredWrapper>
+                    </FieldContainer>
+                  </FieldWrapper>
+                )}
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Country Code</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Country Code
+                  </Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
@@ -662,7 +733,9 @@ const AddOffer = () => {
                         style={{ width: "100%" }}
                         placeholder="Select geo code"
                         value={values.offerCountry}
-                        onChange={(value) => setFieldValue("offerCountry", value)}
+                        onChange={(value) =>
+                          setFieldValue("offerCountry", value)
+                        }
                         options={options}
                       />
                       <Checkbox
@@ -689,7 +762,9 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Daily CAP limit for offer</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Daily CAP limit for offer
+                  </Label>
                   <FieldContainer>
                     <InputField
                       name="dailyCAPLimit"
@@ -721,13 +796,18 @@ const AddOffer = () => {
                     </ChooseCountry>
                   </FieldContainer>
                 </FieldWrapper>
-
               </InputWrapper>
               <Footer>
                 <SubmitBtn type="primary" htmlType="submit" disabled={loader}>
                   Submit{loader ? <Loader /> : ""}
                 </SubmitBtn>
-                <Button type="primary" danger onClick={() => handleReset(resetForm)}>Reset</Button>
+                <Button
+                  type="primary"
+                  danger
+                  onClick={() => handleReset(resetForm)}
+                >
+                  Reset
+                </Button>
               </Footer>
             </Form>
           )}
@@ -848,8 +928,8 @@ const SelectField = styled(Select)`
     border-color: #e5e5e5 !important;
     box-shadow: none !important;
 
-.ant-select-selection-placeholder{
-      color:rgb(102, 102, 102) !important;
+    .ant-select-selection-placeholder {
+      color: rgb(102, 102, 102) !important;
     }
 
     &:hover,
@@ -881,7 +961,7 @@ const ChooseCountry = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  text-align:left;
+  text-align: left;
 `;
 
 const UploadInstruction = styled.p`
@@ -955,60 +1035,60 @@ const RadioLabel = styled.label`
 `;
 
 const RdioWrapper = styled.div`
-display: flex;
-flex-direction: column;
-gap: 7px;
-justify-content: flex-start;
-margin-bottom: 15px;
-align-items: flex-start;
-@media only screen and (min-width: 320px) and (max-width: 480px) {
-  display: flex ;
-  flex-direction: inherit !important;
-gap: 7px;
-margin-bottom: 15px;
-align-items: flex-start;
-}
-`
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+  align-items: flex-start;
+  @media only screen and (min-width: 320px) and (max-width: 480px) {
+    display: flex;
+    flex-direction: inherit !important;
+    gap: 7px;
+    margin-bottom: 15px;
+    align-items: flex-start;
+  }
+`;
 
 const SelectFieldWrapper = styled.div`
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-width: 100%;
-text-align: start;
-`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: start;
+`;
 
 const UploadButton = styled(Button)`
-color: black;
-background: white;
-width: 40%;
-height: 35px;
-border: 1px solid black;
-margin-bottom: 1rem;
-`
+  color: black;
+  background: white;
+  width: 40%;
+  height: 35px;
+  border: 1px solid black;
+  margin-bottom: 1rem;
+`;
 
 const Image = styled.img`
-width: 120px;
-height: 120px;
-object-fit: contain;
-`
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+`;
 
 const Asterisk = styled.span`
-color: red
-`
+  color: red;
+`;
 
 const ErrorText = styled.div`
-color: red;
-margin-top: 5px;
+  color: red;
+  margin-top: 5px;
 `;
 
 const RadioWrapper = styled.div`
-display: flex;
-// flex-direction: column;
-align-items: center;
-justify-content: center;
-`
+  display: flex;
+  // flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
 const RadioStyle = styled(Field)`
-width: 4% !important;
-`
+  width: 4% !important;
+`;
