@@ -154,7 +154,6 @@ const AddOffer = () => {
           toast.error(message);
         }
       } catch (error) {
-        // console.log(error, "error");
         toast.error(error?.message || "Something went wrong");
       }
     }
@@ -174,7 +173,6 @@ const AddOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };
@@ -193,7 +191,6 @@ const AddOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };
@@ -216,7 +213,7 @@ const AddOffer = () => {
       label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
       value: `${jsonData?.iso_code_2}`,
     }));
-  // console.log(allDropdownUsers, "allDropdownUsers")
+    
   const userOptions = allDropdownUsers?.map((data) => ({
     label: `${data?.firstName} ${data?.lastName}`,
     value: `${data?.idUser}`,
@@ -247,7 +244,6 @@ const AddOffer = () => {
             resetForm,
           }) => (
             <Form>
-              {console.log(errors, "errors")}
               <InputWrapper>
                 <FieldWrapper>
                   <Label>
@@ -696,6 +692,7 @@ const AddOffer = () => {
                       onChange={(e) =>
                         setFieldValue("StaticURL", e.target.checked)
                       }
+                      style={{ paddingTop: "15px" }}
                     >
                       is static URL
                     </Checkbox>

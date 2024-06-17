@@ -123,7 +123,7 @@ const EditGiftCardModal = ({
         footer=""
         closable=""
         bodyStyle={{
-          maxHeight: "80vh",
+          maxHeight: "70vh",
           overflowY: "auto",
         }}
       >

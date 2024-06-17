@@ -466,9 +466,9 @@ const InnerContainer = styled.div`
   padding-top: 40px;
 `;
 const NavIcon = styled.div`
-  padding-left: 10px;
+  padding-left: 8px;
   background: ${({ theme }) => theme?.secondaryColor};
-  padding-right: 10px;
+  padding-right: 8px;
   font-size: 20px;
   cursor: pointer;
   line-height: 17px;
@@ -531,9 +531,9 @@ width: calc(100% - 20px);
 // `;
 
 const NavIcon2 = styled.div`
-  padding-left: 10px;
+  padding-left: 8px;
   cursor: pointer;
-  padding-right: 10px;
+  padding-right: 8px;
   width: calc(100% - 20px);
   font-size: 20px;
   font-size: 20px;
