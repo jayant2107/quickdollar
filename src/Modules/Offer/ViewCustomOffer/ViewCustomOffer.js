@@ -461,7 +461,7 @@ const ViewCustomOffers = () => {
 
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Custom Offers</h1>
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div style={{ display: "flex", gap: "20px",alignItems:"center" }}>
           <button onClick={ActiveAllUser} disabled={buttonsDisabled}>
           {activeLoading ?<>
             <CircularProgress color="inherit" size={10} /> Active All Offers  </>: "Active All Offers"}

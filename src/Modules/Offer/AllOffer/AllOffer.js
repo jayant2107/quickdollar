@@ -126,11 +126,10 @@ const AllOffers = () => {
     }
   };
 
-
   const ActiveAllUser = async () => {
     try {
       setActiveLoading(true); // Show loader and disable button
-      setButtonsDisabled(true); 
+      setButtonsDisabled(true);
       let res = await activateDeactivateAllOffers({ isActive: "1" });
       if (res?.status === 200) {
         fetchData();
@@ -154,7 +153,7 @@ const AllOffers = () => {
   const DeactiveAllUser = async () => {
     try {
       setDeactiveLoading(true); // Show loader and disable button
-      setButtonsDisabled(true); 
+      setButtonsDisabled(true);
       let res = await activateDeactivateAllOffers({ isActive: "0" });
       if (res?.status === 200) {
         fetchData();
@@ -491,7 +490,10 @@ const AllOffers = () => {
 
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">All Offers</h1>
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div
+          style={{ display: "flex", gap: "20px", alignItems: "center" }}
+          className="buttons-dropdown"
+        >
           <SelectField
             showSearch // Enable searching
             placeholder={selectedOption}
@@ -513,19 +515,32 @@ const AllOffers = () => {
                 </Option>
               ))}
           </SelectField>
-          <button onClick={ActiveAllUser} disabled={buttonsDisabled}>
-            {activeLoading ?<>
-             <CircularProgress color="inherit" size={10} /> Active All Offers  </>: "Active All Offers"}
-          </button>
-          <button
-            onClick={DeactiveAllUser}
-            disabled={buttonsDisabled}
-            style={{ background: "#ff0e0e" }}
-          >
-            {deactiveLoading ? <>
-              <CircularProgress color="inherit" size={10} /> De-active All Offers
-            </>: "De-active All Offers"}
-          </button>
+          <div style={{ display: "flex", gap: "20px" }}>
+            <button onClick={ActiveAllUser} disabled={buttonsDisabled}>
+              {activeLoading ? (
+                <>
+                  <CircularProgress color="inherit" size={10} /> Active All
+                  Offers{" "}
+                </>
+              ) : (
+                "Active All Offers"
+              )}
+            </button>
+            <button
+              onClick={DeactiveAllUser}
+              disabled={buttonsDisabled}
+              style={{ background: "#ff0e0e" }}
+            >
+              {deactiveLoading ? (
+                <>
+                  <CircularProgress color="inherit" size={10} /> De-active All
+                  Offers
+                </>
+              ) : (
+                "De-active All Offers"
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -561,7 +576,6 @@ const AllUserWrapper = styled.div`
     color: ${({ byTheme }) => (byTheme === "day" ? "#000" : "#fff")};
     @media (max-width: 550px) {
       margin: 0px;
-      margin-top: 67px;
       font-size: 20px;
       margin-bottom: 20px;
     }
@@ -569,13 +583,28 @@ const AllUserWrapper = styled.div`
 
   .allUsersHeader {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     margin-top: 10px;
+    @media (min-width: 550px) and (max-width: 900px) {
+      display: flex;
+      flex-direction: column;
 
-    @media (max-width: 550px) {
-      display: block;
+      .buttons-dropdown {
+        display: flex;
+        justify-content: end;
+      }
     }
+
+    @media (max-width: 549px) {
+      display: flex;
+      flex-direction: column;
+
+      .buttons-dropdown {
+      flex-direction: column;
+      align-items: center;
+      }
+    }
+
     button {
       box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
       font-weight: 600;
@@ -684,8 +713,9 @@ const TooltipContent = styled.div`
   max-height: 4.5em; // Approx. three lines
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3; // Limit to three lines
+  -webkit-line-clamp: 2; // Limit to three lines
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   white-space: normal;
+  
 `;
