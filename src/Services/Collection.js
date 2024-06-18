@@ -27,6 +27,7 @@ const Get_Completed_Offer = "getCompletedOffers";
 const Delete_All_Offers = "deleteALLOffer";
 const Edit_Offers = "editOffers";
 const GET_ALL_DROPDOWN_USERS = "dropDownUsers";
+const Get_User_And_Link = "getUserAndLink";
 
 const Get_ALL_Gift_Card = "getAllGiftCards";
 const Delete_AllGiftCard = "deleteGiftCard";
@@ -48,10 +49,7 @@ const Announcement = "sendNotification";
 
 const PROMOTION_EMAIL = "promoEmail";
 
-const WEB_SETTING = "webSettings";
-const ANDROID_SETTING = "androidSettings";
-const IOS_SETTING = "iOSSettings";
-
+const SETTING = "settings";
 
 /// auth ////
 export const adminLogin = (payload) => postApi(LOGIN_ADMIN, payload);
@@ -103,7 +101,9 @@ export const deleteAllOffers = (id) => deleteApi(Delete_All_Offers, id)
 
 export const editOffers = (payload) => patchApi(Edit_Offers, payload);
 
-export const getAllDropdownUsers = () => getApi(GET_ALL_DROPDOWN_USERS);
+export const getAllDropdownUsers = (query) => getApi(`${GET_ALL_DROPDOWN_USERS}?${query}`);
+
+export const getUserAndLink = (query) => getApi(`${Get_User_And_Link}?${query}`);
 
 /// gift cards ////
 export const getAllGiftCard = (query) => getApi(`${Get_ALL_Gift_Card}?${query}`);
@@ -141,8 +141,4 @@ export const announcement = (payload) => postApi(Announcement, payload);
 export const promotionEmail = (payload) => postApi(PROMOTION_EMAIL, payload);
 
 //// settings //
-export const addWebSetting = (payload) => postApi(WEB_SETTING, payload);
-
-export const addAndroidSetting = (payload) => postApi(ANDROID_SETTING, payload);
-
-export const addIosSetting = (payload) => postApi(IOS_SETTING, payload);
+export const addSetting = (payload) => patchApi(SETTING, payload);

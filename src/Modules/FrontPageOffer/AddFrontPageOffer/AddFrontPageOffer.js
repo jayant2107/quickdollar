@@ -25,7 +25,7 @@ const AddFrontPageOffer = () => {
 
     const validationSchema = yup.object().shape({
         frontpageofferTitle: yup.string().required('Offer title is required'),
-        frontpageofferLink: yup.string().required('Offer link is required'),
+        frontpageofferLink: yup.string().required('Offer link is required').url('Offer link must be a valid URL'),
         frontpageofferImage: yup.mixed().required('Offer image is required'),
         frontpageofferButton: yup.mixed().required('Button image is required'),
     });
@@ -65,7 +65,7 @@ const AddFrontPageOffer = () => {
     const validateFile = (file) => {
         if (!file) return 'File is required';
         if (file.size > 2000000) return 'File too large';
-        if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+        if (!['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) return 'Unsupported format, only jpg, jpeg, png and gif are supported';
         return null;
     };
 
