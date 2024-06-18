@@ -33,13 +33,13 @@ const EditFrontpageModal = ({
 
   const validationSchema = yup.object().shape({
     title: yup.string().required("Title is required"),
-    link: yup.string().required('Link is required'),
+    link: yup.string().required('Link is required').url('Offer link must be a valid URL'),
   });
 
   const validateFile = (file) => {
     if (!file) return 'File is required';
     if (file.size > 2000000) return 'File too large';
-    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    if (!['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) return 'Unsupported format, only jpg, jpeg, png and gif are supported';
     return null;
   };
 

@@ -8,7 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import { Checkbox } from 'antd';
 import { toast } from "react-toastify";
 import { getAllGeoCodes } from '../../../Services/Collection';
-import { addWebSetting } from '../../../Services/Collection';
+import { addSetting } from '../../../Services/Collection';
 import Loader from '../../../Components/Loader/Loader';
 
 const WebSetting = () => {
@@ -63,9 +63,10 @@ const WebSetting = () => {
             let payload = {
                 ...values,
                 cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
+                device_type:'2'
               }
               setLoader(true)
-            let res = await addWebSetting(payload);
+            let res = await addSetting(payload);
             setLoader(false)
             if (res?.status === 200) {
                 toast.success("Web Setting added Successfully");

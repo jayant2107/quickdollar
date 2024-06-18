@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { Checkbox } from 'antd';
 import { getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
-import { addIosSetting } from '../../../Services/Collection';
+import { addSetting } from '../../../Services/Collection';
 import Loader from '../../../Components/Loader/Loader';
 
 const Ios = () => {
@@ -52,9 +52,10 @@ const Ios = () => {
       let payload = {
         ...values,
         cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
+        device_type:'0'
       }
       setLoader(true);
-      let res = await addIosSetting(payload);
+      let res = await addSetting(payload);
       setLoader(false)
       if (res?.status === 200) {
         toast.success("IOS Setting added Successfully");

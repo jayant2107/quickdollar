@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { Checkbox } from 'antd';
 import { getAllGeoCodes } from '../../../Services/Collection';
 import { toast } from "react-toastify";
-import { addAndroidSetting } from '../../../Services/Collection';
+import { addSetting } from '../../../Services/Collection';
 import Loader from '../../../Components/Loader/Loader';
 
 const Android = () => {
@@ -54,9 +54,10 @@ const Android = () => {
       let payload = {
         ...values,
         cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
+        device_type:'1'
       }
       setLoader(true);
-      let res = await addAndroidSetting(payload);
+      let res = await addSetting(payload);
       setLoader(false)
       if (res?.status === 200) {
         toast.success("Android Setting added Successfully");

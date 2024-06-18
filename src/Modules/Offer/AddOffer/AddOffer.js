@@ -80,8 +80,8 @@ const AddOffer = () => {
   const validateFile = (file) => {
     if (!file) return "File is required";
     if (file.size > 2000000) return "File too large";
-    if (!["image/jpg", "image/jpeg", "image/png"].includes(file.type))
-      return "Unsupported format, only jpg, jpeg and png are supported";
+    if (!["image/jpg", "image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type))
+      return "Unsupported format, only jpg, jpeg, png and gif are supported";
     return null;
   };
 
@@ -181,7 +181,7 @@ const AddOffer = () => {
     try {
       const res = await getAllDropdownUsers();
       if (res?.status === 200) {
-        setAllDropdownUsers(res?.data);
+        setAllDropdownUsers(res?.data?.users);
       } else {
         let message =
           res?.response?.data?.message ||
