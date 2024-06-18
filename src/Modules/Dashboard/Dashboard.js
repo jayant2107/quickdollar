@@ -510,7 +510,7 @@ C491.375,120.986,496,130.003,496,140.117z"
                       <p style={{ fontSize: "36px", margin: "0" }}>
                         {card.count}
                       </p>
-                      <p style={{ fontSize: "18px" }}>{card.name}</p>
+                      <p style={{ fontSize: "18px",textAlign:"left" }}>{card.name}</p>
                     </CardContent>
                     <div
                       style={{ width: "80%", height: "101px", margin: "auto" }}
@@ -652,7 +652,7 @@ const DriverWrapper = styled.div`
   .driverHeading {
     display: flex;
     font-weight: 600;
-    font-size: 30px;
+    font-size: 24px;
     margin: 20px 0px 20px 0px;
     font-family: ${({ theme }) => theme?.fontFamily};
     color: ${({ byTheme }) => (byTheme == "day" ? "#fff" : "#000")};

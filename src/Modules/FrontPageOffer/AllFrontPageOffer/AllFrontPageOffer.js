@@ -147,11 +147,13 @@ const AllFrontPageOffer = () => {
 
       dataIndex: "frontpageofferLink",
       key: "offerlink",
-      render: (text, record) =>
+      render: (text, record) => (
         <Tooltip title={record?.frontpageofferLink || "NA"} placement="top">
-          <TooltipContent><Link to="#">{record?.frontpageofferLink || "NA"}</Link></TooltipContent>
+          <TooltipContent>
+            <Link to="#">{record?.frontpageofferLink || "NA"}</Link>
+          </TooltipContent>
         </Tooltip>
-       
+      ),
     },
     {
       title: (
@@ -179,7 +181,11 @@ const AllFrontPageOffer = () => {
       key: "offerimage",
       render: (text, record) => (
         <TableImageWrapper>
-          <img src={record?.frontpageofferImage} alt="NA" />
+          {record?.frontpageofferImage ? (
+            <img src={record?.frontpageofferImage} alt="Offer Image" />
+          ) : (
+            "NA"
+          )}
         </TableImageWrapper>
       ),
     },
@@ -208,7 +214,11 @@ const AllFrontPageOffer = () => {
       key: "offerbuttonimage",
       render: (text, record) => (
         <TableImageWrapper>
-          <img src={record?.frontpageofferButton} alt="NA" />
+          {record?.frontpageofferButton ? (
+            <img src={record?.frontpageofferButton} alt="Offer Button" />
+          ) : (
+            "NA"
+          )}
         </TableImageWrapper>
       ),
     },

@@ -8,7 +8,7 @@ import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
 import TableAction from "../../../Components/TableNew/TableActions";
 import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
-import { deleteGiftCard,  getAllGiftCard } from "../../../Services/Collection";
+import { deleteGiftCard, getAllGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 
@@ -26,7 +26,7 @@ const AllGiftCards = () => {
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
 
-   const handleSearch = useCallback(
+  const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
       setCurrentPage(1);
@@ -83,7 +83,6 @@ const AllGiftCards = () => {
     setCurrentPage(1);
   };
 
-
   const columns = [
     {
       title: (
@@ -106,13 +105,12 @@ const AllGiftCards = () => {
           />
         </div>
       ),
-      
-      
+
       dataIndex: "giftCardName",
       key: "name",
       fixed: "left",
       render: (text, record) => record?.giftCardName || "NA",
-      },
+    },
     {
       title: (
         <div
@@ -138,10 +136,13 @@ const AllGiftCards = () => {
       dataIndex: "giftCardImage",
       render: (text, record) => (
         <TableImageWrapper>
-          <img src={record?.giftCardImage} alt="" />
+          {record?.giftCardImage ? (
+            <img src={record?.giftCardImage} alt="Gift Card Image" />
+          ) : (
+            "NA"
+          )}
         </TableImageWrapper>
       ),
-     
     },
     {
       title: (
@@ -164,11 +165,10 @@ const AllGiftCards = () => {
           />
         </div>
       ),
-     
+
       dataIndex: "giftCardPoints",
       key: "price",
       render: (text, record) => record?.giftCardPoints || "NA",
-     
     },
     {
       title: (
@@ -203,7 +203,6 @@ const AllGiftCards = () => {
           )}
         </StatusStyledText>
       ),
-      
     },
 
     {
@@ -230,11 +229,11 @@ const AllGiftCards = () => {
       dataIndex: "createdAt",
       key: "createdat",
       render: (text, record) => {
-        if(!record?.createdAt) return "NA";
+        if (!record?.createdAt) return "NA";
         const date = DateTime.fromISO(record?.createdAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-       },
+    },
     {
       title: "Action",
       key: "operation",
@@ -248,7 +247,6 @@ const AllGiftCards = () => {
         />
       ),
     },
-    
   ];
 
   const scrollConfig = {
@@ -295,21 +293,19 @@ const AllGiftCards = () => {
       `Showing ${range[0]}-${range[1]} of ${total} items`,
   };
 
-  const handleDelete=async(id)=>{
+  const handleDelete = async (id) => {
     let res = await deleteGiftCard(id);
     if (res?.status === 200) {
-      await fetchData()
+      await fetchData();
     }
     return res;
-   
+  };
 
-  }
-  
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize,search,fieldName, orderMethod]);
+  }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-  document.title="Gift Cards - quickdollarapp";
+  document.title = "Gift Cards - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>
@@ -353,7 +349,7 @@ const AllGiftCards = () => {
 export default AllGiftCards;
 
 const AllUserWrapper = styled.div`
-  padding-bottom: 35px; 
+  padding-bottom: 35px;
   @media (max-width: 550px) {
     padding-bottom: 25px;
   }

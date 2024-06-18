@@ -527,15 +527,9 @@ const AllUserWrapper = styled.div`
     display: flex;
     font-weight: 600;
     font-size: 24px;
-    margin: 20px 0px 20px 0px;
+    margin: 20px 0;
     font-family: ${({ theme }) => theme?.fontFamily};
     color: ${({ byTheme }) => (byTheme === "day" ? "#000" : "#fff")};
-    @media (max-width: 550px) {
-      margin: 0px;
-      margin-top: 67px;
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
   }
 
   .allUsersHeader {
@@ -543,11 +537,9 @@ const AllUserWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-top: 10px;
-
-    @media (max-width: 550px) {
-      display: block;
-    }
+    flex-wrap: wrap;
     button {
+      margin: 20px 0px;
       box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
       font-weight: 600;
       border-radius: 10px;
