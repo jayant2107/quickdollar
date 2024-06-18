@@ -12,9 +12,11 @@ import {
   editOffers,
   getAllDropdownUsers,
   getAllGeoCodes,
+  getUserAndLink,
 } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import Loader from "../../../Components/Loader/Loader";
+import { debounce } from "../../../Utils/CommonFunctions";
 
 const offerLocationOptions = [
   {
@@ -52,23 +54,28 @@ const offerLocationOptions = [
 ];
 
 const EditOffer = () => {
+  const record = useSelector((state) => state.offerRecord.record);
+  const { idOffer } = useParams();
+  const navigate = useNavigate();
+
   const [geoCodes, setGeoCodes] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const [userData, setUserData] = useState([]);
   const offerImgInputRef = useRef(null);
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [userAndLink, setUserAndLink] = useState([]);
   const [h1TitleValue, setH1TitleValue] = useState("");
   const [longDescriptionValue, setLongDescriptionValue] =
     useState("long description");
   const [flag, setFlag] = useState(false);
-
-  const record = useSelector((state) => state.offerRecord.record);
-  const { idOffer } = useParams();
-  const navigate = useNavigate();
   const [offerImgPreview, setOfferImgPreview] = useState(record?.offerImage);
   const [offerImgError, setOfferImgError] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const initialValues = {
     offerTitle: record?.offerTitle,
@@ -95,8 +102,8 @@ const EditOffer = () => {
     customPostbackParams: record?.customPostbackParams,
     isHotOffer: record?.isHotOffer?.toString(),
     HotOfFerFor: record?.HotOfFerFor?.toString(),
-    // user: "",
-    // userOfferUrl: "",
+    user: "",
+    userOfferUrl: "",
   };
 
   const toolbarOptions = [
@@ -116,75 +123,82 @@ const EditOffer = () => {
     offerLink: yup.string().required("Offer Link is required"),
     offerPoints: yup.number().nullable(),
     offerText: yup.string().nullable(),
-        offerShortDescription: yup
+    offerShortDescription: yup
       .string()
       .required("Offer Short Description is required"),
     offerLongDescription: yup
       .string()
       .required("Offer Long Description is required"),
-      OfferCreatedFor: yup.string().required("Offer Created is required"),
+    OfferCreatedFor: yup.string().required("Offer Created is required"),
     offerCountry: yup
       .array()
       .of(yup.string())
       .min(1, "Select at least one country"),
   });
 
-  const handleSubmit = async (values, { resetForm, setFieldValue,setErrors }) => {
+  const handleSubmit = async (
+    values,
+    { resetForm, setFieldValue, setErrors }
+  ) => {
     try {
       if (!values?.offerPoints && !values?.offerText) {
         setErrors({ offerText: "Offer Text is required" });
       } else {
-      const formData = new FormData();
-      formData.append("idOffer", idOffer);
-      formData.append("offerTitle", values?.offerTitle);
-      formData.append("offerLink", values?.offerLink);
-      formData.append("offerPoints", values?.offerPoints);
-      formData.append("offerShortDescription", values?.offerShortDescription);
-      formData.append("isActive", values?.isActive);
-      formData.append("app_install", values?.app_install);
-      formData.append("dailyCAPLimit", values?.dailyCAPLimit);
-      formData.append("conversionCallback", values?.conversionCallback);
-      formData.append("offerCountry", values?.offerCountry);
-      formData.append("isDailyOffer", values?.isDailyOffer);
-      formData.append("StaticURL", values?.StaticURL);
-      formData.append("displaylocation", values?.displaylocation);
-      formData.append("offerPlatform", values?.offerPlatform);
-      formData.append("offerLongDescription", values?.offerLongDescription);
-      formData.append("offerH1Title", values?.offerH1Title);
-      formData.append("OfferCreatedFor", values?.OfferCreatedFor);
-      formData.append("SelectPlatFormForOffer", values?.SelectPlatFormForOffer);
-      formData.append("customPostbackParams", values?.customPostbackParams);
-      formData.append("fraudUser", values?.fraudUser);
-      formData.append("isHotOffer", values?.isHotOffer);
-      formData.append("HotOfFerFor", values?.HotOfFerFor);
-      formData.append("offerText", values?.offerText);
-      if (flag) {
-        formData.append("offerImage", values?.offerImage);
+        const formData = new FormData();
+        formData.append("idOffer", idOffer);
+        formData.append("offerTitle", values?.offerTitle);
+        formData.append("offerLink", values?.offerLink);
+        formData.append("offerPoints", values?.offerPoints);
+        formData.append("offerShortDescription", values?.offerShortDescription);
+        formData.append("isActive", values?.isActive);
+        formData.append("app_install", values?.app_install);
+        formData.append("dailyCAPLimit", values?.dailyCAPLimit);
+        formData.append("conversionCallback", values?.conversionCallback);
+        formData.append("offerCountry", values?.offerCountry);
+        formData.append("isDailyOffer", values?.isDailyOffer);
+        formData.append("StaticURL", values?.StaticURL);
+        formData.append("displaylocation", values?.displaylocation);
+        formData.append("offerPlatform", values?.offerPlatform);
+        formData.append("offerLongDescription", values?.offerLongDescription);
+        formData.append("offerH1Title", values?.offerH1Title);
+        formData.append("OfferCreatedFor", values?.OfferCreatedFor);
+        formData.append("user", values?.user);
+        formData.append("userOfferUrl", values?.userOfferUrl);
+        formData.append(
+          "SelectPlatFormForOffer",
+          values?.SelectPlatFormForOffer
+        );
+        formData.append("customPostbackParams", values?.customPostbackParams);
+        formData.append("fraudUser", values?.fraudUser);
+        formData.append("isHotOffer", values?.isHotOffer);
+        formData.append("HotOfFerFor", values?.HotOfFerFor);
+        formData.append("offerText", values?.offerText);
+        if (flag) {
+          formData.append("offerImage", values?.offerImage);
+        }
+
+        setLoader(true);
+        const res = await editOffers(formData);
+        setLoader(false);
+        if (res?.status === 200) {
+          toast.success("Edited Offer successfully");
+          navigate("/quickdollar/offer/alloffers");
+          setFieldValue("additionalText", "");
+          resetForm();
+          setH1TitleValue("");
+          setLongDescriptionValue("");
+        } else {
+          let message =
+            res?.response?.data?.message ||
+            res?.message ||
+            res?.error ||
+            "Something went wrong";
+          toast.error(message);
+        }
       }
-    
-      setLoader(true);
-      const res = await editOffers(formData);
-      setLoader(false);
-      if (res?.status === 200) {
-        toast.success("Edited Offer successfully");
-        navigate("/quickdollar/offer/alloffers");
-        setFieldValue("additionalText", "");
-        resetForm();
-        setH1TitleValue("");
-        setLongDescriptionValue("");
-      } else {
-        let message =
-          res?.response?.data?.message ||
-          res?.message ||
-          res?.error ||
-          "Something went wrong";
-        toast.error(message);
-      }
-    }} catch (error) {
-      // console.log(error, "error");
+    } catch (error) {
       toast.error(error?.message || "Something went wrong");
     }
-  
   };
 
   const fetchGeoCordData = async () => {
@@ -201,35 +215,93 @@ const EditOffer = () => {
         toast.error(message);
       }
     } catch (error) {
-      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };
 
-  const fetchUsers = async () => {
+
+  const fetchUsers = async (searchValue = "", currentPage = 1) => {
     const params = new URLSearchParams();
-    params.append("limit", 20);
+    params.append("limit", 10);
+    params.append("page", currentPage);
+    params.append("search", searchValue);
     try {
-      const res = await getAllDropdownUsers();
+      const res = await getAllDropdownUsers(params);
       if (res?.status === 200) {
-        setUserData(res?.data);
+        const newOptions = res?.data?.users?.map((data) => ({
+          label: `${data?.firstName} ${data?.lastName}`,
+          value: `${data?.idUser}`,
+        }));
+        setOptions(newOptions);
+        return newOptions;
       } else {
         let message =
           res?.response?.data?.message ||
           res?.message ||
           res?.error ||
           "Something went wrong";
-        setUserData([]);
+        toast.error(message);
+        return [];
+      }
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong");
+      return [];
+    }
+  };
+
+  const fetchUsersandLinks = async () => {
+    const params = new URLSearchParams();
+    params.append("id", selectedUser);
+    try {
+      const res = await getUserAndLink(params);
+      if (res?.status === 200) {
+        setUserAndLink(res?.data);
+      } else {
+        let message =
+          res?.response?.data?.message ||
+          res?.message ||
+          res?.error ||
+          "Something went wrong";
         toast.error(message);
       }
     } catch (error) {
-      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
-    } finally {
-      setLoader(false)
     }
+  };
 
+  const fetchMoreData = async () => {
+    setLoading(true);
+    setPage(page + 1);
+    const newUsers = await fetchUsers(search, page);
+    setOptions([...options, ...newUsers]);
+    setLoading(false);
+  };
 
+  const handleScroll = (event) => {
+    const { target } = event;
+    if (
+      target.scrollTop + target.offsetHeight === target.scrollHeight &&
+      !loading
+    ) {
+      fetchMoreData();
+    }
+  };
+
+  const handleSearchDebounced = debounce(async (value) => {
+    setSearch(value);
+    setLoading(true);
+    const newUsers = await fetchUsers(value, 1);
+    setOptions(newUsers);
+    setLoading(false);
+    setPage(2);
+  }, 300);
+
+  const handleSearch = (value) => {
+    handleSearchDebounced(value);
+  };
+
+  const filterOption = (input, option) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   };
 
   const handleReset = (resetForm) => {
@@ -240,9 +312,12 @@ const EditOffer = () => {
   };
 
   const validateFile = (file) => {
-    if (!file) return 'File is required';
-    if (file.size > 2000000) return 'File too large';
-    if (!['image/jpg', 'image/jpeg', 'image/png'].includes(file.type)) return 'Unsupported format, only jpg, jpeg and png are supported';
+    if (!file) return "File is required";
+    if (file.size > 2000000) return "File too large";
+    if (
+      !["image/jpg", "image/jpeg", "image/png, image/webp"].includes(file.type)
+    )
+      return "Unsupported format, only jpg, jpeg and png are supported";
     return null;
   };
 
@@ -258,7 +333,7 @@ const EditOffer = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
-        setFlag(true)
+        setFlag(true);
       };
       reader.readAsDataURL(file);
     }
@@ -266,27 +341,21 @@ const EditOffer = () => {
     offerImgInputRef.current.value = null;
   };
 
-  const options = geoCodes?.map((jsonData) => ({
+  const optionsGeo = geoCodes?.map((jsonData) => ({
     label: `${jsonData?.country}- ${jsonData?.iso_code_2}`,
     value: `${jsonData?.iso_code_2}`,
   }));
-
-  const userOptions = userData?.map((data) => ({
-    label: `${data?.firstName} ${data?.lastName}`,
-    value: `${data?.idUser}`,
-  }));
-
-  const handleScroll = (event) => {
-    const { target } = event;
-    if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
 
   useEffect(() => {
     fetchGeoCordData();
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      fetchUsersandLinks();
+    }
+  }, [selectedUser]);
 
   document.title = "Edit Offer - quickdollarapp";
 
@@ -310,7 +379,10 @@ const EditOffer = () => {
             <Form>
               <InputWrapper>
                 <FieldWrapper>
-               <Label> <Asterisk>*</Asterisk>Offer Title</Label>
+                  <Label>
+                    {" "}
+                    <Asterisk>*</Asterisk>Offer Title
+                  </Label>
                   <FieldContainer>
                     <InputField
                       name="offerTitle"
@@ -323,7 +395,10 @@ const EditOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label> <Asterisk>*</Asterisk>Offer H1 Title</Label>
+                  <Label>
+                    {" "}
+                    <Asterisk>*</Asterisk>Offer H1 Title
+                  </Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -370,14 +445,18 @@ const EditOffer = () => {
                       <UploadInstruction>
                         Max size 2MB and resolution is 150x150 px
                       </UploadInstruction>
-                      {offerImgPreview && (<Image src={offerImgPreview} alt="Offer Preview" />)}
+                      {offerImgPreview && (
+                        <Image src={offerImgPreview} alt="Offer Preview" />
+                      )}
                       {offerImgError && <ErrorText>{offerImgError}</ErrorText>}
                     </ChooseContainer>
                   </FieldContainer>
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Link</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Link
+                  </Label>
                   <FieldContainer>
                     <InputField name="offerLink" placeholder="Offer link" />
                     <RequiredWrapper>
@@ -404,7 +483,9 @@ const EditOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Short Description</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Short Description
+                  </Label>
                   <FieldContainer>
                     <TextAreaField
                       name="offerShortDescription"
@@ -427,7 +508,9 @@ const EditOffer = () => {
                   </FieldContainer>
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Long Description</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Long Description
+                  </Label>
                   <QuillFieldContainer>
                     <StyledReactQuill
                       theme="snow"
@@ -466,7 +549,7 @@ const EditOffer = () => {
                     >
                       <RdioWrapper>
                         <RadioWrapper>
-                          <RadioStyle
+                          <Field
                             type="radio"
                             name="isActive"
                             value="true"
@@ -759,27 +842,6 @@ const EditOffer = () => {
                       </RadioWrapper>
                     </RdioWrapper>
                   </FieldWrapper>
-                  {/* <Field name="offerPlatform">
-                    {({ field, form: { setFieldValue } }) => (
-                      <FieldContainer style={{ display: "flex" }}>
-                        <Checkbox.Group
-                          className="checkboxGroup"
-                          value={field.value}
-                          options={[
-                            { label: "shopOffer", value: "1" },
-                            { label: "quickThoughts", value: "2" },
-                          ]}
-                          onChange={(selectedValues) =>
-                            setFieldValue("offerPlatform", selectedValues)
-                          }
-                        />
-
-                        <RequiredWrapper>
-                          <ErrorMessage name="offerPlatform" />
-                        </RequiredWrapper>
-                      </FieldContainer>
-                    )}
-                  </Field> */}
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>Offer location to display</Label>
@@ -871,7 +933,9 @@ const EditOffer = () => {
                   </FieldWrapper>
                 )}
                 <FieldWrapper>
-                  <Label><Asterisk>*</Asterisk>Offer Country Code</Label>
+                  <Label>
+                    <Asterisk>*</Asterisk>Offer Country Code
+                  </Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
@@ -883,9 +947,11 @@ const EditOffer = () => {
                         onChange={(value) =>
                           setFieldValue("offerCountry", value)
                         }
-                        options={options}
+                        options={optionsGeo}
                         filterOption={(input, option) =>
-                          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          option.label
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
                         }
                       />
                       <Checkbox
@@ -893,7 +959,7 @@ const EditOffer = () => {
                         onChange={(e) => {
                           const { checked } = e.target;
                           setSelectAll(checked);
-                          const offerCountry = options?.map(
+                          const offerCountry = optionsGeo?.map(
                             (option) => option.value
                           );
                           setFieldValue(
@@ -927,25 +993,50 @@ const EditOffer = () => {
                   <Label>Users</Label>
                   <SelectFieldWrapper>
                     <SelectField
+                      showSearch
                       placeholder="Search for a user"
-                      defaultValue={initialValues.users}
+                      defaultValue={values.user}
                       style={{
                         width: "100%",
                         marginBottom: "3px",
                       }}
-                      value={values.users || null}
-                      onChange={(value) => setFieldValue("users", value)}
-                      options={[]}
+                      value={
+                        options.find(
+                          (option) => option.value === values.user
+                        ) || null
+                      }
+                      onChange={(value) => {
+                        setFieldValue("user", value);
+                        setSelectedUser(value || null);
+                      }}
+                      onSearch={handleSearch}
+                      filterOption={filterOption}
+                      options={options}
+                      onPopupScroll={handleScroll}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          {loading && (
+                            <div
+                              style={{ textAlign: "center", padding: "5px 0" }}
+                            >
+                              <Loader />
+                            </div>
+                          )}
+                        </>
+                      )}
                     />
                     <RequiredWrapper>
-                      <ErrorMessage name="users" />
+                      <ErrorMessage name="user" />
                     </RequiredWrapper>
                   </SelectFieldWrapper>
                 </FieldWrapper>
                 <FieldWrapper>
                   <Label>User Offer URL</Label>
                   <SelectFieldWrapper>
-                    NA
+                    {values?.user == userAndLink?.findUsers?.idUser
+                      ? userAndLink?.findlink?.offerLink
+                      : `NA`}
                     <RequiredWrapper>
                       <ErrorMessage name="userOfferURL" />
                     </RequiredWrapper>
@@ -961,11 +1052,16 @@ const EditOffer = () => {
                         mode="multiple"
                         allowClear
                         onPopupScroll={handleScroll}
+                        onSearch={handleSearch}
                         style={{ width: "100%" }}
                         placeholder="Search for a user"
                         value={values.fraudUser}
-                        onChange={(value) => setFieldValue("fraudUser", value)}
-                        options={userOptions}
+                        onChange={(value) => {
+
+                          setFieldValue("fraudUser", value);
+                          setSearch("");
+                        }}
+                        options={options}
                       />
                       <RequiredWrapper>
                         <ErrorMessage name="fraudUser" />
@@ -1257,23 +1353,23 @@ const Image = styled.img`
   width: 120px;
   height: 120px;
   object-fit: contain;
-  margin-bottom:5px
+  margin-bottom: 5px;
 `;
 
 const ErrorText = styled.div`
-color: red;
-margin-top: 5px;
-margin-bottom: 5px;
+  color: red;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 const RadioWrapper = styled.div`
-display: flex;
-align-items: center;
-justify-content: center;
-`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 const RadioStyle = styled(Field)`
-width: 4% !important;
-`
+  width: 4% !important;
+`;
 
 const Asterisk = styled.span`
   color: red;
