@@ -80,9 +80,6 @@ const EditOffer = () => {
   const [optionsLoader, setOptionsLoader] = useState(false);
   const [allUserCount, setAllUserCount] = useState(0);
 
-
-
-
   const initialValues = {
     offerTitle: record?.offerTitle,
     offerLink: record?.offerLink,
@@ -263,7 +260,6 @@ const EditOffer = () => {
     }
   };
 
-
   const fetchUsersandLinks = async () => {
     const params = new URLSearchParams();
     params.append("id", selectedUser);
@@ -286,7 +282,7 @@ const EditOffer = () => {
 
   const handleScroll = (e) => {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
-    if (scrollHeight -Math.round (scrollTop) === clientHeight) {
+    if (scrollHeight - Math.round(scrollTop) === clientHeight) {
       if (allUserCount > allDropdownUsers?.length) {
         setOptionsPage(optionPage + 1);
       }
@@ -321,9 +317,15 @@ const EditOffer = () => {
     if (!file) return "File is required";
     if (file.size > 2000000) return "File too large";
     if (
-      !["image/jpg", "image/jpeg", "image/png, image/webp"].includes(file.type)
+      ![
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ].includes(file.type)
     )
-      return "Unsupported format, only jpg, jpeg and png are supported";
+      return "Unsupported format, only jpg, jpeg, png and gif are supported";
     return null;
   };
 
