@@ -62,7 +62,7 @@ const EditOffer = () => {
   const [loader, setLoader] = useState(false);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [optionPage, setOptionsPage] = useState(1);
   const [search, setSearch] = useState("");
   const [userData, setUserData] = useState([]);
   const offerImgInputRef = useRef(null);
@@ -76,6 +76,12 @@ const EditOffer = () => {
   const [offerImgPreview, setOfferImgPreview] = useState(record?.offerImage);
   const [offerImgError, setOfferImgError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [allDropdownUsers, setAllDropdownUsers] = useState([]);
+  const [optionsLoader, setOptionsLoader] = useState(false);
+  const [allUserCount, setAllUserCount] = useState(0);
+
+
+
 
   const initialValues = {
     offerTitle: record?.offerTitle,
@@ -86,7 +92,7 @@ const EditOffer = () => {
     offerShortDescription: record?.offerShortDescription,
     offerLongDescription: record?.offerLongDescription,
     offerCountry: record?.offerCountry?.split(","),
-    fraudUser: record?.fraudUser?.split(","),
+    fraudUser: record?.fraudUser,
     dailyCAPLimit: record?.dailyCAPLimit,
     isActive: record?.isActive?.toString(),
     app_install: record?.app_install?.toString(),
@@ -219,35 +225,44 @@ const EditOffer = () => {
     }
   };
 
-
-  const fetchUsers = async (searchValue = "", currentPage = 1) => {
-    const params = new URLSearchParams();
-    params.append("limit", 10);
-    params.append("page", currentPage);
-    params.append("search", searchValue);
+  const fetchdropDownUsers = async (page, search) => {
     try {
+      setOptionsLoader(true);
+      let params = new URLSearchParams();
+      params.append("page", page ?? optionPage);
+      params.append("limit", 50);
+      search && params.append("search", search);
       const res = await getAllDropdownUsers(params);
       if (res?.status === 200) {
-        const newOptions = res?.data?.users?.map((data) => ({
-          label: `${data?.firstName} ${data?.lastName}`,
-          value: `${data?.idUser}`,
-        }));
-        setOptions(newOptions);
-        return newOptions;
+        setOptionsLoader(false);
+        setAllUserCount(res?.data?.count);
+        let filteredArray = [];
+        res?.data?.users?.map((data) => {
+          filteredArray.push({
+            label: `${data?.firstName} ${data?.lastName}`,
+            value: `${data?.idUser}`,
+          });
+        });
+        if (optionPage === 1 || page === 1) {
+          setAllDropdownUsers(filteredArray);
+        } else {
+          setAllDropdownUsers([...allDropdownUsers, ...filteredArray]);
+        }
       } else {
+        setOptionsLoader(false);
         let message =
           res?.response?.data?.message ||
           res?.message ||
           res?.error ||
           "Something went wrong";
         toast.error(message);
-        return [];
       }
     } catch (error) {
+      setOptionsLoader(false);
       toast.error(error?.message || "Something went wrong");
-      return [];
     }
   };
+
 
   const fetchUsersandLinks = async () => {
     const params = new URLSearchParams();
@@ -269,31 +284,22 @@ const EditOffer = () => {
     }
   };
 
-  const fetchMoreData = async () => {
-    setLoading(true);
-    setPage(page + 1);
-    const newUsers = await fetchUsers(search, page);
-    setOptions([...options, ...newUsers]);
-    setLoading(false);
-  };
-
-  const handleScroll = (event) => {
-    const { target } = event;
-    if (
-      target.scrollTop + target.offsetHeight === target.scrollHeight &&
-      !loading
-    ) {
-      fetchMoreData();
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (scrollHeight -Math.round (scrollTop) === clientHeight) {
+      if (allUserCount > allDropdownUsers?.length) {
+        setOptionsPage(optionPage + 1);
+      }
     }
   };
 
   const handleSearchDebounced = debounce(async (value) => {
     setSearch(value);
     setLoading(true);
-    const newUsers = await fetchUsers(value, 1);
+    const newUsers = await fetchdropDownUsers(value, 1);
     setOptions(newUsers);
     setLoading(false);
-    setPage(2);
+    setOptionsPage(2);
   }, 300);
 
   const handleSearch = (value) => {
@@ -348,8 +354,11 @@ const EditOffer = () => {
 
   useEffect(() => {
     fetchGeoCordData();
-    fetchUsers();
   }, []);
+
+  useEffect(() => {
+    fetchdropDownUsers();
+  }, [optionPage]);
 
   useEffect(() => {
     if (selectedUser) {
@@ -1001,17 +1010,17 @@ const EditOffer = () => {
                         marginBottom: "3px",
                       }}
                       value={
-                        options.find(
-                          (option) => option.value === values.user
+                        allDropdownUsers.find(
+                          (option) => allDropdownUsers.value === values.user
                         ) || null
                       }
                       onChange={(value) => {
                         setFieldValue("user", value);
                         setSelectedUser(value || null);
                       }}
-                      onSearch={handleSearch}
+                      // onSearch={handleSearch}
                       filterOption={filterOption}
-                      options={options}
+                      options={allDropdownUsers}
                       onPopupScroll={handleScroll}
                       dropdownRender={(menu) => (
                         <>
@@ -1048,20 +1057,19 @@ const EditOffer = () => {
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
-                        showSearch
                         mode="multiple"
                         allowClear
-                        onPopupScroll={handleScroll}
-                        onSearch={handleSearch}
                         style={{ width: "100%" }}
                         placeholder="Search for a user"
+                        onPopupScroll={handleScroll}
+                        onBlur={(e) =>
+                          optionPage === 1
+                            ? fetchdropDownUsers()
+                            : setOptionsPage(1)
+                        }
                         value={values.fraudUser}
-                        onChange={(value) => {
-
-                          setFieldValue("fraudUser", value);
-                          setSearch("");
-                        }}
-                        options={options}
+                        onChange={(value) => setFieldValue("fraudUser", value)}
+                        options={allDropdownUsers}
                       />
                       <RequiredWrapper>
                         <ErrorMessage name="fraudUser" />

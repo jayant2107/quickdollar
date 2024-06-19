@@ -240,7 +240,7 @@ const AddOffer = () => {
 
   const handleScroll = (e) => {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
-    if (scrollHeight - scrollTop === clientHeight) {
+    if (scrollHeight - Math.round(scrollTop) === clientHeight) {
       if (allUserCount > allDropdownUsers?.length) {
         setOptionsPage(optionPage + 1);
       }
