@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Checkbox, Select } from "antd";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import styled from "styled-components";
@@ -44,6 +44,9 @@ const AddOffer = () => {
   const [offerImgError, setOfferImgError] = useState(null);
   const offerImgInputRef = useRef(null);
   const [loader, setLoader] = useState(false);
+  const [optionsLoader, setOptionsLoader] = useState(false);
+  const [optionPage, setOptionsPage] = useState(1);
+  const [allUserCount, setAllUserCount] = useState(0);
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -80,7 +83,15 @@ const AddOffer = () => {
   const validateFile = (file) => {
     if (!file) return "File is required";
     if (file.size > 2000000) return "File too large";
-    if (!["image/jpg", "image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type))
+    if (
+      ![
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ].includes(file.type)
+    )
       return "Unsupported format, only jpg, jpeg, png and gif are supported";
     return null;
   };
@@ -177,12 +188,31 @@ const AddOffer = () => {
     }
   };
 
-  const fetchdropDownUsers = async () => {
+  const fetchdropDownUsers = async (page, search) => {
     try {
-      const res = await getAllDropdownUsers();
+      setOptionsLoader(true);
+      let params = new URLSearchParams();
+      params.append("page", page ?? optionPage);
+      params.append("limit", 50);
+      search && params.append("search", search);
+      const res = await getAllDropdownUsers(params);
       if (res?.status === 200) {
-        setAllDropdownUsers(res?.data?.users);
+        setOptionsLoader(false);
+        setAllUserCount(res?.data?.count);
+        let filteredArray = [];
+        res?.data?.users?.map((data) => {
+          filteredArray.push({
+            label: `${data?.firstName} ${data?.lastName}`,
+            value: `${data?.idUser}`,
+          });
+        });
+        if (optionPage === 1 || page === 1) {
+          setAllDropdownUsers(filteredArray);
+        } else {
+          setAllDropdownUsers([...allDropdownUsers, ...filteredArray]);
+        }
       } else {
+        setOptionsLoader(false);
         let message =
           res?.response?.data?.message ||
           res?.message ||
@@ -191,6 +221,7 @@ const AddOffer = () => {
         toast.error(message);
       }
     } catch (error) {
+      setOptionsLoader(false);
       toast.error(error?.message || "Something went wrong");
     }
   };
@@ -207,22 +238,29 @@ const AddOffer = () => {
     setOfferImgPreview(null);
   };
 
+  const handleScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (scrollHeight - scrollTop === clientHeight) {
+      if (allUserCount > allDropdownUsers?.length) {
+        setOptionsPage(optionPage + 1);
+      }
+    }
+  };
+
   const options =
     geoCodes &&
     geoCodes?.map((jsonData) => ({
       label: `${jsonData?.country} (${jsonData?.iso_code_2})`,
       value: `${jsonData?.iso_code_2}`,
     }));
-    
-  const userOptions = allDropdownUsers?.map((data) => ({
-    label: `${data?.firstName} ${data?.lastName}`,
-    value: `${data?.idUser}`,
-  }));
 
   useEffect(() => {
     fetchGeoCordData();
-    fetchdropDownUsers();
   }, []);
+
+  useEffect(() => {
+    fetchdropDownUsers();
+  }, [optionPage]);
 
   document.title = "Add Offer - quickdollarapp";
 
@@ -338,9 +376,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>
-                    Offer Amount in $
-                  </Label>
+                  <Label>Offer Amount in $</Label>
                   <FieldContainer>
                     <InputField name="offerPoints" placeholder="Offer amount" />
                     <RequiredWrapper>
@@ -350,9 +386,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>
-                    Offer Text
-                  </Label>
+                  <Label>Offer Text</Label>
                   <FieldContainer>
                     <InputField name="offerText" placeholder="Offer text" />
                     <RequiredWrapper>
@@ -735,7 +769,9 @@ const AddOffer = () => {
                         }
                         options={options}
                         filterOption={(input, option) =>
-                          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          option.label
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
                         }
                       />
                       <Checkbox
@@ -762,9 +798,7 @@ const AddOffer = () => {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <Label>
-                    Daily CAP limit for offer
-                  </Label>
+                  <Label>Daily CAP limit for offer</Label>
                   <FieldContainer>
                     <InputField
                       name="dailyCAPLimit"
@@ -786,9 +820,15 @@ const AddOffer = () => {
                         allowClear
                         style={{ width: "100%" }}
                         placeholder="Search for a user"
+                        onPopupScroll={handleScroll}
+                        onBlur={(e) =>
+                          optionPage === 1
+                            ? fetchdropDownUsers()
+                            : setOptionsPage(1)
+                        }
                         value={values.fraudUser}
                         onChange={(value) => setFieldValue("fraudUser", value)}
-                        options={userOptions}
+                        options={allDropdownUsers}
                       />
                     </ChooseCountry>
                   </FieldContainer>
