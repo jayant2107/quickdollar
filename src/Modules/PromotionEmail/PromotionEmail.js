@@ -15,8 +15,7 @@ const PromotionEmail = () => {
     const [loader, setLoader] = useState(false);
     const [triggerModal, setTriggerModal] = useState(false);
     const [previewData, setPreviewData] = useState({});
-
-    const initialValues = {
+    const [formValues, setFormValues] = useState({
         emailSubject: '',
         emailHeading: '',
         additionalText: '',
@@ -27,7 +26,7 @@ const PromotionEmail = () => {
         offerLink: '',
         customPostbackParams: '',
         offerDescription: ""
-    };
+    });
 
     const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],
@@ -42,6 +41,8 @@ const PromotionEmail = () => {
 
     const [value, setValue] = useState('');
     const [geoCodes, setGeoCodes] = useState([]);
+    const [selectAll, setSelectAll] = useState(false);
+    const [isEmpty, setIsEmpty] = useState(false);
 
     const validationSchema = yup.object().shape({
         emailSubject: yup.string().required('Subject is required'),
@@ -83,6 +84,7 @@ const PromotionEmail = () => {
                 resetForm();
                 setFieldValue('additionalText', '');
                 setValue('');
+                setSelectAll(false)
             } else {
                 let message =
                     res?.response?.data?.message ||
@@ -96,8 +98,6 @@ const PromotionEmail = () => {
         }
     };
 
-    const [selectAll, setSelectAll] = useState(false);
-    const [isEmpty, setIsEmpty] = useState(false);
 
     const fetchGeoCordData = async () => {
         try {
@@ -127,13 +127,30 @@ const PromotionEmail = () => {
         fetchGeoCordData();
     }, [])
 
+    useEffect(() => {
+        const allCountries = options.map(option => option.value);
+        const areAllSelected = formValues.offerCountryCode.length === allCountries.length &&
+            formValues.offerCountryCode.every(code => allCountries.includes(code));
+        setSelectAll(areAllSelected);
+    }, [formValues.offerCountryCode, options]);
+
+    const handleSelectAllChange = (checked, setFieldValue) => {
+        setSelectAll(checked);
+        const allCountries = options.map(option => option.value);
+        setFieldValue('offerCountryCode', checked ? allCountries : []);
+        setFormValues(prevValues => ({
+            ...prevValues,
+            offerCountryCode: checked ? allCountries : []
+        }));
+    };
+
     document.title = "Promotion Email - quickdollarapp";
     return (
         <div>
             <Header>Email Preview</Header>
             <AnnouncementWrapper>
                 <Formik
-                    initialValues={initialValues}
+                    initialValues={formValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
@@ -267,20 +284,24 @@ const PromotionEmail = () => {
                                                 style={{ width: '100%' }}
                                                 placeholder="Please select"
                                                 value={values.offerCountryCode}
-                                                onChange={(value) => setFieldValue('offerCountryCode', value)}
+                                                onChange={(value) => {
+                                                    setFieldValue('offerCountryCode', value);
+                                                    setFormValues(prevValues => ({
+                                                        ...prevValues,
+                                                        offerCountryCode: value
+                                                    }));
+                                                }}
                                                 options={options}
                                                 filterOption={(input, option) =>
                                                     option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                 }
                                                 onBlur={() => setFieldTouched('offerCountryCode', true)}
                                             />
-                                            <Checkbox checked={selectAll} onChange={(e) => {
-                                                const { checked } = e.target;
-                                                setSelectAll(checked);
-                                                const allCountries = options?.map(option => option.value);
-                                                setFieldValue('offerCountryCode', checked ? allCountries : []);
-                                            }}>
-                                                Select all country
+                                            <Checkbox
+                                                checked={selectAll}
+                                                onChange={(e) => handleSelectAllChange(e.target.checked, setFieldValue)}
+                                            >
+                                                Select all countries
                                             </Checkbox>
                                             <RequiredWrapper>
                                                 <ErrorMessage name="offerCountryCode" />
@@ -288,6 +309,7 @@ const PromotionEmail = () => {
                                         </ChooseCountry>
                                     </FieldContainer>
                                 </FieldWrapper>
+
                             </InputWrapper>
                             <Footer>
                                 {values?.offerText && values?.offerDescription && values?.additionalText && (

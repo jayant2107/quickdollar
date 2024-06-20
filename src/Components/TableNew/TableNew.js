@@ -73,7 +73,7 @@ const TableNew = ({
         </div>
       </TableWrapper>
 
-      <p style={{margin:"0px"}}>Copyright © {currentYear} QuickDollar. All rights reserved.</p>
+      <p style={{margin:"0px", fontSize:"12px"}}>Copyright © {currentYear} QuickDollar. All rights reserved.</p>
     </>
   );
 };

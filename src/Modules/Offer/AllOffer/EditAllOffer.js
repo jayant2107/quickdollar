@@ -291,20 +291,9 @@ const EditOffer = () => {
 
   const handleSearchDebounced = debounce(async (value) => {
     setSearch(value);
-    setLoading(true);
-    const newUsers = await fetchdropDownUsers(value, 1);
-    setOptions(newUsers);
-    setLoading(false);
-    setOptionsPage(2);
-  }, 300);
-
-  const handleSearch = (value) => {
-    handleSearchDebounced(value);
-  };
-
-  const filterOption = (input, option) => {
-    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-  };
+    fetchdropDownUsers(1, value);
+    // fetchUsersandLinks(value)
+  });
 
   const handleReset = (resetForm) => {
     resetForm();
@@ -1020,8 +1009,17 @@ const EditOffer = () => {
                         setFieldValue("user", value);
                         setSelectedUser(value || null);
                       }}
-                      // onSearch={handleSearch}
-                      filterOption={filterOption}
+                      onSearch={(value) => handleSearchDebounced(value)}
+                      onBlur={(e) =>
+                        optionPage === 1
+                          ? fetchUsersandLinks()
+                          : setOptionsPage(1)
+                      }
+                      filterOption={(input, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.indexOf(input?.toLowerCase()) >= 0
+                      }
                       options={allDropdownUsers}
                       onPopupScroll={handleScroll}
                       dropdownRender={(menu) => (
@@ -1069,6 +1067,12 @@ const EditOffer = () => {
                             ? fetchdropDownUsers()
                             : setOptionsPage(1)
                         }
+                        filterOption={(input, option) =>
+                          option?.label
+                            ?.toLowerCase()
+                            ?.indexOf(input?.toLowerCase()) >= 0
+                        }
+                        onSearch={(value) => handleSearchDebounced(value)}
                         value={values.fraudUser}
                         onChange={(value) => setFieldValue("fraudUser", value)}
                         options={allDropdownUsers}

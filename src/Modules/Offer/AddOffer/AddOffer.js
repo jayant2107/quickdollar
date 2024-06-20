@@ -13,8 +13,9 @@ import {
 } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import Loader from "../../../Components/Loader/Loader";
+import { debounce } from '../../../Utils/CommonFunctions'
 const AddOffer = () => {
-  const initialValues = {
+  const [formValues, setFormValues] = useState({
     offerTitle: "",
     offerH1Title: "",
     offerImage: null,
@@ -27,7 +28,7 @@ const AddOffer = () => {
     offerCountry: [],
     fraudUser: [],
     dailyCAPLimit: "",
-    customPostbaclParams: "",
+    customPostbackParams: "",
     isActive: "false",
     isHotOffer: "false",
     HotOfFerFor: "1",
@@ -36,7 +37,7 @@ const AddOffer = () => {
     isDailyOffer: "false",
     relistOffer: false,
     StaticURL: false,
-  };
+  })
 
   const [geoCodes, setGeoCodes] = useState([]);
   const [allDropdownUsers, setAllDropdownUsers] = useState([]);
@@ -47,7 +48,7 @@ const AddOffer = () => {
   const [optionsLoader, setOptionsLoader] = useState(false);
   const [optionPage, setOptionsPage] = useState(1);
   const [allUserCount, setAllUserCount] = useState(0);
-
+  const [search, setSearch] = useState("")
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
     ["blockquote", "code-block"],
@@ -58,6 +59,8 @@ const AddOffer = () => {
     [{ font: [] }],
     [{ align: [] }],
   ];
+
+  console.log(allDropdownUsers, "allDropdownUsersallDropdownUsers");
 
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
@@ -73,7 +76,7 @@ const AddOffer = () => {
       .string()
       .required("Offer Long Description is required"),
     OfferCreatedFor: yup.string().required("Offer Created is required"),
-    customPostbaclParams: yup.string(),
+    customPostbackParams: yup.string(),
     offerCountry: yup
       .array()
       .min(1, "Countries are required")
@@ -136,7 +139,7 @@ const AddOffer = () => {
       // formData.append("offerCountry", values.offerCountry);
       formData.append("fraudUser", values?.fraudUser);
       formData.append("dailyCAPLimit", values?.dailyCAPLimit);
-      formData.append("customPostbaclParams", values?.customPostbaclParams);
+      formData.append("customPostbackParams", values?.customPostbackParams);
       formData.append("isActive", values?.isActive);
       formData.append("isHotOffer", values?.isHotOffer);
       formData.append("HotOfFerFor", values?.HotOfFerFor);
@@ -238,6 +241,11 @@ const AddOffer = () => {
     setOfferImgPreview(null);
   };
 
+  const handleSearchDebounced = debounce(async (value) => {
+    setSearch(value);
+    fetchdropDownUsers(1, value);
+  });
+
   const handleScroll = (e) => {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
     if (scrollHeight - Math.round(scrollTop) === clientHeight) {
@@ -255,6 +263,23 @@ const AddOffer = () => {
     }));
 
   useEffect(() => {
+    const allCountries = options.map(option => option.value);
+    const areAllSelected = formValues.offerCountry?.length === allCountries?.length &&
+      formValues.offerCountry.every(code => allCountries.includes(code));
+    setSelectAll(areAllSelected);
+  }, [formValues.offerCountry, options]);
+
+  const handleSelectAllChange = (checked, setFieldValue) => {
+    setSelectAll(checked);
+    const allCountries = options.map(option => option.value);
+    setFieldValue('offerCountry', checked ? allCountries : []);
+    setFormValues(prevValues => ({
+      ...prevValues,
+      offerCountry: checked ? allCountries : []
+    }));
+  };
+
+  useEffect(() => {
     fetchGeoCordData();
   }, []);
 
@@ -269,7 +294,7 @@ const AddOffer = () => {
       <Header>Add Offer</Header>
       <AnnouncementWrapper>
         <Formik
-          initialValues={initialValues}
+          initialValues={formValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -681,7 +706,7 @@ const AddOffer = () => {
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select users"
-                      defaultValue={initialValues.OfferCreatedFor}
+                      defaultValue={formValues?.OfferCreatedFor}
                       style={{
                         width: "100%",
                         marginBottom: "3px",
@@ -741,54 +766,45 @@ const AddOffer = () => {
                     <Label>Custom Postback Params</Label>
                     <FieldContainer>
                       <InputField
-                        name="customPostbaclParams"
+                        name="customPostbackParams"
                         placeholder="custom postback params
 "
                       />
                       <RequiredWrapper>
-                        <ErrorMessage name="customPostbaclParams" />
+                        <ErrorMessage name="customPostbackParams" />
                       </RequiredWrapper>
                     </FieldContainer>
                   </FieldWrapper>
                 )}
 
                 <FieldWrapper>
-                  <Label>
-                    <Asterisk>*</Asterisk>Offer Country Code
-                  </Label>
+                  <Label><Asterisk>*</Asterisk>Offer Country Code</Label>
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
                         mode="multiple"
                         allowClear
-                        style={{ width: "100%" }}
-                        placeholder="Select geo code"
+                        style={{ width: '100%' }}
+                        placeholder="Please select"
                         value={values.offerCountry}
-                        onChange={(value) =>
-                          setFieldValue("offerCountry", value)
-                        }
+                        onChange={(value) => {
+                          setFieldValue('offerCountry', value);
+                          setFormValues(prevValues => ({
+                            ...prevValues,
+                            offerCountry: value
+                          }));
+                        }}
                         options={options}
                         filterOption={(input, option) =>
-                          option.label
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
+                          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
+                        onBlur={() => setFieldTouched('offerCountry', true)}
                       />
                       <Checkbox
                         checked={selectAll}
-                        onChange={(e) => {
-                          const { checked } = e.target;
-                          setSelectAll(checked);
-                          const offerCountry = options?.map(
-                            (option) => option.value
-                          );
-                          setFieldValue(
-                            "offerCountry",
-                            checked ? offerCountry : []
-                          );
-                        }}
+                        onChange={(e) => handleSelectAllChange(e.target.checked, setFieldValue)}
                       >
-                        Select all country
+                        Select all countries
                       </Checkbox>
                       <RequiredWrapper>
                         <ErrorMessage name="offerCountry" />
@@ -816,17 +832,24 @@ const AddOffer = () => {
                   <FieldContainer>
                     <ChooseCountry>
                       <SelectField
+
                         mode="multiple"
                         allowClear
                         style={{ width: "100%" }}
                         placeholder="Search for a user"
                         onPopupScroll={handleScroll}
+                        value={values.fraudUser}
                         onBlur={(e) =>
                           optionPage === 1
                             ? fetchdropDownUsers()
                             : setOptionsPage(1)
                         }
-                        value={values.fraudUser}
+                        filterOption={(input, option) =>
+                          option?.label
+                            ?.toLowerCase()
+                            ?.indexOf(input?.toLowerCase()) >= 0
+                        }
+                        onSearch={(value) => handleSearchDebounced(value)}
                         onChange={(value) => setFieldValue("fraudUser", value)}
                         options={allDropdownUsers}
                       />
