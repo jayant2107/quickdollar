@@ -89,7 +89,7 @@ const EditOffer = () => {
     offerShortDescription: record?.offerShortDescription,
     offerLongDescription: record?.offerLongDescription,
     offerCountry: record?.offerCountry?.split(","),
-    fraudUser: record?.fraudUser,
+    fraudUser: record?.fraudUser?.split(","),
     dailyCAPLimit: record?.dailyCAPLimit,
     isActive: record?.isActive?.toString(),
     app_install: record?.app_install?.toString(),
@@ -1374,7 +1374,7 @@ const ErrorText = styled.div`
 
 const RadioWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: center;
 `;
 const RadioStyle = styled(Field)`

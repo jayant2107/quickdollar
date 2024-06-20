@@ -8,7 +8,7 @@ import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditFrontpageModal from "../../../Components/EditFrontpageModal/EditFrontpageModal";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import { deleteFrontpageOffer } from "../../../Services/Collection";
 import { Tooltip } from "antd";
 import { Link } from "react-router-dom";
@@ -26,6 +26,8 @@ const AllFrontPageOffer = () => {
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 769;
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -116,7 +118,7 @@ const AllFrontPageOffer = () => {
 
       dataIndex: "frontpageofferTitle",
       key: "offertext",
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       render: (text, record) => (
         <Tooltip title={record?.frontpageofferTitle || "NA"} placement="top">
           <TooltipContent>{record?.frontpageofferTitle || "NA"}</TooltipContent>
@@ -255,7 +257,7 @@ const AllFrontPageOffer = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       width: 100,
       render: (text, record) => (
         <TableAction

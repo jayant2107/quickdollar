@@ -323,12 +323,12 @@ export default function Sidebar() {
             </NavIcon2>
           </div>
         )}
-        <NavIcon2>
+        {/* <NavIcon2>
           <p>
             Pause API Survey
           </p>
           <Switch onChange={onToggleChange} />
-        </NavIcon2>
+        </NavIcon2> */}
       </>
     )
   }

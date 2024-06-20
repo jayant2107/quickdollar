@@ -15,17 +15,17 @@ const WebSetting = () => {
     const [loader, setLoader] = useState(false);
 
     const initialValues = {
-        appTitle: 'Make up to $500 a month',
-        appSubTitle: 'High paying surveys and many more',
-        headerText: 'QD',
-        currencySign: '$',
+        appTitle: '',
+        appSubTitle: '',
+        headerText: '',
+        currencySign: '',
         emailcontent: "",
-        cubeOfferCountryCode: ['US'],
-        showRedeembutton: 'true',
-        showUserBalance: 'true',
-        showBonusButton: 'false',
-        showBonusBalance: 'false',
-        maintanancemodeon: 'false',
+        cubeOfferCountryCode: [],
+        showRedeembutton: '',
+        showUserBalance: '',
+        showBonusButton: '',
+        showBonusBalance: '',
+        maintanancemodeon: '',
     };
 
     const toolbarOptions = [
@@ -39,13 +39,7 @@ const WebSetting = () => {
         [{ 'align': [] }],
     ];
 
-    const [value, setValue] = useState(`Welcome to Quick Dollar,
-    The easy money making site that gives you Cash
-    We have added best handpicked offers from trusted sources for our customers, so explore
-    them and start making up to  $450 a month by just investing your free time.
-    Thanks again  for joining Quick Dollar; and may God bless you bountifully
-    Best,
-    Quick Dollar`);
+    const [value, setValue] = useState('');
 
     const [geoCodes, setGeoCodes] = useState([]);
 
@@ -63,7 +57,7 @@ const WebSetting = () => {
             let payload = {
                 ...values,
                 cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
-                device_type:'2'
+                device_type:'3'
               }
               setLoader(true)
             let res = await addSetting(payload);
@@ -426,6 +420,7 @@ const Label = styled.p`
     @media only screen and (min-width: 320px) and (max-width: 480px) {
         margin-bottom: 0px;
         width: 100%;
+        padding: 15px 0px;
         }
 `;
 

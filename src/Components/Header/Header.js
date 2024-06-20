@@ -15,6 +15,7 @@ import { IoMail } from "react-icons/io5";
 import { AiFillDashboard } from "react-icons/ai";
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Switch } from 'antd';
+import DecryptUserInfo from "../../Modules/User/DecryptUser/DecryptUserInfo";
 
 const Header = () => {
   const [type, setTtype] = useState(false);
@@ -317,13 +318,13 @@ const Header = () => {
             </NavIcon2>
           </div>
         )}
-        <NavIcon2>
+        {/* <NavIcon2>
           <p>
             Pause API Survey
 
           </p>
           <Switch onChange={onToggleChange} />
-        </NavIcon2>
+        </NavIcon2> */}
       </>
     )
   }
@@ -493,6 +494,7 @@ const Header = () => {
           </div>
         </div>
       )}
+        <DecryptUserInfo triggerModal={showModal} setTriggerModal={setShowModal} />
     </HeaderWrapper>
   );
 };

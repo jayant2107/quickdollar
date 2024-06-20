@@ -12,10 +12,9 @@ import {
   getRequestedGiftCard,
   editRequestedGiftCard,
 } from "../../../Services/Collection";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import { DateTime } from "luxon";
 import EditRequestGiftCard from "../../../Components/EditRequestedGiftCard/EditRequestesGiftCard";
-import { Button, Switch } from "antd";
 
 const RequestGiftCard = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -32,6 +31,9 @@ const RequestGiftCard = () => {
   const [orderMethod, setorderMethod] = useState("desc");
   const [orderType, setOrderType] = useState("3");
   const [sentRewards, setSentRewards] = useState({});
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 480;
+  
   const handleSearch = useCallback(
     debounce((value) => {
       setSearch(value);
@@ -39,8 +41,6 @@ const RequestGiftCard = () => {
     }),
     []
   );
-
-  
 
   const fetchData = async () => {
     setLoader(true);
@@ -152,7 +152,7 @@ const RequestGiftCard = () => {
       width: 150,
       dataIndex: "giftCardName",
       key: "giftname",
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       render: (text, record) => record?.Giftcard?.giftCardName || "NA",
     },
     {
@@ -340,7 +340,7 @@ const RequestGiftCard = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       width: 150,
       render: (text, record) => (
         <TableAction

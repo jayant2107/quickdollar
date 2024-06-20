@@ -74,9 +74,9 @@ const PromotionEmail = () => {
             let payload = {
                 ...values,
                 offerCountryCode: values.offerCountryCode.join(','),
-              }
+            }
             setLoader(true)
-            let res = await promotionEmail(payload );
+            let res = await promotionEmail(payload);
             setLoader(false)
             if (res?.status === 200) {
                 toast.success("Promotion email send Successfully");
@@ -128,7 +128,6 @@ const PromotionEmail = () => {
     }, [])
 
     document.title = "Promotion Email - quickdollarapp";
-
     return (
         <div>
             <Header>Email Preview</Header>
@@ -272,7 +271,7 @@ const PromotionEmail = () => {
                                                 options={options}
                                                 filterOption={(input, option) =>
                                                     option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                } 
+                                                }
                                                 onBlur={() => setFieldTouched('offerCountryCode', true)}
                                             />
                                             <Checkbox checked={selectAll} onChange={(e) => {
@@ -291,7 +290,9 @@ const PromotionEmail = () => {
                                 </FieldWrapper>
                             </InputWrapper>
                             <Footer>
-                                <ResetButton type="button" onClick={() => handlePreview(values)}>Preview</ResetButton>
+                                {values?.offerText && values?.offerDescription && values?.additionalText && (
+                                    <PreviewButton type="button" onClick={() => handlePreview(values)}>Preview</PreviewButton>
+                                ) || <DisablePreviewButton type="button" disabled>Preview</DisablePreviewButton>}
                                 <SubmitBtn type="primary" htmlType="submit" disabled={loader}>Submit{loader ? <Loader /> : ""}</SubmitBtn>
                             </Footer>
                         </Form>
@@ -444,10 +445,18 @@ const ChooseCountry = styled.div`
     text-align:left
 `;
 
-const ResetButton = styled(Button)`
+const PreviewButton = styled(Button)`
     background-color: #17A2B8;
     border-color: #17A2B8;
     color: white;
+`;
+
+const DisablePreviewButton = styled(Button)`
+    background-color: #17A2B8;
+    border-color: #17A2B8;
+    color: white;
+    opacity: 0.5;
+    cursor: not-allowed;
 `;
 
 const SubmitBtn = styled(Button)`

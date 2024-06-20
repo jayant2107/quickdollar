@@ -9,11 +9,15 @@ import { FaInstagram } from "react-icons/fa";
 import { FaPinterest } from "react-icons/fa";
 
 const PreviewPromotionEmail = ({ triggerModal, setTriggerModal, previewData }) => {
-
     const handleCancel = () => {
         setTriggerModal(false);
     };
-    // console.log(previewData, "preview")
+
+    const htmlToPlainText = (html) => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        return doc.body.textContent || "";
+    };
+    
     return (
         <Modal
             style={{ display: 'flex', width: "100%", justifyContent: 'center', alignItems: 'center' }}
@@ -33,7 +37,7 @@ const PreviewPromotionEmail = ({ triggerModal, setTriggerModal, previewData }) =
                         <PTag>{previewData?.offerText}</PTag>
                         <PTag><SpanText>Dear Mike</SpanText>(username),</PTag>
                         <SpanText>Quick Dollar invites you to share your opinions in an important <br /> new survey.</SpanText>
-                        <PTag>{previewData?.offerDescription}</PTag>
+                        <PTag>{htmlToPlainText(previewData?.offerDescription)}</PTag>
                         <PTag>{previewData?.additionalText}</PTag>
                     </EmailDetails>
 

@@ -6,7 +6,7 @@ import { deleteOffers, getCompletedoffers } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -24,6 +24,8 @@ const CompletedOffers = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 769;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -147,7 +149,7 @@ const CompletedOffers = () => {
       key: "name",
       dataIndex: "firstName",
       width: 200,
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       render: (text, record) => {
         const capitalizeFirstLetter = (str) => {
           return str.charAt(0).toUpperCase() + str.slice(1);
@@ -305,7 +307,7 @@ const CompletedOffers = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       width: 100,
       render: (text, record) => (
         <TableAction

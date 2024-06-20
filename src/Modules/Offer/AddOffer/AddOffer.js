@@ -1122,7 +1122,7 @@ const ErrorText = styled.div`
 const RadioWrapper = styled.div`
   display: flex;
   // flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
 `;
 

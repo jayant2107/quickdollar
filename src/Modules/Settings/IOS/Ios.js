@@ -13,22 +13,22 @@ const Ios = () => {
   const [loader, setLoader] = useState(false);
 
   const initialValues = {
-    appTitle: 'Welcome to iPeor',
-    appSubTitle: 'Enjoy Taking surveys',
-    headerText: 'QD',
-    currencySign: '$',
-    cubeOfferCountryCode: ['US'],
-    showRedeembutton: 'true',
-    showUserBalance: 'true',
-    showBonusButton: 'true',
-    showBonusBalance: 'false',
-    maintanancemodeon: 'false',
-    offerDisplayCount: '50',
-    pauseAllOffers: 'false',
-    locationService: 'true',
-    completedOffers: 'true',
-    payment: 'true',
-    inviteModule: 'true',
+    appTitle: '',
+    appSubTitle: '',
+    headerText: '',
+    currencySign: '',
+    cubeOfferCountryCode: [],
+    showRedeembutton: '',
+    showUserBalance: '',
+    showBonusButton: '',
+    showBonusBalance: '',
+    maintanancemodeon: '',
+    offerDisplayCount: '',
+    pauseAllOffers: '',
+    locationService: '',
+    completedOffers: '',
+    payment: '',
+    inviteModule: '',
   };
 
   const [geoCodes, setGeoCodes] = useState([]);
@@ -52,7 +52,7 @@ const Ios = () => {
       let payload = {
         ...values,
         cubeOfferCountryCode: values.cubeOfferCountryCode.join(','),
-        device_type:'0'
+        device_type:'1'
       }
       setLoader(true);
       let res = await addSetting(payload);

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
 import { RxCross2 } from "react-icons/rx";
 import { IoCheckmarkOutline } from "react-icons/io5";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import { getDeliveredGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
@@ -20,7 +20,8 @@ const DeliveredGift = () => {
   const [fieldName, setFieldName] = useState("updatedAt");
   const [orderMethod, setorderMethod] = useState("desc");
   const [orderType, setOrderType] = useState("3");
-
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 480;
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -40,10 +41,8 @@ const DeliveredGift = () => {
       params.append("fieldName", fieldName);
       params.append("orderMethod", orderMethod);
       params.append("orderType", orderType);
-      // console.log("Fetch Params:", params.toString());
       const res = await getDeliveredGiftCard(params);
       if (res?.status === 200) {
-        // console.log(res?.data?.findDeliveredGiftCards);
         setUserData(res?.data?.findDeliveredGiftCards || []);
         setTotalUsers(res?.data?.totalDeliveredGiftCards || 0);
       } else {
@@ -63,23 +62,17 @@ const DeliveredGift = () => {
     }
   };
 
-  const handleSort = (columnKey,type) => {
+  const handleSort = (columnKey, type) => {
     let newOrder;
-    // If the clicked column is the same as the currently sorted column, toggle the sorting order
     if (columnKey === fieldName) {
       newOrder = orderMethod === "asc" ? "desc" : "asc";
     } else {
-      // If a new column is clicked, set the sorting order to ascending by default
       newOrder = "asc";
-      // Reset sorting order for other columns
       setorderMethod("asc");
     }
-    // console.log("Sort Field:", columnKey);
-    // console.log("Sort Order:", newOrder);
-    // console.log(type)
     setFieldName(columnKey);
     setorderMethod(newOrder);
-    setOrderType(type)
+    setOrderType(type);
     setCurrentPage(1);
   };
 
@@ -87,7 +80,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardName","2")}
+          onClick={() => handleSort("giftCardName", "2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -108,13 +101,13 @@ const DeliveredGift = () => {
       width: 150,
       dataIndex: "giftCardName",
       key: "giftname",
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       render: (text, record) => record?.Giftcard?.giftCardName || "NA",
     },
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardPoints","2")}
+          onClick={() => handleSort("giftCardPoints", "2")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -139,7 +132,7 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("firstName","1")}
+          onClick={() => handleSort("firstName", "1")}
           style={{
             display: "flex",
             alignItems: "center",
@@ -157,7 +150,6 @@ const DeliveredGift = () => {
           />
         </div>
       ),
-
       dataIndex: "firstName",
       key: "name",
       render: (text, record) => {
@@ -170,22 +162,21 @@ const DeliveredGift = () => {
         const capitalizedLastName = capitalizeFirstLetter(
           record?.User?.lastName || ""
         );
-        const fullName =
-          `${capitalizedFirstName} ${capitalizedLastName}`.trim();
+        const fullName = `${capitalizedFirstName} ${capitalizedLastName}`.trim();
         return fullName ? fullName : "NA";
       },
     },
     {
       title: (
         <div
-          onClick={() => handleSort("Status","3")}
+          onClick={() => handleSort("Status", "3")}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-         Status{" "}
+          Status{" "}
           <img
             src={srcSortImage("Status", {
               sortBasis: fieldName,
@@ -208,11 +199,9 @@ const DeliveredGift = () => {
           )}
         </StatusStyledText>
       ),
-    
     },
     {
-      title:"User Type",
-      
+      title: "User Type",
       dataIndex: "userApplicationtype",
       key: "usertype",
       render: (text, record) => {
@@ -235,20 +224,18 @@ const DeliveredGift = () => {
         }
         return <StyledText>{userType}</StyledText>;
       },
-      
     },
-
     {
       title: (
         <div
-          onClick={() => handleSort("giftCardCode","3")}
+          onClick={() => handleSort("giftCardCode", "3")}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-         Gift Card Code{" "}
+          Gift Card Code{" "}
           <img
             src={srcSortImage("giftCardCode", {
               sortBasis: fieldName,
@@ -266,14 +253,14 @@ const DeliveredGift = () => {
     {
       title: (
         <div
-          onClick={() => handleSort("updatedAt","2")}
+          onClick={() => handleSort("updatedAt", "2")}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-         Delivery Date{" "}
+          Delivery Date{" "}
           <img
             src={srcSortImage("updatedAt", {
               sortBasis: fieldName,
@@ -284,15 +271,13 @@ const DeliveredGift = () => {
           />
         </div>
       ),
-     
       dataIndex: "updatedAt",
       key: "deliveryDate",
       render: (text, record) => {
-        if(!record?.Giftcard?.updatedAt) return "NA";
+        if (!record?.Giftcard?.updatedAt) return "NA";
         const date = DateTime.fromISO(record?.Giftcard?.updatedAt);
         return date.toFormat("MMM dd yyyy, HH : mm : ss");
       },
-     
     },
   ];
 
@@ -316,21 +301,17 @@ const DeliveredGift = () => {
     x: 1000,
   };
 
-  
-
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, search, fieldName, orderMethod]);
 
-
-  document.title="Delivered Gift Cards - quickdollarapp";
+  document.title = "Delivered Gift Cards - quickdollarapp";
 
   return (
     <AllUserWrapper byTheme={byTheme}>
       <div className="allUsersHeader">
         <h1 className="allUsersHeading">Delivered Gift Card</h1>
       </div>
-
       <div className="tableDiv">
         <TableNew
           columns={columns}
@@ -402,6 +383,7 @@ const AllUserWrapper = styled.div`
     box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
   }
 `;
+
 const StatusStyledText = styled.span`
   color: #fff;
   background-color: ${({ status }) =>
@@ -414,6 +396,7 @@ const StatusStyledText = styled.span`
   cursor: pointer;
   text-transform: capitalize;
 `;
+
 const StyledText = styled.span`
   color: #fff;
   background: linear-gradient(

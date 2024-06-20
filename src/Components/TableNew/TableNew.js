@@ -36,6 +36,8 @@ const TableNew = ({
 }) => {
   const columnsWithSno = [...columns];
 
+  const currentYear = new Date().getFullYear(); 
+
   return (
     <>
       <GlobalStyle />
@@ -71,7 +73,7 @@ const TableNew = ({
         </div>
       </TableWrapper>
 
-      <p style={{margin:"0px"}}>Copyright © 2020 QuickDollar. All rights reserved.</p>
+      <p style={{margin:"0px"}}>Copyright © {currentYear} QuickDollar. All rights reserved.</p>
     </>
   );
 };
@@ -174,6 +176,40 @@ const TableWrapper = styled.div`
     font-size: 25px;
     &:hover {
       cursor: pointer;
+    }
+  }
+
+  @media only screen and (min-width: 320px) and (max-width: 480px) {
+    .ant-pagination-total-text{
+      width: 100% !important;
+    }
+    .ant-table-pagination.ant-pagination{
+      display: flex;
+      justify-content: center;
+    }
+    .ant-pagination-options {
+      display: inline-block;
+    }
+    .ant-pagination-item{
+      margin-inline-end: 3px !important;
+      min-width: 24px !important;
+    }
+  }
+
+  @media only screen and (min-width: 480px) and (max-width: 769px) {
+    .ant-pagination-total-text{
+      width: 100% !important;
+    }
+    .ant-table-pagination.ant-pagination{
+      display: flex;
+      justify-content: center;
+    }
+    .ant-pagination-options {
+      display: inline-block;
+    }
+    .ant-pagination-item{
+      margin-inline-end: 3px !important;
+      min-width: 24px !important;
     }
   }
 `;

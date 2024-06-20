@@ -12,7 +12,7 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { DateTime } from "luxon";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -36,6 +36,8 @@ const ViewCustomOffers = () => {
   const [activeLoading, setActiveLoading] = useState(false);
   const [deactiveLoading, setDeactiveLoading] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 769;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -218,7 +220,7 @@ const ViewCustomOffers = () => {
       key: "title",
       dataIndex: "offerTitle",
       width: 150,
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       render: (text, record) => record?.offerTitle || "NA",
     },
     {
@@ -421,7 +423,7 @@ const ViewCustomOffers = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       width: 100,
       render: (text, record) => (
         <TableAction

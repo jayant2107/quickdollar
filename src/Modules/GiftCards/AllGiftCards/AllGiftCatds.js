@@ -7,7 +7,7 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import DeleteModal from "../../../Components/DeleteModal/DeleteModal";
 import EditGiftCardModal from "../../../Components/EditAllGiftCardModal/EditGiftCardModal";
 import TableAction from "../../../Components/TableNew/TableActions";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import { deleteGiftCard, getAllGiftCard } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
@@ -25,6 +25,8 @@ const AllGiftCards = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 480;
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -108,7 +110,7 @@ const AllGiftCards = () => {
 
       dataIndex: "giftCardName",
       key: "name",
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       render: (text, record) => record?.giftCardName || "NA",
     },
     {
@@ -237,7 +239,7 @@ const AllGiftCards = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       render: (text, record) => (
         <TableAction
           edit={formActions.edit}

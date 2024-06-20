@@ -14,7 +14,7 @@ import ActiveModal from "../../../Components/ActiveModal/ActiveModal";
 import { deleteUser, getAllAbusedUser } from "../../../Services/Collection";
 import { toast } from "react-toastify";
 import { DateTime } from "luxon";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage,useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 
 const AllAbusedUsers = () => {
   const byTheme = useSelector((state) => state?.changeColors?.theme);
@@ -31,6 +31,8 @@ const AllAbusedUsers = () => {
   const [search, setSearch] = useState("");
   const [fieldName, setFieldName] = useState("createdAt");
   const [orderMethod, setorderMethod] = useState("desc");
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 769;
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -116,7 +118,7 @@ const AllAbusedUsers = () => {
       width: 150,
       dataIndex: "firstName",
       key: "name",
-      fixed: "left",
+       fixed: isMobile ? undefined : "left",
       render: (text, record) => {
         const capitalizeFirstLetter = (str) => {
           return str.charAt(0).toUpperCase() + str.slice(1);
@@ -294,7 +296,7 @@ const AllAbusedUsers = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       width: 150,
       render: (text, record) => (
         <TableAction

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TableNew from "../../../Components/TableNew/TableNew";
-import { debounce, srcSortImage } from "../../../Utils/CommonFunctions";
+import { debounce, srcSortImage, useTableScreenResponsive } from "../../../Utils/CommonFunctions";
 import { toast } from "react-toastify";
 import { Select, Tooltip } from "antd";
 import {
@@ -40,6 +40,8 @@ const AllOffers = () => {
   const [activeLoading, setActiveLoading] = useState(false);
   const [deactiveLoading, setDeactiveLoading] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const screenWidth = useTableScreenResponsive();
+  const isMobile = screenWidth >= 320 && screenWidth <= 769;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -233,7 +235,7 @@ const AllOffers = () => {
 
       key: "title",
       dataIndex: "offerTitle",
-      fixed: "left",
+      fixed: isMobile ? undefined : "left",
       width: 150,
       render: (text, record) => record?.offerTitle || "NA",
     },
@@ -439,7 +441,7 @@ const AllOffers = () => {
     {
       title: "Action",
       key: "operation",
-      fixed: "right",
+      fixed: isMobile ? undefined : "right",
       width: 150,
       render: (text, record) => (
         <TableAction
