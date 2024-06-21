@@ -264,7 +264,6 @@ const EditOffer = () => {
     params.append("id", selectedUser);
     try {
       const res = await getUserAndLink(params);
-      console.log(res);
       if (res?.status === 200) {
         setUserAndLink(res?.data?.findlink?.offerLink);
       } else {
