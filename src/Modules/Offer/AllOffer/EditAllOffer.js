@@ -75,12 +75,11 @@ const EditOffer = () => {
   const [flag, setFlag] = useState(false);
   const [offerImgPreview, setOfferImgPreview] = useState(record?.offerImage);
   const [offerImgError, setOfferImgError] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(1);
   const [allDropdownUsers, setAllDropdownUsers] = useState([]);
   const [optionsLoader, setOptionsLoader] = useState(false);
   const [allUserCount, setAllUserCount] = useState(0);
-
-  const initialValues = {
+  const [formValues, setFormValues] = useState({
     offerTitle: record?.offerTitle,
     offerLink: record?.offerLink,
     offerPoints: record?.offerPoints,
@@ -107,7 +106,7 @@ const EditOffer = () => {
     HotOfFerFor: record?.HotOfFerFor?.toString(),
     user: "",
     userOfferUrl: "",
-  };
+  })
 
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"],
@@ -260,13 +259,27 @@ const EditOffer = () => {
     }
   };
 
-  const fetchUsersandLinks = async () => {
-    const params = new URLSearchParams();
-    params.append("id", selectedUser);
+  const fetchUsersandLinks = async (page,search) => {
     try {
+    const params = new URLSearchParams();
+    params.append("page", page ?? selectedUser);
+    params.append("limit", 50);
+    search && params.append("search", search);
       const res = await getUserAndLink(params);
       if (res?.status === 200) {
         setUserAndLink(res?.data);
+        let filteredArray = [];
+        res?.data?.map((data) => {
+          filteredArray.push({
+            label: `${data?.firstName} ${data?.lastName}`,
+            value: `${data?.idUser}`,
+          });
+        });
+        if (optionPage === 1 || page === 1) {
+          setAllDropdownUsers(filteredArray);
+        } else {
+          setAllDropdownUsers([...allDropdownUsers, ...filteredArray]);
+        }
       } else {
         let message =
           res?.response?.data?.message ||
@@ -292,7 +305,7 @@ const EditOffer = () => {
   const handleSearchDebounced = debounce(async (value) => {
     setSearch(value);
     fetchdropDownUsers(1, value);
-    // fetchUsersandLinks(value)
+    fetchUsersandLinks(1, value)
   });
 
   const handleReset = (resetForm) => {
@@ -344,6 +357,23 @@ const EditOffer = () => {
   }));
 
   useEffect(() => {
+    const allCountries = optionsGeo.map(option => option.value);
+    const areAllSelected = formValues.offerCountry?.length === allCountries?.length &&
+      formValues.offerCountry.every(code => allCountries.includes(code));
+    setSelectAll(areAllSelected);
+  }, [formValues.offerCountry, optionsGeo]);
+
+  const handleSelectAllChange = (checked, setFieldValue) => {
+    setSelectAll(checked);
+    const allCountries = optionsGeo.map(option => option.value);
+    setFieldValue('offerCountry', checked ? allCountries : []);
+    setFormValues(prevValues => ({
+      ...prevValues,
+      offerCountry: checked ? allCountries : []
+    }));
+  };
+
+  useEffect(() => {
     fetchGeoCordData();
   }, []);
 
@@ -364,7 +394,7 @@ const EditOffer = () => {
       <Header>Edit Offer</Header>
       <AnnouncementWrapper>
         <Formik
-          initialValues={initialValues}
+          initialValues={formValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -787,7 +817,7 @@ const EditOffer = () => {
                   <SelectFieldWrapper>
                     <SelectField
                       placeholder="Select user"
-                      defaultValue={initialValues.OfferCreatedFor}
+                      defaultValue={formValues.OfferCreatedFor}
                       style={{
                         width: "100%",
                         marginBottom: "3px",
@@ -944,31 +974,25 @@ const EditOffer = () => {
                         style={{ width: "100%" }}
                         placeholder="Select geo code"
                         value={values.offerCountry}
-                        onChange={(value) =>
-                          setFieldValue("offerCountry", value)
-                        }
                         options={optionsGeo}
                         filterOption={(input, option) =>
                           option.label
                             .toLowerCase()
                             .indexOf(input.toLowerCase()) >= 0
                         }
+                        onChange={(value) => {
+                          setFieldValue('offerCountry', value);
+                          setFormValues(prevValues => ({
+                            ...prevValues,
+                            offerCountry: value
+                          }));
+                        }}
                       />
                       <Checkbox
-                        checked={selectAll}
-                        onChange={(e) => {
-                          const { checked } = e.target;
-                          setSelectAll(checked);
-                          const offerCountry = optionsGeo?.map(
-                            (option) => option.value
-                          );
-                          setFieldValue(
-                            "offerCountry",
-                            checked ? offerCountry : []
-                          );
-                        }}
+                        checked={selectAll && values.offerCountry?.length === optionsGeo?.length}
+                        onChange={(e) => handleSelectAllChange(e.target.checked, setFieldValue)}
                       >
-                        Select all country
+                        Select all countries
                       </Checkbox>
                       <RequiredWrapper>
                         <ErrorMessage name="offerCountry" />
@@ -1347,11 +1371,11 @@ const RdioWrapper = styled.div`
 `;
 
 const SelectFieldWrapper = styled.div`
+width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
   text-align: start;
+  align-items: flex-start;
 `;
 
 const UploadButton = styled(Button)`

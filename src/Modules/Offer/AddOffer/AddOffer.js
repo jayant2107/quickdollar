@@ -801,7 +801,7 @@ const AddOffer = () => {
                         onBlur={() => setFieldTouched('offerCountry', true)}
                       />
                       <Checkbox
-                        checked={selectAll}
+                        checked={selectAll && values.offerCountry?.length === options?.length}
                         onChange={(e) => handleSelectAllChange(e.target.checked, setFieldValue)}
                       >
                         Select all countries

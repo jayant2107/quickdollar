@@ -298,7 +298,7 @@ const PromotionEmail = () => {
                                                 onBlur={() => setFieldTouched('offerCountryCode', true)}
                                             />
                                             <Checkbox
-                                                checked={selectAll}
+                                                checked={selectAll && values.offerCountryCode.length === options.length}
                                                 onChange={(e) => handleSelectAllChange(e.target.checked, setFieldValue)}
                                             >
                                                 Select all countries
