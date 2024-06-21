@@ -889,7 +889,7 @@ const EditOffer = () => {
                   <Label>Select platform for offer</Label>
                   <Field name="SelectPlatFormForOffer">
                     {({ field, form: { setFieldValue } }) => (
-                      <FieldContainer style={{ display: "flex" }}>
+                      <FieldContainer style={{ display: "flex" , marginTop: "10px"}}>
                         <Checkbox.Group
                           className="checkboxGroup"
                           value={field.value}
@@ -1165,6 +1165,8 @@ const Label = styled.p`
   font-family: Poppins;
   @media only screen and (min-width: 320px) and (max-width: 480px) {
     margin-bottom: 0px;
+      padding: 15px 0px 15px 0px;
+
   }
 `;
 
