@@ -68,14 +68,14 @@ const EditOffer = () => {
   const offerImgInputRef = useRef(null);
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
-  const [userAndLink, setUserAndLink] = useState([]);
+  const [userAndLink, setUserAndLink] = useState(['NA']);
   const [h1TitleValue, setH1TitleValue] = useState("");
   const [longDescriptionValue, setLongDescriptionValue] =
     useState("long description");
   const [flag, setFlag] = useState(false);
   const [offerImgPreview, setOfferImgPreview] = useState(record?.offerImage);
   const [offerImgError, setOfferImgError] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(1);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [allDropdownUsers, setAllDropdownUsers] = useState([]);
   const [optionsLoader, setOptionsLoader] = useState(false);
   const [allUserCount, setAllUserCount] = useState(0);
@@ -165,7 +165,7 @@ const EditOffer = () => {
         formData.append("offerH1Title", values?.offerH1Title);
         formData.append("OfferCreatedFor", values?.OfferCreatedFor);
         formData.append("user", values?.user);
-        formData.append("userOfferUrl", values?.userOfferUrl);
+        formData.append("userOfferUrl", userAndLink);
         formData.append(
           "SelectPlatFormForOffer",
           values?.SelectPlatFormForOffer
@@ -259,28 +259,16 @@ const EditOffer = () => {
     }
   };
 
-  const fetchUsersandLinks = async (page,search) => {
-    try {
+  const fetchUsersandLinks = async () => {
     const params = new URLSearchParams();
-    params.append("page", page ?? selectedUser);
-    params.append("limit", 50);
-    search && params.append("search", search);
+    params.append("id", selectedUser);
+    try {
       const res = await getUserAndLink(params);
+      console.log(res);
       if (res?.status === 200) {
-        setUserAndLink(res?.data);
-        let filteredArray = [];
-        res?.data?.map((data) => {
-          filteredArray.push({
-            label: `${data?.firstName} ${data?.lastName}`,
-            value: `${data?.idUser}`,
-          });
-        });
-        if (optionPage === 1 || page === 1) {
-          setAllDropdownUsers(filteredArray);
-        } else {
-          setAllDropdownUsers([...allDropdownUsers, ...filteredArray]);
-        }
+        setUserAndLink(res?.data?.findlink?.offerLink);
       } else {
+        setUserAndLink('NA')
         let message =
           res?.response?.data?.message ||
           res?.message ||
@@ -291,6 +279,10 @@ const EditOffer = () => {
     } catch (error) {
       toast.error(error?.message || "Something went wrong");
     }
+  };
+
+  const filterOption = (input, option) => {
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   };
 
   const handleScroll = (e) => {
@@ -305,7 +297,7 @@ const EditOffer = () => {
   const handleSearchDebounced = debounce(async (value) => {
     setSearch(value);
     fetchdropDownUsers(1, value);
-    fetchUsersandLinks(1, value)
+    // fetchUsersandLinks(1, value)
   });
 
   const handleReset = (resetForm) => {
@@ -854,7 +846,7 @@ const EditOffer = () => {
                         <Field
                           type="radio"
                           name="offerPlatform"
-                          value="true"
+                          value="1"
                           id="shopOffer"
                         />
                         <RadioLabel htmlFor="shopOffer">shopOffer</RadioLabel>
@@ -863,7 +855,7 @@ const EditOffer = () => {
                         <Field
                           type="radio"
                           name="offerPlatform"
-                          value="false"
+                          value="2"
                           id="quickThoughts"
                         />
                         <RadioLabel htmlFor="quickThoughts">
@@ -1024,26 +1016,23 @@ const EditOffer = () => {
                         width: "100%",
                         marginBottom: "3px",
                       }}
-                      value={
-                        allDropdownUsers.find(
-                          (option) => allDropdownUsers.value === values.user
-                        ) || null
+                      // value={
+                      //   allDropdownUsers.find(
+                      //     (option) => allDropdownUsers.value === values.user
+                      //   ) || null
+                      // }
+                      value={values.user|| null}
+                      onBlur={(e) =>
+                        optionPage === 1
+                          ? fetchdropDownUsers()
+                          : setOptionsPage(1)
                       }
                       onChange={(value) => {
                         setFieldValue("user", value);
                         setSelectedUser(value || null);
                       }}
                       onSearch={(value) => handleSearchDebounced(value)}
-                      onBlur={(e) =>
-                        optionPage === 1
-                          ? fetchUsersandLinks()
-                          : setOptionsPage(1)
-                      }
-                      filterOption={(input, option) =>
-                        option?.label
-                          ?.toLowerCase()
-                          ?.indexOf(input?.toLowerCase()) >= 0
-                      }
+                      filterOption={filterOption}
                       options={allDropdownUsers}
                       onPopupScroll={handleScroll}
                       dropdownRender={(menu) => (
@@ -1067,9 +1056,7 @@ const EditOffer = () => {
                 <FieldWrapper>
                   <Label>User Offer URL</Label>
                   <SelectFieldWrapper>
-                    {values?.user == userAndLink?.findUsers?.idUser
-                      ? userAndLink?.findlink?.offerLink
-                      : `NA`}
+                    {userAndLink}
                     <RequiredWrapper>
                       <ErrorMessage name="userOfferURL" />
                     </RequiredWrapper>
@@ -1376,6 +1363,10 @@ width: 100%;
   flex-direction: column;
   text-align: start;
   align-items: flex-start;
+  justify-content:center;
+  .ant-select-show-search:where(.css-dev-only-do-not-override-zjzpde).ant-select:not(.ant-select-customize-input) .ant-select-selector input{
+height:100%
+}
 `;
 
 const UploadButton = styled(Button)`
