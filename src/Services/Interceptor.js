@@ -2,7 +2,6 @@ import axios from "axios";
 import store from "../Store/Store";
 
 const BaseUrl = process.env.REACT_APP_BASEURL;
-// const LiveUrl = "http://chayadapp-env.eba-kenpmbrm.us-east-1.elasticbeanstalk.com";
 
 const EndPoint = BaseUrl;
 const Api = axios.create({
@@ -17,7 +16,6 @@ Api.interceptors.request.use(
   (config) => {
     if (store.getState().Authlogin.data !== null) {
       const token = `B ${store.getState().Authlogin.data.token}`;
-      // console.log(token, "uu");
       config.headers = {
         Authorization: token,
       };
@@ -59,8 +57,7 @@ export const postApi = async (url, data) => {
 };
 
 //delete Api
-export const deleteApi = async (url,data) => {
-  
+export const deleteApi = async (url, data) => {
   try {
     let result = await Api.delete(url, { params: data });
     if (result.status === 200) {
