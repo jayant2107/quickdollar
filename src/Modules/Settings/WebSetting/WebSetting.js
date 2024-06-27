@@ -286,7 +286,7 @@ const WebSetting = () => {
 
 
                                 <FieldWrapper>
-                                    <Label>Maintanance Mode ON ?</Label>
+                                    <Label>Maintenance Mode ON ?</Label>
                                     <FieldContainer>
                                         <Field
                                             name="maintanancemodeon"
@@ -303,7 +303,7 @@ const WebSetting = () => {
                                 </FieldWrapper>
 
                                 <FieldWrapper>
-                                    <Label>welcom email</Label>
+                                    <Label>Welcome email</Label>
                                     <QuillFieldContainer>
                                         <StyledReactQuill
                                             theme="snow"

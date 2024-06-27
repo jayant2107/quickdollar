@@ -60,7 +60,7 @@ const PromotionEmail = () => {
             'Enter number only',
             value => !isNaN(value) && Number.isInteger(parseFloat(value))
         ),
-        offerLink: yup.string().required('Offer link is required'),
+        offerLink: yup.string().required('Offer link is required').url(),
         customPostbackParams: yup.string().required('Custom postback parameter is required'),
         offerDescription: yup.string().required('Offer description is required'),
     });

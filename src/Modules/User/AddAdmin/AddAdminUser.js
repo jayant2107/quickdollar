@@ -23,7 +23,7 @@ const AddAdminUser = () => {
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
     userName: yup.string().required('User name is required'),
-    emailAddress: yup.string().required('Email Address is required'),
+    emailAddress: yup.string().required('Email Address is required').email('Email Address is invalid'),
     password: yup.string().required('Password is required')
       .min(8, 'Password must be at least 8 characters')
       .matches(/^(?=.*[A-Z])/, 'Password must contain at least one uppercase letter')
@@ -41,7 +41,6 @@ const AddAdminUser = () => {
       setLoader(true);
       let res = await addAdminUser(payload);
       setLoader(false);
-      // console.log(res, "res");
       if (res?.status === 200) {
         toast.success("User Added Successfully");
         resetForm();
@@ -54,7 +53,6 @@ const AddAdminUser = () => {
         toast.error(message);
       }
     } catch (error) {
-      // console.log(error, "error");
       toast.error(error?.message || "Something went wrong");
     }
   };

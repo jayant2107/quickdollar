@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Checkbox, Select } from "antd";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import styled from "styled-components";
@@ -60,13 +60,11 @@ const AddOffer = () => {
     [{ align: [] }],
   ];
 
-  console.log(allDropdownUsers, "allDropdownUsersallDropdownUsers");
-
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
     offerH1Title: yup.string().required("H1 title is required"),
     offerImage: yup.mixed().required("Offer image is required"),
-    offerLink: yup.string().required("Offer Link is required"),
+    offerLink: yup.string().required("Offer Link is required").url(),
     offerPoints: yup.number().nullable(),
     offerText: yup.string().nullable(),
     offerShortDescription: yup
@@ -136,7 +134,6 @@ const AddOffer = () => {
       formData.append("offerLongDescription", values?.offerLongDescription);
       formData.append("OfferCreatedFor", values?.OfferCreatedFor);
       formData.append("offerCountry", values?.offerCountry);
-      // formData.append("offerCountry", values.offerCountry);
       formData.append("fraudUser", values?.fraudUser);
       formData.append("dailyCAPLimit", values?.dailyCAPLimit);
       formData.append("customPostbackParams", values?.customPostbackParams);
@@ -315,8 +312,7 @@ const AddOffer = () => {
                   <FieldContainer>
                     <InputField
                       name="offerTitle"
-                      placeholder="Offer Title
-"
+                      placeholder="Offer Title"
                     />
                     <RequiredWrapper>
                       <ErrorMessage name="offerTitle" />
@@ -347,7 +343,7 @@ const AddOffer = () => {
                       }}
                     />
                     <RequiredWrapper>
-                      {touched.offerH1Title && errors.offerH1Title && (
+                      {touched?.offerH1Title && errors?.offerH1Title && (
                         <ErrorMessage name="offerH1Title" />
                       )}
                     </RequiredWrapper>
@@ -435,7 +431,7 @@ const AddOffer = () => {
                       onBlur={() =>
                         setFieldTouched("offerShortDescription", true)
                       }
-                      value={values.offerShortDescription}
+                      value={values?.offerShortDescription}
                     />
                     <RequiredWrapper>
                       {touched.offerShortDescription &&

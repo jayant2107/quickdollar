@@ -278,7 +278,7 @@ const Android = () => {
 
 
                 <FieldWrapper>
-                  <Label>Maintanance Mode ON ?</Label>
+                  <Label>Maintenance Mode ON ?</Label>
                   <FieldContainer>
                     <Field
                       name="maintanancemodeon"

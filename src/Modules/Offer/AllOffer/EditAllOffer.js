@@ -17,6 +17,7 @@ import {
 import { toast } from "react-toastify";
 import Loader from "../../../Components/Loader/Loader";
 import { debounce } from "../../../Utils/CommonFunctions";
+import { MdEmail } from "react-icons/md";
 
 const offerLocationOptions = [
   {
@@ -57,14 +58,11 @@ const EditOffer = () => {
   const record = useSelector((state) => state.offerRecord.record);
   const { idOffer } = useParams();
   const navigate = useNavigate();
-
   const [geoCodes, setGeoCodes] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [optionPage, setOptionsPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [userData, setUserData] = useState([]);
   const offerImgInputRef = useRef(null);
   const [selectAll, setSelectAll] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -122,7 +120,7 @@ const EditOffer = () => {
   const validationSchema = yup.object().shape({
     offerTitle: yup.string().required("Title is Required"),
     offerH1Title: yup.string().required("H1 title is required"),
-    offerLink: yup.string().required("Offer Link is required"),
+    offerLink: yup.string().required("Offer Link is required").url(),
     offerPoints: yup.number().nullable(),
     offerText: yup.string().nullable(),
     offerShortDescription: yup
@@ -178,7 +176,6 @@ const EditOffer = () => {
         if (flag) {
           formData.append("offerImage", values?.offerImage);
         }
-
         setLoader(true);
         const res = await editOffers(formData);
         setLoader(false);
@@ -382,7 +379,14 @@ const EditOffer = () => {
 
   return (
     <div>
+      <HeaderWrapper>
       <Header>Edit Offer</Header>
+        <button onClick={() => navigate("/quickdollar/offer/completedoffers")}>
+        <MdEmail style={{width: '20px', height: '20px'}}/>
+        Completed Offers
+        </button>
+      </HeaderWrapper>
+
       <AnnouncementWrapper>
         <Formik
           initialValues={formValues}
@@ -1131,7 +1135,7 @@ const Header = styled.p`
   display: flex;
   font-weight: 600;
   font-size: 24px;
-  margin: 20px 0px;
+  margin: 0px 0px;
   font-family: Poppins;
   color: rgb(0, 0, 0);
 `;
@@ -1404,3 +1408,26 @@ const RadioStyle = styled(Field)`
 const Asterisk = styled.span`
   color: red;
 `;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  button {
+    margin: 20px 0px;
+    box-shadow: rgba(61, 107, 192, 0.28) 0px 2px 8px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    padding: 11px 30px;
+    cursor: pointer;
+    color: ${({ theme }) => theme?.primaryColor};
+    background: ${({ theme }) => theme?.secondaryColor};
+    font-family: ${({ theme }) => theme?.fontFamily};
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+`
